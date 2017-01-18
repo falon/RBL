@@ -34,7 +34,7 @@ Customize the tables ($tables) you want. These are the lists. List types are cla
 - domain (list of domains, exportable to rbldns format such as URIBL or SURBL)
 
 Every list name and key must be unique. The field "active" if set to FALSE make the list inexistent.
-You can the maximum number of active members in every list configuring the "limit" field.
+The "limit" field configures the maximum number of active members in every list.
 The "bl" field identifies list as blocklist (TRUE) or whitelist (FALSE), but it is quite useless. It just helps you to make a sane employ of the list.
 
 The admins can list and relist items by hand through the web GUI. The superadmins (TRUE) can  list and relist up to years intervals. The list and relist facility is allowed only if you enable "require_auth", for safety reason. List and relist actions are logged with the authenticated admin credential.
