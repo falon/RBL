@@ -1,5 +1,5 @@
 # RBL Manager
-A complete RBL Management System
+A complete RBL Management System, with interfaces to Splunk Alert and trap mailboxes.
 
 ## Abstract
 A complete tool to create and manage a time expiring lists of IP, networks, usernames and email address.
