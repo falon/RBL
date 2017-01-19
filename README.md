@@ -18,16 +18,18 @@ Every member in list can be active (really listed), or inactive (time expired, o
 
 ## Basic Installation
 Unfortunately I don't have time to provide a very stupid user installation. Sorry, you must follow the instructions.
+
 Install via composer.
+
 Move the doc and contrib folders to /usr/local/RBL or other location. Or don't move at all, if you like.
 
 ### Database MySQL
-Check at the doc/db.sql and doc/grant.sql. Default values work with default config. Arrange them in your environment.
+Check at the `doc/db.sql` and `doc/grant.sql`. Default values work with default config. Arrange them in your environment.
 You can separate the MySQL host from the web host.
-
+```
 mysql -u root < doc/db.sql
 mysql -u root < doc/grant.sql
-
+```
 ### config.php
 Copy config.php-default to config.php
 
