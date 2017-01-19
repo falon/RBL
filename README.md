@@ -50,6 +50,13 @@ The "depend" field defines constraint through lists. For instance, a spam listed
 
 The admins can list and relist items by hand through the web GUI. The superadmins (TRUE) can  list and relist up to years intervals. The list and relist facility is allowed only if you enable "require_auth", for safety reason. List and relist actions are logged with the authenticated admin credential.
 
+### Expire task
+Install the expire daily task to prevent an indefinitely DB growing. You should write a systemd timer or crontab such as
+```
+ln -s /usr/local/RBL/contrib/expire.php /etc/cron.daily/expireRBL.php
+```
+It will remove all items expired for at least one year, or other specified in `$expireTime`. Expiration must also be activated (`$expire = TRUE`), see at `config.php`.
+
 ## Plugin
 
 The plugins are the real useful core of the lists. See at the wiki.
