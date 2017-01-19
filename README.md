@@ -17,7 +17,7 @@ Every member in list can be active (really listed), or inactive (time expired, o
 - php-imap, php-xml and Splunk SDK for the SPAM Learn Observer
 
 ## Basic Installation
-Unfortunately I don't have time to provide a very stupid user installation. Sorry, you must follow the instructions.
+Unfortunately I don't have time to provide a very stupid user installation. Sorry, you must follow these lapidary instructions.
 
 Install via composer.
 
