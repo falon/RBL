@@ -9,7 +9,7 @@ Every member in list can be active (really listed), or inactive (time expired, o
 
 ## Requisite
 
-- PHP > 7 (not tested with PHP5, but it could works).
+- PHP > 7 (not tested with PHP5, but it could work).
 - MySQL Server > 5.
 - php-gmp and Haran/PHP.IPv4
 - RBLDNS, if you export file zone through RBLDNS Export Plugin.
