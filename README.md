@@ -44,7 +44,7 @@ Customize the tables ($tables) you want. These are the lists. List types are cla
 - email (list of email addresses, useful to Postfix policy over sender email addresses, if you like)
 - domain (list of domains, exportable to rbldns format such as URIBL or SURBL)
 
-Every list name and key must be unique. The field "active" if set to FALSE make the list inexistent.
+Every list name and key must be unique. If set to FALSE, the field "active" makes the list inexistent.
 The "limit" field configures the maximum number of active members in every list.
 The "bl" field identifies the list as a blocklist (TRUE) or a whitelist (FALSE), but it is quite useless. It just helps you to make a sane employ of the list.
 The "depend" field defines constraint through lists. For instance, a spam listed item can't be subscribed to a whitelist.
