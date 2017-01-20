@@ -1,0 +1,39 @@
+## Postfix Example ##
+
+
+postscreen_access_list = permit_mynetworks,
+        cidr:/etc/postfix/postscreen_access.cidr,
+	mysql:/etc/postfix/mysql-postscreen.cf
+
+
+smtpd_client_restrictions = check_client_access hash:/etc/postfix/access,
+						mysql:/etc/postfix/mysql-clientrbl.cf
+                permit_sasl_authenticated,
+		[...]
+                reject
+
+
+smtpd_relay_restrictions =
+                permit_mynetworks,
+                permit_sasl_authenticated,
+                reject_unauth_destination
+
+
+smtpd_sender_restrictions =
+                reject_non_fqdn_sender,
+                reject_unknown_sender_domain,
+                reject_unlisted_sender,
+##                reject_unverified_sender,
+                check_sender_access regexp:/etc/postfix/banned_senders_rules
+                                    mysql:/etc/postfix/mysql-senderrbl.cf,
+		[Other access OK rules]
+
+
+smtpd_recipient_restrictions =
+                reject_non_fqdn_recipient,
+                reject_unknown_recipient_domain,
+                reject_unlisted_recipient,
+                check_recipient_access hash:/etc/postfix/recipient_access
+                                        mysql:/etc/postfix/mysql-destrbl.cf,
+		[Other access OK rules]
+                permit

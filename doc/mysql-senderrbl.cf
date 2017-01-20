@@ -1,0 +1,6 @@
+hosts = inet:fqdn:3306
+user = blackman
+password = rbl
+dbname = rbl
+query = SELECT `reason` FROM `intfromaddr` WHERE `email` = '%s' AND `active` = '1' AND `exp` > NOW()
+result_format = REJECT %s

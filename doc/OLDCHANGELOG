@@ -1,0 +1,72 @@
+16.1.2015
+- Added "depend" configuration value. This field contains an array of list name which are incongruent with the list. If a value is present on a "depend" list, cannot be added to this list.
+- Added configuration for non-standard MySQL server port.
+
+3.2.2015 Ver 1.5
+- Added export sender emails to LDAP catchall amavisBlacklistSender and amavisWhitelistSender.
+- Removed list of email address applied directly to Postfix from default config
+- Added 'White Sender' and 'Black Sender' as list of emails for interface with Amavis.
+
+4.3.2015 Ver 1.6
+- Added limit in number of items for each list (optional)
+- Minor bugs and restyled code
+
+18.3.2015 Ver 1.7
+- Added module to list items by Splunk Alert Action
+
+19.3.2015
+- in exportAmavisLdap.php connect to MySQL before deleting LDAP attrs. Risk to delete
+values without inserting the new ones. FIXED
+
+8.4.2015 Ver 1.7a
+- added ability to send notification mail; now hardcoded and used only from Splunk plugin
+
+21.5.2015 Ver 1.8
+- added learning spam tool to list IP most learned as spam and ham
+- in "listFromSplunk.php" only first line checked for policy for each address. FIXED
+- in 'depend' list configuration, only lists of same 'field' type can be added.
+- added user category admins, array of authenticated HTTP users.
+- added ability to list for MONTHS and YEARS in GUI, but only for admins.
+
+12.6.2015
+- in learning spam tool imap date search absolute days ago (0 to 24h), not starting from
+  script execution time.
+
+17.6.2015 Ver 1.8a
+- in learning spam tool minor restyle and added ability to take past reports.
+  Cron stuff removes oldest reports.
+
+30.7.2015
+- new version of listFromSplunk.php, with more complex trigger condition and
+  a new Splunk alert result. See at the plugin README.
+
+16.9.2015 Ver 1.9
+- added DateMod: the last modified time (listed, delisted, relisted) of an item.
+- added #list: number of time the item has been listed.
+- updated view to show DateMod and #list.
+- added schema for table `spamusername`. A list of username abused on SMTP Auth.
+  It is identical to email or domain's tables.
+- added syntax check for insert usernames through GUI.
+- added check that 'reason' is ASCII in list and relist POST.
+
+21.1.2016 Ver 1.9a
+- added admins and superadmins. Admins can list and relist.
+  Superadmins can list and relist for years intervals.
+
+24.2.2016
+- added check for empty Message-ID in ipImap learning spam tool.
+
+24.3.2016
+- in learning spam tool moved mysql connection after imap collection,
+  to prevent mySQL timeouts.
+
+30.3.2016 Ver 1.9b
+- minor GUI change in spam reports:
+	 modal div:
+	http://www.webdesignerdepot.com/2012/10/creating-a-modal-window-with-html5-and-css3/
+	 calendar pick:
+	http://www.triconsole.com/php/calendar_datepicker.php
+
+01.9.2016 Ver 1.9c
+- if IMAP or SPLUNK relist, number of relist multiply for the configured quantity.
+- minor HTML5 restyling.

@@ -1,0 +1,11 @@
+# Run export of DNSBL every 30 minutes
+*/30 * * * * root cd /usr/local/RBL/contrib/rbldns/yourbl; ../exportdns.php -f ../conf.default -t 'White IP'
+*/30 * * * * root cd /usr/local/RBL/contrib/rbldns/yourbl; ../exportdns.php -f ../conf.default -t 'Spam IP'
+
+# Run export of envelope list to Amavis every 30 minutes
+*/30 * * * * root /usr/local/RBL/contrib/amavis/exportAmavisLdap.php
+
+# Run learn spam tool every day at 8
+0 8 * * * root /usr/local/RBL/contrib/ipImap/getip.php
+# Delete oldest report every day at 8h55'
+55 8 * * * root find /usr/local/RBL/contrib/ipImap/report/*.html -type f -ctime +14 -exec rm -rf {} \;

@@ -1,0 +1,135 @@
+<?php
+
+/*********************************************************
+
+This is the configuration file for Policy RBL System.
+See the example in doc folder to understand the options.
+
+**********************************************************/
+
+
+$require_auth = FALSE;
+$version='1.9c';
+
+
+/* Admins can list or relist, others can only delist     */
+/* Superadmins (TRUE) have power to list items for years */
+$admins = array (
+        'superadmin@example.com' => TRUE,
+        'operator@example.com' => FALSE,
+);
+
+
+/* DB config */
+$dbhost = 'localhost';
+$dbport = ini_get("mysqli.default_port");
+$db = 'rbl';
+$userdb = 'root';
+$pwd = '';
+
+/*
+ Types:
+
+  - ip
+  - network
+  - email
+  - domain
+  - username
+
+*/
+
+/*
+   If you change 'name' and 'field', you also must change the DB schema accordingly.
+   Feel free to change runtime ONLY the 'active' and 'limit' fields.
+*/
+
+$tables = array (
+	'White IP' => array (
+		'name'		=> 'whiteip',
+		'field'		=> 'ip',
+		'active'	=> TRUE,
+		'depend'	=> array('Spam IP'),
+                'limit'         => 50,
+		'bl'		=> FALSE
+		),
+        'Spam IP' => array (
+                'name'          => 'spamip',
+                'field'         => 'ip',
+                'active'        => TRUE,
+		'depend'	=> array('White IP'),
+		'limit'		=> 50,
+                'bl'            => TRUE
+                ),
+        'UID' => array (
+                'name'          => 'spamusername',
+                'field'         => 'username',
+                'active'        => TRUE,
+                'limit'         => 50,
+                'bl'            => TRUE
+                ),
+        'White Network' => array (
+                'name'          => 'whitenet',
+                'field'         => 'network',
+                'active'        => FALSE,
+		'depend'        => array('Spam Network'),
+                'bl'            => FALSE
+                ),
+        'Spam Network' => array (
+                'name'          => 'spamnet',
+                'field'         => 'network',
+                'active'        => FALSE,
+		'depend'        => array('White Network'),
+                'bl'            => TRUE
+                ),
+	'Spam Sender'	=> array (
+		'name'		=> 'spamsender',
+		'field'		=> 'email',
+                'active'        => TRUE,
+		'depend'        => array('White Sender'),
+                'limit'         => 50,
+                'bl'            => TRUE
+		),
+	'White Sender' => array (
+		'name'		=> 'whitesender',
+		'field'		=> 'email',
+                'active'        => TRUE,
+		'depend'        => array('Spam Sender'),
+                'limit'         => 50,
+                'bl'            => FALSE
+		),
+	'Spam Domain'		=> array (
+		'name'		=> 'spamdomain',
+		'field'		=> 'domain',
+                'active'        => TRUE,
+		'depend'        => array('White Domain'),
+                'bl'            => TRUE
+		),
+        'White Domain'          => array (
+                'name'          => 'whitedomain',
+                'field'         => 'domain',
+                'active'        => FALSE,
+		'depend'        => array('Spam Domain'),
+                'bl'            => FALSE
+                ),
+	);
+
+
+
+/* Email notification for Splunk List Plugin */
+$domainNotify_file	= dirname(__FILE__) . '/notifyDomains.conf';
+$tplfile['header']	= dirname(__FILE__) . '/template/mailWarnHeaders.eml';
+$tplfile['body']	= dirname(__FILE__) . '/template/mailWarn.eml';
+
+/* IMAP Email parser for Spam Learn Observer Plugin */
+$imapListActive = FALSE; /* activate the plugin */
+$confImap_file = dirname(__FILE__) . '/imap.conf';
+
+/* syslog */
+$tag = 'myRBL';
+$fac = LOG_LOCAL0;
+
+/* Expire (delete) old records from DB */
+$expire		= TRUE;	/* Expire? */
+$expireTime	= 1;	/* Expiration time in YEARS */
+
+?>

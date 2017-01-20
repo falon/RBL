@@ -1,0 +1,68 @@
+[Abuse sender]
+action.email = 1
+action.email.cc = abuse@example.com
+action.email.include.trigger_time = 1
+action.email.include.view_link = 0
+action.email.inline = 1
+action.email.message.alert = The alert for abuse sending messages was trigged.\
+\
+Envelope From sending more than 1000 recips and 3 msgs over 5 minutes, goes on  for successive interval of 5 minutes. So it has blocklisted.\
+More details following.\
+\
+    Your RBL Manager\
+    http://server.example.com/RBL
+action.email.priority = 1
+action.email.sendresults = 1
+action.email.subject.alert = ALARM: $name$
+action.email.to = you@example.com
+action.email.useNSSubject = 1
+action.script = 1
+action.script.filename = listEmail.sh
+alert.severity = 5
+alert.suppress = 0
+alert.track = 1
+alert_condition = search FattoreX>1
+auto_summarize.dispatch.earliest_time = -1d@h
+counttype = custom
+cron_schedule = */10 * * * *
+description = Envelope From sending more than 1000 recips and 3 msgs over 5 minutes, continuing  for successive interval of 5 minutes.
+dispatch.earliest_time = -10m@m
+dispatch.latest_time = @m
+display.events.maxLines = 10
+display.general.timeRangePicker.show = 0
+display.general.type = statistics
+display.page.search.mode = verbose
+display.page.search.tab = statistics
+display.visualizations.chartHeight = 466
+display.visualizations.charting.chart = line
+display.visualizations.show = 0
+enableSched = 1
+request.ui_dispatch_app = postfix
+request.ui_dispatch_view = search
+search = | savedsearch "Detailed Statistics" from=* | search TotDestinatari>1000 AND  NumMessaggi>3 AND NOT from=Total AND NOT from=\<\> | streamstats count(from) as FattoreX by from
+
+
+[Detailed Statistics]
+action.email.useNSSubject = 1
+alert.track = 0
+description = From address count
+dispatch.earliest_time = -4h
+dispatch.latest_time = now
+display.events.maxLines = 10
+display.general.timeRangePicker.show = 0
+display.general.type = statistics
+display.page.search.mode = verbose
+display.page.search.tab = statistics
+display.visualizations.chartHeight = 652
+display.visualizations.charting.chart = line
+display.visualizations.show = 0
+request.ui_dispatch_app = postfix
+request.ui_dispatch_view = search
+search = index=decentrati source=/var/log/maillog ((nrcpt AND from=$from$) OR client=*)\
+| transaction queue_id client host startswith="client\=" endswith="(queue active)"\
+| bucket _time span=5m\
+| eval Periodo = strftime(_time,"%d %b %Y - %H:%M")." to ".strftime(_time+300,"%H:%M")\
+| stats count(from) AS NumMessaggi sum(nrcpt) AS TotDestinatari by Periodo from | streamstats avg(NumMessaggi) AS\
+MEDIAMessaggi by from | addcoltotals label=Total\
+labelfield=from NumMessaggi TotDestinatari
+

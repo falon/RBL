@@ -1,0 +1,29 @@
+Read the result splunk alert CSV file and list the address
+if it violates a policy.
+
+For more info read the official documentation of the project.
+
+CSV contains:
+
+# header line (ignored)
+Time reference,from,NumMail,TotDest,TriggerThreshold,[others ignored for now]
+
+You must share the fs /opt/splunk/bin/scripts/ from Splunk installed host.
+
+In README.Splunk you find the search which provides the alarm.
+Then, the listFromSplunk read the Splunk result file. It wants the following ordered parameters:
+
+        [0] = interval
+        [1] = element
+        [2] = Num msg
+        [3] = Tot recips
+        [4] = Trigger condition
+
+  reading into
+
+       [element][0] = interval
+       [element][1] = Num msg
+       [element][2] = Tot recips
+       [element][3] = Trigger condition (max value if multiple occurrency of element)
+
+

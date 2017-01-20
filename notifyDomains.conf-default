@@ -1,0 +1,8 @@
+; This is a domain notifier configuration file
+; valid only for email list type
+; Comments start with ';', as in php.ini
+
+[domain_to_notify]
+;sub1.example.com	= Abuse <abuse@example.org>
+;sub2.example.com	= Torture <postmaster@example.net>
+;super.example.org	= Buf <abuse@example.com>

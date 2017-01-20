@@ -1,0 +1,119 @@
+#!/usr/bin/php
+<?php
+
+
+/************** Start of conf ************************/
+$path	= '/web/RBL/';
+
+/* LDAP Conf */
+$server         = 'localhost';
+$port           = 389;
+$base           = 'ou=people,c=en';
+$dnlog          = 'uid=RBLManager,ou=people,c=en';
+$password       = 'password';
+
+require_once($path.'config.php');
+
+$attributes = array (
+	'amaviswhitelistsender' => array (		/* LDAP Attr.  */
+		'table' => $tables['White Sender'],	/* MySQL table */
+		'field'	=> 'email'			/* MySQL field */
+		),
+        'amavisblacklistsender' => array (
+                'table' => $tables['Spam Sender'],
+                'field' => 'email'
+                ),
+);
+
+						
+/* Syslog */
+$tag            .= 'AmavisLDAP';
+/************** End of conf *************************/
+
+
+/* Functions */
+require_once($path.'function.php');
+
+function ldapCheckDel ($ds, $basedn,$attr) {
+	$justthese = array($attr);
+	$sr=ldap_read($ds, $basedn, "$attr=*", $justthese);
+	$info = ldap_get_entries($ds, $sr);
+	if ($info["count"]) {
+		$del["$attr"]= array();
+		if (ldap_mod_del($ds,$basedn,$del)) 
+			syslog (LOG_INFO, "There are already ".$info["count"]." values of $attr. Deleted successfully");
+		else {
+			syslog (LOG_EMERG, "Error deleting $attr. Error code: ".ldap_error($conn));
+			exit (254);
+		}
+	} else	syslog (LOG_INFO, "There are no values of $attr to delete");
+}
+
+function ldapAddAttr ($ds, $basedn,$attr) {
+        if (ldap_mod_add($ds,$basedn,$attr))
+		syslog (LOG_INFO, "LDAP Attributes added successfully to Directory Server");
+	else {
+		syslog (LOG_EMERG, "Error adding LDAP attribute. Error code: ".ldap_error($ds));
+		exit (254);
+	}
+}
+	
+function arrayofListed ($sqlconn,$sqlvalue,$sqlcol,$sqlfield,$ldapattr) {
+	$add = array();
+	if ( $listed = searchentry ($sqlconn,$sqlvalue,$sqlcol) ) {
+		while ($riga = $listed->fetch_array(MYSQLI_ASSOC)) {
+        		if (isListed($riga)) {
+                		/* Prepare LDAP array*/
+                		$add["$ldapattr"][] = $riga["$sqlfield"];
+				syslog (LOG_INFO, 'Prepare <'.$riga["$sqlfield"]. "> to LDAP attribute <$ldapattr>");
+        		}
+		}
+	}
+	return $add;
+}
+
+
+
+/***********   MAIN   **************/
+
+openlog($tag, LOG_PID, $fac);
+
+if ($conn = ldap_connect($server,$port)) syslog (LOG_INFO, "Successfully connected to $server at port $port");
+else {
+	syslog (LOG_EMERG, "Error connecting to $server at port $port. Error code: ".ldap_error($conn));
+	exit (ldap_error($conn));
+}
+
+if (@ldap_bind($conn,$dnlog,$password))  syslog (LOG_INFO, "Successfully bind to $server as $dnlog");
+else {
+	syslog (LOG_EMERG, "Failed bind to $server as $dnlog. Error code: ".ldap_error($conn));
+	exit (ldap_error($conn));
+}
+
+/* Connect to mysql */
+$user=username();
+$mysqli = new mysqli($dbhost, $userdb, $pwd, $db, $dbport);
+if ($mysqli->connect_error) {
+        syslog (LOG_EMERG, $user."\t".'MySQL Connect Error (' . $mysqli->connect_errno . ') '
+                    . $mysqli->connect_error);
+            exit ($user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+                    . $mysqli->connect_error);
+}
+syslog(LOG_INFO, $user."\t".'Successfully MySQL connected to ' . $mysqli->host_info) ;
+
+
+/* Delete old attributes */
+/* Every time restart from scratch */
+foreach( array_keys($attributes) as $amavisAttr )  ldapCheckDel ($conn, $base,$amavisAttr);
+
+/* Add new attribute values */
+/* If no values, it DOESN'T ADD an empty value! */
+$lattr = array();
+foreach ( array_keys($attributes) as $amavisAttr )
+	$lattr  = array_merge($lattr, arrayofListed($mysqli,'ALL',$attributes["$amavisAttr"]['table'],$attributes["$amavisAttr"]['field'],$amavisAttr));
+if ( !empty( $lattr ) )  ldapAddAttr ($conn, $base, $lattr);
+ldap_unbind($conn);
+$mysqli->close();
+closelog();
+exit (0);
+?>

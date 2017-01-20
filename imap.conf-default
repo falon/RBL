@@ -1,0 +1,62 @@
+; IMAP conf file for RBL Manager
+; used by getIP listing facility
+
+[imap]
+mailhost	= imap.example.com
+authuser	= admin
+authpassword	= password
+account		= spamtrap@example.com
+folder[spam]	= INBOX/SpamCollected
+folder[ham]	= INBOX/HamCollected
+oldestday	= 1
+
+[msa]
+;Regular expression which identify your Learning MSA hostnames
+msalearn	= '/^msa\d{2}\.example\.com$/'
+
+; YOUR MX hostnames
+[mx_hostname]
+mx[] 		= mx1.example.com
+mx[] 		= mx2.example.com
+
+[listing]
+; In MySQL Language. See at config.php for list names
+quantity[spam]		= 5
+unit[spam]		= DAY
+list[spam]		= 'Spam IP'
+; Thresholds
+; read at least <ip> ip learned by <uid> different uids
+thresholdip[spam]	= 10
+thresholduid[spam]	= 6
+
+quantity[ham]		= 1
+unit[ham]		= WEEK
+list[ham]		= 'White IP'
+;Thresholds (same mean as spam)
+thresholdip[ham]	= 6
+thresholduid[ham]	= 3
+
+user			= 'UC Learner'
+
+
+[report]
+onlyReport		= False				; set True for a DEMO or False if you want to list.
+reportFile[spam]	= report/learnspamip-{date}.html
+reportFile[ham]         = report/learnhamip-{date}.html
+
+badreportFile[spam]	= report/badspamlearn-{date}.html
+badreportFile[ham]      = report/badhamlearn-{date}.html
+
+reportTemplateHeader	= templateH.html
+reportTemplateFooter	= templateF.html
+
+[syslog]
+tag			= learner
+
+[SplunkSDK]
+splpath			= '/web/include/splunk-sdk-php-1.0.1/'
+splunkConn[host]	= splunk.example.com
+splunkConn[port]	= 8089
+splunkConn[username]	= admin
+splunkConn[password]	= password
+splunkConn[scheme]	= https

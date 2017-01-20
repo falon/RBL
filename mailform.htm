@@ -1,0 +1,8 @@
+<form enctype="multipart/form-data" name="ipfinder" action="ipfound.php" method="POST" target="frameIP">
+    <!-- MAX_FILE_SIZE deve precedere campo di input del nome file -->
+    <input type="hidden" name="MAX_FILE_SIZE" value="60000" />
+    <!-- Il nome dell'elemento di input determina il nome nell'array $_FILES -->
+    Send this file: <input name="mailfile" type="file" class="button" id="bwarn" />
+    <input type="submit" class="button" value="Show IP" />
+</form> 
+<iframe name="frameIP" id="frameIP" height="30" style="margin: 0; position: relative; border: 0; vertical-align: middle; overflow: hidden; top: -40px; float:right"></iframe>

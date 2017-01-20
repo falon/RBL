@@ -1,0 +1,73 @@
+.font, .font input select textarea { font-family: Tahoma; font-size: 11px; }
+a.tclabel span { text-decoration: none; font-family: Tahoma; cursor: pointer; }
+
+#calendar-page { background-color: #6699CC; display: inline-block; }
+
+#calendar-header { padding-top: 2px; position: relative; z-index: 150; }
+#calendar-header .closeme { padding: 0px 3px 2px 0px; }
+
+#calendar-body { padding: 2px 3px 3px 3px; }
+#calendar-body .general { background-color: #FFFFFF; }
+#calendar-body .header { background-color: #6699CC; color: #FFFFFF; font-size: 9px; }
+#calendar-body .othermonth { background-color: #EEEEEE; color: #AAAAAA; }
+#calendar-body .othermonth a:link { text-decoration: none; color: #CCFFCC; }
+#calendar-body .othermonth a:visited { text-decoration: none; color: #CCFFCC; }
+#calendar-body .othermonth a:hover { text-decoration: none; color: #FFFFFF; }
+#calendar-body td div { padding: 3px; width: 15px; white-space: nowrap; position: relative; z-index: 100; }
+#calendar-body td a { display: block; white-space: nowrap; }
+#calendar-body a:link { text-decoration: none; color: #000000; }
+#calendar-body a:visited { text-decoration: none; color: #000000; }
+#calendar-body a:hover { text-decoration: none; color: #FF0000; }
+#calendar-body .disabledate { color: #AAAAAA; background: url(images/disable_date_bg.png) no-repeat center center #EEEEEE; }
+#calendar-body .today { background-color: #F8D17C; }
+#calendar-body .select div { background: url(images/choose.png) no-repeat center center; }
+#calendar-body .wk-hdr { font-size: 9px; }
+#calendar-body .wk { background-color: #CCCCFF; font-size: 9px; color: #003399; }
+
+#calendar-body .refresh { color: #FFFFFF; padding: 10px 3px 3px; }
+#calendar-body .refresh .txt-container { padding: 25px 10px 10px; height: 50px; }
+
+#calendar-body .mon {}
+#calendar-body .tue {}
+#calendar-body .wed {}
+#calendar-body .thu {}
+#calendar-body .fri {}
+#calendar-body .sat { color: #6666CC; }
+#calendar-body .sat a:link { color: #6666CC; }
+#calendar-body .sun { color: #993300; }
+#calendar-body .sun a:link { color: #993300; }
+
+#calendar-body .hasEvent { background-color: #4DEF88; } /* event color */
+
+#calendar-footer { background-color: #CCCCCC; font-size: 9px; overflow: hidden; }
+#calendar-footer .btn { width: 16px; }
+#calendar-footer a.txt { line-height: 19px; }
+#calendar-footer a.txt:link { text-decoration: none; color: #000000; padding: 5px 2px; }
+#calendar-footer a.txt:visited { text-decoration: none; color: #000000; }
+#calendar-footer a.txt:hover { text-decoration: none; color: #FF0000; }
+#calendar-footer a>img { margin-top: 1px; }
+#calendar-footer .links { text-align: center; margin: auto 25px; }
+#calendar-footer .links>div { display: inline; }
+
+#calendar-header, #calendar-body, #calendar-footer { padding-left: 1px; padding-right: 1px; }
+#calendar-container { clear: both; }
+
+.tcday, .tcmonth, .tcyear { z-index: 10; }
+.drop_dis { background-color: #DCDCDC; } /*disabled days, months, years: lightgrey*/
+.drop_wday, .drop_mnth, .drop_year { color: #000000; background-color: #D6F0E0; } /*enabled weekdays, months, years: black font, lightgreen background; white if disabled*/
+.drop_sat { color: #0000FF; background-color: #D0E0EA; } /*Saturdays: blue font, lightblue background*/
+.drop_sun { color: #FF0000; background-color: #EAD7D1; } /*Sundays: red font, lightpink background*/
+
+.date-tccontainer { border: 1px solid #CCCCCC; background-color: #EFEFEF; padding: 2px; display: inline-block; vertical-align: top; }
+
+#calendarform { margin: 0px; padding: 0px; }
+#calendarform ul { margin: 0px; padding: 0px; list-style: none; }
+#calendarform ul li { display: inline; }
+#calendarform select { z-index: 1; }
+
+.calendar-border { border: 1px solid #999999; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; overflow: hidden; }
+.div_calendar { width: 10px; height: 10px; }
+
+#calendar-alert { background-color: #CC3300; border: 1px solid #993300; color: #FFFFFF; padding: 3px; margin: 2px; border-radius: 5px 5px 5px 5px; -moz-border-radius: 5px 5px 5px 5px; -webkit-border-radius: 5px 5px 5px 5px; }
+
+.calendartooltip { position: absolute; top: 0px; right: 0px; width: 8px; height: 8px; background: url(images/info.gif) no-repeat top right; z-index: 102; } /* event icons */

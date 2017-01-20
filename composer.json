@@ -1,0 +1,9 @@
+{
+    "name": "falon/RBL",
+    "description": "RBL Management System",
+    "license": "Apache-2.0",
+    "require": {
+        "php": ">=7.0",
+        "dautkom/php.ipv4": "@dev"
+    }
+}

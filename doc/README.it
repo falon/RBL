@@ -1,0 +1,90 @@
+ --- POLICY RBL SYSTEM FOR MTA ---
+
+## SCOPO
+Introdurre un policy RBL server per Postfix  relativamente a:
+- mittenti/destinatari	[field = email]
+- domini fqdn		[field = domain]
+- smtp client ip	[field = ip]
+- network		[field = network]
+- username		[field = username]
+
+email, username e domain sono trattati identicamente nello schema mysql.
+Si fa un diverso controllo di sintassi in fase di scrittura dei dati da GUI.
+
+
+
+## INSTALLAZIONE
+
+
+ - Requisiti
+
+/include/stile.css
+/include/ajaxsbmt.js
+/include/pleasewait.gif
+/include/
+IPv4 -> PHP.IPv4-master/IPv4
+(https://github.com/Haran/PHP.IPv4)
+
+Eseguire sul server mysql l'installazione del db tramite il file
+	db.sql
+
+Ricordarsi di dare i privilegi all'utente che fa le query:
+
+ SELECT, INSERT, UPDATE, DELETE 
+
+sul DB RBL.
+
+Configurare il tool solo tramite 'config.php' per quanto riguarda
+- le credenziali di accesso mysql
+- eventuali disabilitazioni sulle tabelle (Campi 'active')
+
+Se si aggiungono nuove tabelle occorre aggiungerle a mano anche nel DB MySQL!
+
+I file *.cf sono riportati come esempio di utilizzo sui server Postfix.
+In alternativa, per le liste di singoli IP, e` possibile esportare l'elenco
+in formato RBLDNS tramite lo script 'exportdns.pl'. Il file ottenuto va
+copiato sul server RBLDNS, oppure e` possibile eseguire lo script sul server
+RBLDNS stesso.
+
+Installare la cartella RBL su un server PHP.
+Spostare le cartelle crontrib e doc altrove.
+
+## Utilizzo
+L'utilizzo e` molto intuitivo ed e` sufficiente seguire le indicazioni
+presentate a schermo.
+L'opzione "Get Sender IP from Source Mail" è completamente separata dal
+resto dell'applicazione, si tratta di una facility per ottenere in modo
+semplice l'IP mittente di una mail di cui si ha la sorgente originale in
+un file.
+L'IP ottenuto in questo modo puo` essere copiato ed utilizzato come
+oggetto di query.
+
+Per inserire un nuovo dato nel sistema occorre prima ricercarlo. Se non
+viene trovato viene presentata l'opzione di inserimento.
+
+Gli elementi disattivati anzitempo e scaduti non vengono eliminati dal DB.
+Restano per valutazioni storiche e statistiche.
+
+
+ Nota sulla gestione delle reti
+Puo` essere necessario listare intere reti (es: Postscreen Whitelist).
+I dati vanno inseriti come reti nella forma net/mask.
+Se si inserisce una rete grande, e la si disattiva, poi non sarebbe possibile
+reinserirne una inclusa di piu` piccole dimensioni: il programma
+restituisce un errore, affermando che la rete e` gia` inclusa in un'altra.
+
+D'altra parte, consentire il listing di reti mutuamente incluse comporta una
+scarsa governabilita` della lista, con possibili confusioni.
+
+Tuttavia puo` accadere che una rete debba essere rimossa per listarne solo
+una porzione. Ecco perche` in questo ambito viene data la possibilita`
+di rimuovere in modo permanente dal DB la rete, oltre alla semplice
+disattivazione.
+
+Le reti vanno configurate con il 'field' uguale a 'network'
+
+
+ Perche` l'occhio vuole la sua parte
+E` stato inserito il field=bl, boolean, che consente di indicare con un diverso
+colore una voce listata. Il rosso indica una blocklist, il verde una whitelist.
+
