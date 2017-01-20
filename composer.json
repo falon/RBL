@@ -1,5 +1,5 @@
 {
-    "name": "falon/RBL",
+    "name": "falon/rbl",
     "description": "RBL Management System",
     "license": "Apache-2.0",
     "require": {
