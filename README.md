@@ -1,6 +1,7 @@
 # RBL Manager
 A complete RBL Management System, with interfaces to Splunk Alert and trap mailboxes.
 
+![screenshot](doc/RBL.JPG)
 ## Abstract
 A complete tool to create and manage a time expiring lists of IP, networks, usernames and email address.
 All the active members can be exported into RBLDNS zone format. The lists are stored into MySQL server, which can be accessed by Postfix for any policy enforcements. A Splunk plugin allow an authomated listing mechanism to block SPAM source.
