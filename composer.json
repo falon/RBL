@@ -8,7 +8,7 @@
     "description": "RBL Management System",
     "license": "Apache-2.0",
     "require": {
-        "oomphinc/composer-installers-extender",
+        "oomphinc/composer-installers-extender": "*",
         "php": ">=7.0",
         "ext-ldap": "*",
         "ext-mysqlnd": "*",
