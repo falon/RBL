@@ -1,14 +1,14 @@
 {
-     "extra": {
-                "installer-paths": {
-                        ".": ["falon/rbl"]
-                }
-     },
+    "extra": {
+          "installer-paths": {
+               ".": ["falon/rbl"]
+          }
+    },
     "name": "falon/rbl",
     "description": "RBL Management System",
     "license": "Apache-2.0",
     "require": {
-        "composer/installers": "~1.0",
+        "oomphinc/composer-installers-extender",
         "php": ">=7.0",
         "ext-ldap": "*",
         "ext-mysqlnd": "*",
