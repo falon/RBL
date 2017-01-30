@@ -20,7 +20,7 @@ Every member in list can be active (really listed), or inactive (time expired, o
 ## Basic Installation
 Unfortunately I don't have time to provide a very stupid user installation. Sorry, you must follow these lapidary instructions.
 
-Install via composer.
+Clone, from home directory `composer require dautkom/php.ipv4`.
 
 Move the doc and contrib folders to /usr/local/RBL or other location. Or don't move at all, if you like.
 
