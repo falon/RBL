@@ -8,7 +8,7 @@
     "description": "RBL Management System",
     "license": "Apache-2.0",
     "require": {
-        "composer/installers": "~1.0"
+        "composer/installers": "~1.0",
         "php": ">=7.0",
         "ext-ldap": "*",
         "ext-mysqlnd": "*",
