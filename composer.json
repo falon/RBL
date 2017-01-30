@@ -4,8 +4,9 @@
     "license": "Apache-2.0",
     "require": {
         "php": ">=7.0",
-        ext-ldap: *,
-        ext-mysqlnd: *,
+        "ext-ldap": *,
+        "ext-mysqlnd": *,
+        "ext-imap": *,
         "dautkom/php.ipv4": "@dev"
     }
 }
