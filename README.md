@@ -9,7 +9,7 @@ Every member in list can be active (really listed), or inactive (time expired, o
 
 ## Requisite
 
-- PHP > 7 (not tested with PHP5, but it could works).
+- PHP > 7 (not tested with PHP5, but it could work).
 - MySQL Server > 5.
 - php-gmp and Haran/PHP.IPv4
 - RBLDNS, if you export file zone through RBLDNS Export Plugin.
@@ -20,7 +20,7 @@ Every member in list can be active (really listed), or inactive (time expired, o
 ## Basic Installation
 Unfortunately I don't have time to provide a very stupid user installation. Sorry, you must follow these lapidary instructions.
 
-Install via composer.
+Clone, from home directory `composer require dautkom/php.ipv4`.
 
 Move the doc and contrib folders to /usr/local/RBL or other location. Or don't move at all, if you like.
 
@@ -44,7 +44,7 @@ Customize the tables ($tables) you want. These are the lists. List types are cla
 - email (list of email addresses, useful to Postfix policy over sender email addresses, if you like)
 - domain (list of domains, exportable to rbldns format such as URIBL or SURBL)
 
-Every list name and key must be unique. The field "active" if set to FALSE make the list inexistent.
+Every list name and key must be unique. If set to FALSE, the field "active" makes the list inexistent.
 The "limit" field configures the maximum number of active members in every list.
 The "bl" field identifies the list as a blocklist (TRUE) or a whitelist (FALSE), but it is quite useless. It just helps you to make a sane employ of the list.
 The "depend" field defines constraint through lists. For instance, a spam listed item can't be subscribed to a whitelist.
