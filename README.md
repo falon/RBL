@@ -32,6 +32,14 @@ mysql -u root < doc/db.sql
 mysql -u root < doc/grant.sql
 ```
 ### config.php
+Move
+```
+ajaxsbmt.js
+pleasewait.gif
+style.css
+```
+to `/include` folder relative to Document Root of web server.
+
 Copy config.php-default to config.php
 
 Customize the DB part ($dbhost, $userdb, $db, $pwd)
