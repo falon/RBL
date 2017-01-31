@@ -1,0 +1,13 @@
+### RBL Expire items Timer ###
+#
+# expire.php automatically expire oldest items no longer active from db.
+
+[Unit]
+Description=RBL Expire Tool Timer
+
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec = 7200
+
+[Install]
+WantedBy=multi-user.target

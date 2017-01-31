@@ -27,16 +27,22 @@ if ( isset($opts['f']) ) {
 }
 
 if ( isset($opts['t']) ) {
-        $typedesc = $opts['t'];
+        $tablename = $opts['t'];
 } else {
 	print "\nNo option for '-t' given.\n";
         exit ( usage() );
 }
 
+if ( ($typedescN = array_search( $tablename, array_column($tables, 'name'))) === FALSE ) {
+        print "\nDB <$tablename> doesn't exist!\n";
+        syslog (LOG_EMERG, "$user\tDB <$tablename> doesn't exist!");
+        exit ( usage() );
+}
+$typedesc = array_keys($tables)[$typedescN];
 
 if (! file_exists($filetemplate) ) {
         print "\nFile <$filetemplate> doesn't exists!\n";
-	syslog (LOG_EMERG, "$user\tFile <$filetemplate> doesn't exists!");
+	syslog (LOG_EMERG, "$user\tFile <$filetemplate> doesn't exist!");
         exit ( usage() );
 }
 

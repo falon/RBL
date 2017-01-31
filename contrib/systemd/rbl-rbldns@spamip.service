@@ -1,0 +1,7 @@
+.include /lib/systemd/system/rbl-rbldns@.service
+
+[Unit]
+Description = RBLDNS Exporter for "Spam IP" list
+
+[Install]
+WantedBy = multi-user.target

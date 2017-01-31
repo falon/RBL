@@ -1,0 +1,9 @@
+## Rename this file in /etc/httpd/conf.d/ipImap.conf
+
+Alias /spamreport "/usr/local/RBL/contrib/ipImap/report"
+<Directory "/usr/local/RBL/contrib/ipImap/report">
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+</Directory>
+

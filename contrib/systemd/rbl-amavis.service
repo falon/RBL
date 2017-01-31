@@ -1,0 +1,9 @@
+### RBL Amavis Exporter ###
+#
+#
+
+[Unit]
+Description=RBL Amavis Export
+
+[Service]
+ExecStart=/usr/local/RBL/contrib/amavis/exportAmavisLdap.php

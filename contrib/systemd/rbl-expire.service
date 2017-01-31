@@ -1,0 +1,13 @@
+### RBL Expire items ###
+#
+# expire.php automatically expire oldest items no longer active from db.
+
+[Unit]
+Description=RBL Expire Tool
+After = syslog.target
+
+[Service]
+ExecStart=/usr/local/RBL/contrib/expire.php
+
+[Install]
+WantedBy=multi-user.target

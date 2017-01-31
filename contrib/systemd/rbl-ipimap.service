@@ -1,0 +1,11 @@
+### RBL Reputation Subscriber ###
+#
+#
+
+[Unit]
+Description=RBL IP Reputation Subscriber
+After = syslog.target
+
+[Service]
+ExecStart=/usr/local/RBL/contrib/ipImap/getip.php
+ExecStopPost="find /usr/local/RBL/contrib/ipImap/report/*.html -type f -ctime +14 -exec rm -rf {} \;"

@@ -1,0 +1,13 @@
+### RBL Reputation IP Subscriber Timer ###
+#
+#
+
+[Unit]
+Description=RBL Reputation IP Subscriber Timer
+
+[Timer]
+OnCalendar=*-*-* 08:00:00
+RandomizedDelaySec = 300
+
+[Install]
+WantedBy=multi-user.target

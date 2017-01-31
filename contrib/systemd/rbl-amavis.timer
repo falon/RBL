@@ -1,0 +1,13 @@
+### RBL Amavis Exporter Timer ###
+#
+#
+
+[Unit]
+Description=RBL Amavis Exporter Timer
+
+[Timer]
+OnCalendar=*:0/30
+RandomizedDelaySec = 30
+
+[Install]
+WantedBy=multi-user.target

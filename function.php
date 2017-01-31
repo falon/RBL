@@ -1,5 +1,7 @@
 <?php
 
+$version='1.9d';
+
 function username() {
 	if (isset ($_SERVER['REMOTE_USER'])) $user = $_SERVER['REMOTE_USER'];
         	else if (isset ($_SERVER['USER'])) $user = $_SERVER['USER'];
