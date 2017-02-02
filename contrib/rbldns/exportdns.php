@@ -66,8 +66,8 @@ $rblname= ($tables["$typedesc"]['bl']) ? 'Blocklist' : 'Whitelist';
 
 
 $tmpl = file_get_contents($filetemplate);
-$arr_tpl_vars = array('{rblname}','{rbltype}','{date822}','{year}','{unixtimestamp}');
-$arr_tpl_data = array($typedesc,$rblname,$dateRFC822,$year,$timeunix);
+$arr_tpl_vars = array('{rblname}','{rbltype}','{date822}','{year}','{unixtimestamp}','{hostname}');
+$arr_tpl_data = array($typedesc,$rblname,$dateRFC822,$year,$timeunix,gethostname());
 $headerList = str_replace($arr_tpl_vars, $arr_tpl_data, $tmpl);
 
 
