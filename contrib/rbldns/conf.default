@@ -1,5 +1,5 @@
 # {rblname} {rbltype} generated on {date822} - (c) {year} The DNSBL {rbltype} Project.
 #\$SOA 60m localhost. hostmaster.localhost. {unixtimestamp} 2h 10m 5d 30s
 #\$TTL 1800s
-:127.0.0.2:{rbltype} member, see http://{hostname}/lookup.php?$&{rblname64}
+:127.0.0.2:{rbltype} member, see http://{hostname}/RBL/lookup.php?$&{rblname64}
 127.0.0.2
