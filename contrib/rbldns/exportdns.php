@@ -62,12 +62,12 @@ $now=new DateTime('NOW');
 $timeunix = $now->format('U');
 $dateRFC822 = $now->format('r');
 $year = $now->format('Y');
-$rblname= ($tables["$typedesc"]['bl']) ? 'Blocklist' : 'Whitelist';
+$rbltype= ($tables["$typedesc"]['bl']) ? 'Blocklist' : 'Whitelist';
 
 
 $tmpl = file_get_contents($filetemplate);
 $arr_tpl_vars = array('{rblname}','{rbltype}','{date822}','{year}','{unixtimestamp}','{rblname64}','{hostname}');
-$arr_tpl_data = array($typedesc,$rblname,$dateRFC822,$year,$timeunix,base64_encode($typedesc),gethostname());
+$arr_tpl_data = array($typedesc,$rbltype,$dateRFC822,$year,$timeunix,base64_encode($typedesc),gethostname());
 $headerList = str_replace($arr_tpl_vars, $arr_tpl_data, $tmpl);
 
 
