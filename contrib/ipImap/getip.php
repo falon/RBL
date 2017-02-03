@@ -11,10 +11,17 @@ $conf = parse_ini_file($confImap_file);
 $tag .= $conf['tag'];
 openlog($tag, LOG_PID, $fac);
 
+if ( $conf === FALSE ) {
+        syslog (LOG_EMERG, 'unknown: I can\'t read the config files. Do you have configured the $path in getip.php?');
+        closelog();
+        exit(255);
+}
+
+
 if ( !$imapListActive ) {
 	syslog (LOG_INFO, $conf['user'].': This plugin isn\'t active.');
 	closelog();
-	exit(0);
+	exit(255);
 }
 	
 
