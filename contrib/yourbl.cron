@@ -1,6 +1,6 @@
 # Run export of DNSBL every 30 minutes
-*/30 * * * * root cd /usr/local/RBL/contrib/rbldns/yourbl; ../exportdns.php -f ../conf.default -t 'White IP'
-*/30 * * * * root cd /usr/local/RBL/contrib/rbldns/yourbl; ../exportdns.php -f ../conf.default -t 'Spam IP'
+*/30 * * * * root cd /usr/local/RBL/contrib/rbldns/yourbl; ../exportdns.php -f ../conf.default -t whiteip
+*/30 * * * * root cd /usr/local/RBL/contrib/rbldns/yourbl; ../exportdns.php -f ../conf.default -t spamip
 
 # Run export of envelope list to Amavis every 30 minutes
 */30 * * * * root /usr/local/RBL/contrib/amavis/exportAmavisLdap.php
