@@ -7,15 +7,16 @@ require_once($path.'function.php');
 include_once(dirname(__FILE__) . '/function.php');
 $conf = parse_ini_file($confImap_file);
 
- /* Syslog */
-$tag .= $conf['tag'];
-openlog($tag, LOG_PID, $fac);
-
 if ( $conf === FALSE ) {
+	openlog('myRBLemergency', LOG_PID, LOG_LOCAL0);
         syslog (LOG_EMERG, 'unknown: I can\'t read the config files. Do you have configured the $path in getip.php?');
         closelog();
         exit(255);
 }
+
+ /* Syslog */
+$tag .= $conf['tag'];
+openlog($tag, LOG_PID, $fac);
 
 
 if ( !$imapListActive ) {
