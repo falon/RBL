@@ -4,15 +4,15 @@
 $path='/web/RBL/';
 include_once($path.'config.php');
 require_once($path.'function.php');
-include_once(dirname(__FILE__) . '/function.php');
-$conf = parse_ini_file($confImap_file);
-
-if ( $conf === FALSE ) {
-	openlog('myRBLemergency', LOG_PID, LOG_LOCAL0);
+if ( !isset($version) ) {
+        openlog('myRBLemergency', LOG_PID, LOG_LOCAL0);
         syslog (LOG_EMERG, 'unknown: I can\'t read the config files. Do you have configured the $path in getip.php?');
         closelog();
         exit(255);
 }
+include_once(dirname(__FILE__) . '/function.php');
+$conf = parse_ini_file($confImap_file);
+
 
  /* Syslog */
 $tag .= $conf['tag'];
