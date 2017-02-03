@@ -12,7 +12,7 @@ $tag .= $conf['tag'];
 openlog($tag, LOG_PID, $fac);
 
 if ( !$imapListActive ) {
-	syslog (LOG_INFO, $conf['user']."\t".'This plugin isn\'t active.');
+	syslog (LOG_INFO, $conf['user'].': This plugin isn\'t active.');
 	closelog();
 	exit(0);
 }
@@ -27,11 +27,11 @@ if ( !$conf['onlyReport'] ) {
 
 	/* check you select a right list */
 	if ( !$tables[$conf['list']['spam']]['bl'] ) {
-       		syslog(LOG_EMERG, $conf['user']."\t<".$conf['list']['spam'].'> is not a blocklist. Are you stupid? Do you want to whitelist a spammer? I refuse to continue.');
+       		syslog(LOG_EMERG, $conf['user'].': <'.$conf['list']['spam'].'> is not a blocklist. Are you stupid? Do you want to whitelist a spammer? I refuse to continue.');
 	       	exit (254);
 	}
 	if ( $tables[$conf['list']['ham']]['bl'] ) {
-        	syslog(LOG_EMERG, $conf['user']."\t<".$conf['list']['ham'].'> is a blocklist. Are you stupid? Do you want to block a legitimate sender? I refuse to continue.');
+        	syslog(LOG_EMERG, $conf['user'].': <'.$conf['list']['ham'].'> is a blocklist. Are you stupid? Do you want to block a legitimate sender? I refuse to continue.');
 	        exit (254);
 	}
 
@@ -47,7 +47,7 @@ if ( !$conf['onlyReport'] ) {
 
 else {
 	$mysqlconf = NULL;
-	syslog(LOG_INFO, $conf['user']."\t".'Report only, no listing activated in configuration.') ;
+	syslog(LOG_INFO, $conf['user'].': Report only, no listing activated in configuration.') ;
 }
 
 
@@ -68,7 +68,7 @@ foreach ( $learnfromArray as $learnfrom ) {
 
 if ( !$conf['onlyReport'] ) {
 	/* Close connection */
-	syslog (LOG_INFO, $conf['user']."\t".'Successfully end of session.');
+	syslog (LOG_INFO, $conf['user'].': Successfully end of session.');
 }
 closelog();
 ?>

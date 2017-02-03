@@ -49,13 +49,13 @@ $user = username();
 
 $mysqli = new mysqli($dbhost, $userdb, $pwd, $db, $dbport);
 if ($mysqli->connect_error) {
-            syslog (LOG_EMERG, $user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+            syslog (LOG_EMERG, $user.': Connect Error (' . $mysqli->connect_errno . ') '
                     . $mysqli->connect_error);
-            exit ($user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+            exit ($user.': Connect Error (' . $mysqli->connect_errno . ') '
                     . $mysqli->connect_error);
 }
 
-syslog(LOG_INFO, $user."\t".'Successfully mysql connected to ' . $mysqli->host_info) ;
+syslog(LOG_INFO, $user.': Successfully mysql connected to ' . $mysqli->host_info) ;
 rlookup($mysqli,username(),$admins,$_POST['Value'],$_POST['genere'],$tables);
 $mysqli->close();
 closelog();

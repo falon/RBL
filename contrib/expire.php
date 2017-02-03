@@ -15,13 +15,13 @@ require $base.'/function.php';
 openlog($tag, LOG_PID, $fac);
 $mysqli = new mysqli($dbhost, $userdb, $pwd, $db, $dbport);
 if ($mysqli->connect_error) {
-            syslog (LOG_EMERG, $user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+            syslog (LOG_EMERG, $user.': Connect Error (' . $mysqli->connect_errno . ') '
                     . $mysqli->connect_error);
-            die($user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+            die($user.': Connect Error (' . $mysqli->connect_errno . ') '
                     . $mysqli->connect_error);
 }
 
-syslog (LOG_INFO, $user."\t".'Successfully connected to ' . $mysqli->host_info );
+syslog (LOG_INFO, $user.': Successfully connected to ' . $mysqli->host_info );
 
 expire($mysqli,$user,$tables,$expireTime);
 $mysqli->close();

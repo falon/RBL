@@ -94,12 +94,12 @@ else {
 $user=username();
 $mysqli = new mysqli($dbhost, $userdb, $pwd, $db, $dbport);
 if ($mysqli->connect_error) {
-        syslog (LOG_EMERG, $user."\t".'MySQL Connect Error (' . $mysqli->connect_errno . ') '
+        syslog (LOG_EMERG, $user.': MySQL Connect Error (' . $mysqli->connect_errno . ') '
                     . $mysqli->connect_error);
-            exit ($user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+            exit ($user.': Connect Error (' . $mysqli->connect_errno . ') '
                     . $mysqli->connect_error);
 }
-syslog(LOG_INFO, $user."\t".'Successfully MySQL connected to ' . $mysqli->host_info) ;
+syslog(LOG_INFO, $user.': Successfully MySQL connected to ' . $mysqli->host_info) ;
 
 
 /* Delete old attributes */

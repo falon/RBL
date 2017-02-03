@@ -35,14 +35,14 @@ if ( isset($opts['t']) ) {
 
 if ( ($typedescN = array_search( $tablename, array_column($tables, 'name'))) === FALSE ) {
         print "\nDB <$tablename> doesn't exist!\n";
-        syslog (LOG_EMERG, "$user\tDB <$tablename> doesn't exist!");
+        syslog (LOG_EMERG, "$user: DB <$tablename> doesn't exist!");
         exit ( usage() );
 }
 $typedesc = array_keys($tables)[$typedescN];
 
 if (! file_exists($filetemplate) ) {
         print "\nFile <$filetemplate> doesn't exists!\n";
-	syslog (LOG_EMERG, "$user\tFile <$filetemplate> doesn't exist!");
+	syslog (LOG_EMERG, "$user: File <$filetemplate> doesn't exist!");
         exit ( usage() );
 }
 
@@ -73,13 +73,13 @@ $headerList = str_replace($arr_tpl_vars, $arr_tpl_data, $tmpl);
 
 $mysqli = new mysqli($dbhost, $userdb, $pwd, $db, $dbport);
 if ($mysqli->connect_error) {
-            syslog (LOG_EMERG, $user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+            syslog (LOG_EMERG, $user.': Connect Error (' . $mysqli->connect_errno . ') '
                     . $mysqli->connect_error);
-            exit ($user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+            exit ($user.': Connect Error (' . $mysqli->connect_errno . ') '
                     . $mysqli->connect_error);
 }
 
-syslog(LOG_INFO, $user."\t".'Successfully mysql connected to ' . $mysqli->host_info) ;
+syslog(LOG_INFO, $user.': Successfully mysql connected to ' . $mysqli->host_info) ;
 
 $result = searchentry ($mysqli,'ALL',$tables["$typedesc"]);
 if ($result->num_rows) {

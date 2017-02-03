@@ -230,11 +230,11 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 	$file = dirname(__FILE__) . '/' . $cf['reportFile']["$type"];
 	$fileb= dirname(__FILE__) . '/' . $cf['badreportFile']["$type"];
 	$m_mail = imap_open('{'.$cf['mailhost'].':143/imap/novalidate-cert/authuser='.$cf['authuser'].'}'.$cf['folder']["$type"], $cf['account'],$cf['authpassword'], OP_READONLY)
-        	or syslog (LOG_EMERG, $cf['user']."\t".'Error in IMAP connection to <'.$cf['mailhost'].'>: ' . imap_last_error());
+        	or syslog (LOG_EMERG, $cf['user'].': Error in IMAP connection to <'.$cf['mailhost'].'>: ' . imap_last_error());
 	if ( !$m_mail ) exit(254);
 		
 
-	syslog (LOG_INFO,$cf['user']."\t".'Successfully connected to <'.$cf['mailhost'].">; Reading $type messages of last ".$cf['oldestday'].' days...');
+	syslog (LOG_INFO,$cf['user'].': Successfully connected to <'.$cf['mailhost'].">; Reading $type messages of last ".$cf['oldestday'].' days...');
 	//get all messages
 	$dateTh = date ( "d-M-Y", strToTime ( '-'.$cf['oldestday'].' days' ) );
         $dateN  = date ( "d-M-Y", strToTime ( "now" ) );
@@ -243,14 +243,14 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 
 	// Order results starting from newest message
 	if (!$m_search) {
-		syslog (LOG_INFO,$cf['user']."\tNo mail found in $type folder. No reports written for $type.");
+		syslog (LOG_INFO,$cf['user'].": No mail found in $type folder. No reports written for $type.");
 		imap_close( $m_mail );
 		if ( file_exists( $file ) ) unlink ($file);
 		if ( file_exists( $fileb ) ) unlink ($fileb);
 		return FALSE;
 	}
 	$nmes = count ($m_search);
-	syslog (LOG_INFO,$cf['user']."\tFound $nmes mail in $type folder.");
+	syslog (LOG_INFO,$cf['user'].": Found $nmes mail in $type folder.");
 	if ($nmes>0) rsort($m_search);
 
 	// Create report file
@@ -286,14 +286,14 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 	        list ($ip,$host,$dateReceived,$dateClient,$mid) =  getIP( $head,$cf['mx'],$cf['msalearn'] );
 		if (empty($mid)) {
 			$uid='NA';
-			syslog (LOG_ERR, $cf['user']."\tError retrieving data for empty Message-ID.");
+			syslog (LOG_ERR, $cf['user'].": Error retrieving data for empty Message-ID.");
 		} else {
 			if (!$dateReceived) {
 				$uid='unauthenticated';
-				syslog (LOG_ERR, $cf['user']."\tError retrieving date for $mid. Maybe this mail was not submitted to Learner MSA");
+				syslog (LOG_ERR, $cf['user'].": Error retrieving date for $mid. Maybe this mail was not submitted to Learner MSA");
 			} else  
 				if ( !($uid = splunksearch ($splunkconn, trim($mid,'<>'), $dateReceived)) ) {
-					syslog (LOG_ERR, $cf['user']."\tError retrieving uid from Splunk log for $mid.");
+					syslog (LOG_ERR, $cf['user'].": Error retrieving uid from Splunk log for $mid.");
 					$uid='unknown';
 				}
 		}
@@ -363,11 +363,11 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 	else {
         	$mysqli = new mysqli($myconnArray['dbhost'], $myconnArray['userdb'], $myconnArray['pwd'], $myconnArray['db'], $myconnArray['dbport']);
         	if ($mysqli->connect_error) {
-                	syslog (LOG_EMERG, $cf['user']."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+                	syslog (LOG_EMERG, $cf['user'].': Connect Error (' . $mysqli->connect_errno . ') '
                 	. $mysqli->connect_error);
                 	exit (254);
         	}
-        	syslog(LOG_INFO, $cf['user']."\t".'Successfully mysql connected to ' . $mysqli->host_info) ;
+        	syslog(LOG_INFO, $cf['user'].': Successfully mysql connected to ' . $mysqli->host_info) ;
 	}
 	/***********************/
 
@@ -380,7 +380,7 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 	fwrite( $fpb,summaryBadReport( $uidbad ) );
 	fwrite($fpb,file_get_contents(dirname(__FILE__) . '/' . $cf['reportTemplateFooter']));
 	fclose($fpb);
-	syslog (LOG_INFO,$cf['user']."\t".'Report files written. Listing job for '.$type.' terminated.');
+	syslog (LOG_INFO,$cf['user'].': Report files written. Listing job for '.$type.' terminated.');
 
 	imap_close($m_mail);
 }

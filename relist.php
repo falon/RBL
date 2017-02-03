@@ -15,12 +15,12 @@ $user = username();
 
 $mysqli = new mysqli($dbhost, $userdb, $pwd, $db, $dbport);
 if ($mysqli->connect_error) {
-	syslog (LOG_EMERG, $user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+	syslog (LOG_EMERG, $user.': Connect Error (' . $mysqli->connect_errno . ') '
         	. $mysqli->connect_error);
-            exit ($user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+            exit ($user.': Connect Error (' . $mysqli->connect_errno . ') '
                     . $mysqli->connect_error);
 }
-syslog(LOG_INFO, $user."\t".'Successfully connected to ' . $mysqli->host_info) ;
+syslog(LOG_INFO, $user.': Successfully connected to ' . $mysqli->host_info) ;
 
 if (isFull($mysqli,$typedesc,$tables)) die("ERROR in relist: ".htmlspecialchars("$typedesc has reached maximum value of ".$tables["$typedesc"]['limit'].' listed items.') );
 if (relist ($mysqli,username(),$_POST['value'],$type,$table,$_POST['unit'],$_POST['quantity'],$_POST['reason']))

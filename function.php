@@ -65,10 +65,10 @@ function addtolist ($myconn,$user,$value,$type,$table,$expUnit,$expQ,$myreason) 
 	}
 
 	if ($myconn->query($query) === TRUE) {
-	    syslog(LOG_INFO, "$user\t$type <$value> successfully listed on <$table> for $expQ $expUnit.");
+	    syslog(LOG_INFO, "$user: $type <$value> successfully listed on <$table> for $expQ $expUnit.");
 	    $result=TRUE;
 	}
-	else syslog(LOG_ERR, "$user\tError: ".$myconn->error);
+	else syslog(LOG_ERR, "$user: Error: ".$myconn->error);
 	return $result;
 }
 
@@ -107,10 +107,10 @@ function relist ($myconn,$user,$value,$type,$table,$expUnit,$expQ,$myreason) {
 	}
 
         if ($myconn->query($query) === TRUE) {
-            syslog(LOG_INFO, "$user\trelist $type <$value> on <$table> for $expQ $expUnit.");
+            syslog(LOG_INFO, "$user: relist $type <$value> on <$table> for $expQ $expUnit.");
 		$result=TRUE;
         }
-        else syslog (LOG_ERR, "$user\tError: ". $myconn->error);
+        else syslog (LOG_ERR, "$user: Error: ". $myconn->error);
 	return $result;
 }
 
@@ -135,8 +135,8 @@ function remove ($myconn,$user,$value,$type,$table) {
 
 
         if ($return=$myconn->query($query) === TRUE) 
-            syslog(LOG_INFO, "$user\t permanently DELETED $type <$value> from <$table>.");
-        else syslog(LOG_ERR, "$user\tError: ". $myconn->error);
+            syslog(LOG_INFO, "$user: permanently DELETED $type <$value> from <$table>.");
+        else syslog(LOG_ERR, "$user: Error: ". $myconn->error);
 
         return $return;
 }
@@ -157,9 +157,9 @@ function changestatus ($myconn,$user,$value,$status,$type,$table) {
 	}
 
         if ($return=$myconn->query($query) === TRUE) {
-            syslog(LOG_INFO, "$user\tchange status of $type <$value>. The status is now <$status>");
+            syslog(LOG_INFO, "$user: change status of $type <$value>. The status is now <$status>");
         }
-        else syslog(LOG_ERR, "$user\tError: ". $myconn->error);
+        else syslog(LOG_ERR, "$user: Error: ". $myconn->error);
 	return $return;	
 }
 
@@ -414,7 +414,7 @@ function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,$quantit
         /* Manage abnormal conditions */
         /* Value already present in db more than once. This is absurd. Panic! */
         if ($result->num_rows > 1) {
-                syslog(LOG_EMERG,"$loguser\tPANIC! Select for $type '$value' returned ". $result->num_rows ." items instead of one. Abnormal. Contact a sysadmin or a developer.");
+                syslog(LOG_EMERG,"$loguser: PANIC! Select for $type '$value' returned ". $result->num_rows ." items instead of one. Abnormal. Contact a sysadmin or a developer.");
                 $result->free();
                 return FALSE;
         }
@@ -423,13 +423,13 @@ function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,$quantit
         if ($result->num_rows >= 0) {
                 /* First, check for limit in number of listed items */
                 if (isFull($myconn,$typedesc,$tables)) {
-                        syslog(LOG_EMERG,"$loguser\t$typedesc has reached maximum value of ".$tables["$typedesc"]['limit'].' listed items. Abnormal exit.');
+                        syslog(LOG_EMERG,"$loguser: $typedesc has reached maximum value of ".$tables["$typedesc"]['limit'].' listed items. Abnormal exit.');
                         $result->free();
                         return FALSE;
                 }
                 /* Second, check if the (re)list would be consistent now */
                 if (! consistentListing($myconn,$tables,$typedesc,$value,$whynot) ) {
-                        syslog(LOG_ERR, $loguser."\t".$whynot);
+                        syslog(LOG_ERR, $loguser.': '.$whynot);
                         $result->free();
                         return FALSE;
                 }
@@ -444,7 +444,7 @@ function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,$quantit
                 case 1:
                         /* Entry already listed */
                         if ( isListed($thisentry) ) {
-                                syslog(LOG_INFO, $loguser."\t".$value.' already listed. Nothing to do.');
+                                syslog(LOG_INFO, $loguser.': '.$value.' already listed. Nothing to do.');
                                 $result->free();
                                 return FALSE;
                         }

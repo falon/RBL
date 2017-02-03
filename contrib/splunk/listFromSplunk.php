@@ -49,7 +49,7 @@ $user = 'Splunk';
 
 /* check you select a blocklist */
 if ( !$tables["$typedesc"]['bl'] ) {
-        syslog(LOG_EMERG,"$user\t<$typedesc> is not a blocklist. Are you stupid? Do you want to whitelist a spammer? I refuse to continue.");
+        syslog(LOG_EMERG,"$user: <$typedesc> is not a blocklist. Are you stupid? Do you want to whitelist a spammer? I refuse to continue.");
         exit (254);
 }
 
@@ -70,7 +70,7 @@ if ( !$tables["$typedesc"]['bl'] ) {
 $tolist = array();
 
 if ( !file_exists($splfile) ) {
-        syslog(LOG_ERR,"$user\tFile <$splfile> not found! Exit.");
+        syslog(LOG_ERR,"$user: File <$splfile> not found! Exit.");
         exit (254);
 }
 
@@ -94,19 +94,19 @@ if (($handle = gzopen($splfile, 'r')) !== FALSE) {
 
 $mysqli = new mysqli($dbhost, $userdb, $pwd, $db, $dbport);
 if ($mysqli->connect_error) {
-        syslog (LOG_EMERG, $user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+        syslog (LOG_EMERG, $user.': Connect Error (' . $mysqli->connect_errno . ') '
         . $mysqli->connect_error);
         exit (254);
 
 }
 
-syslog(LOG_INFO, $user."\t".'Successfully mysql connected to ' . $mysqli->host_info) ;
+syslog(LOG_INFO, $user.': Successfully mysql connected to ' . $mysqli->host_info) ;
 
 foreach ( array_keys($tolist) as $value) {
 	$reason = 'On ['.$tolist["$value"][0]."] <$value> sent ".$tolist["$value"][1].' messages to '.$tolist["$value"][2].' recipients.';
         if ( $tolist["$value"][3] >= $threshold ) {
                 if ( searchAndList ($mysqli,$user,$tables,$typedesc,$value,$unit,$quantity,$reason) ) {
-                        syslog (LOG_INFO, "$user\t".'Listing reason: '.$reason);
+                        syslog (LOG_INFO, "$user: ".'Listing reason: '.$reason);
                         /* Send a email to domain admin if you list an email */
                         if ( $tables["$typedesc"]['field'] == 'email' ) {
                                 $domain = array_pop(explode('@',$value,2));
@@ -114,18 +114,18 @@ foreach ( array_keys($tolist) as $value) {
                                 $subject = "<$value> is now blocked because exceedes limits on outgoing emails";
                                 if (!empty($recip))
                                         if ( sendEmailWarn($tplfile,'postmaster@csi.it',$recip,$subject,$value,"$quantity $unit",$reason) )
-                                                syslog(LOG_INFO, "$user\t\"$recip\" was notified about the \"$value\" abuse.");
+                                                syslog(LOG_INFO, "$user: \"$recip\" was notified about the \"$value\" abuse.");
                         }
                 }
         }
 	else {
 		$reason .= " But it has NOT been listed because it doesn't apply to the trigger condition.";
-		syslog (LOG_INFO, "$user\t".$reason);
+		syslog (LOG_INFO, "$user: ".$reason);
 	}
 }
 
 /* Close connection */
-syslog (LOG_INFO, "$user\t".'Successfully end of session.');
+syslog (LOG_INFO, "$user: ".'Successfully end of session.');
 $mysqli->close();
 closelog();
 

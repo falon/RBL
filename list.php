@@ -13,12 +13,12 @@ $user = username();
 
 $mysqli = new mysqli($dbhost, $userdb, $pwd, $db, $dbport);
         if ($mysqli->connect_error) {
-            syslog (LOG_EMERG, $user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+            syslog (LOG_EMERG, $user.': Connect Error (' . $mysqli->connect_errno . ') '
                     . $mysqli->connect_error);
-            die($user."\t".'Connect Error (' . $mysqli->connect_errno . ') '
+            die($user.': Connect Error (' . $mysqli->connect_errno . ') '
                     . $mysqli->connect_error);
         }
-syslog (LOG_INFO, $user."\t".'Successfully connected to ' . $mysqli->host_info );
+syslog (LOG_INFO, $user.': Successfully connected to ' . $mysqli->host_info );
 
 if (addtolist ($mysqli,username(),$_POST['value'],$type,$table,$_POST['unit'],$_POST['quantity'],$_POST['reason']))
  print 'OK '.$_POST["type"].' &lt;'.$_POST['value'].'&gt; first time listed for '.$_POST['quantity'].$_POST['unit'].'.';
