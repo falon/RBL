@@ -287,6 +287,8 @@ blockquote em{
   background: #fff;
   border-radius: 5px;
   width: 70%;
+  height: 70%;
+  overflow: auto;
   position: relative;
   transition: all 5s ease-in-out;
 }
