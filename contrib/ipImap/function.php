@@ -372,7 +372,8 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 	/***********************/
 
 	fwrite($fp, summaryReportAndList ($cf,$mysqli,$tables,$type,$ipuid) );
-	$mysqli->close();
+	if ( !$cf['onlyReport'] )
+		$mysqli->close();
 	fwrite($fp,file_get_contents(dirname(__FILE__) . '/' . $cf['reportTemplateFooter']));
 	fclose($fp);
 
