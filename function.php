@@ -404,7 +404,7 @@ function emailToNotify($notify_file,$dom) {
 }
 
 
-function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,$quantity,$reason) {
+function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,&$quantity,$reason) {
 
 /* Search and list value */
         $type = $tables["$typedesc"]['field'];
