@@ -16,7 +16,7 @@ if ( !isset($options['c']) ) exit ("\n\nUSAGE: $0 -c<file.conf>\n\n");
 if ( !file_exists(dirname(__FILE__) . '/' . $options['c']) ) exit ("\n\nThe file <".$options['c']."> doesn't exists.\nExiting...\n\n");
 
 /************** Start of conf ************************/
-$path   = '/web/RBL/';  /* Path of library and conf */
+$path   = '/var/www/html/RBL/';  /* Path of library and conf */
 require_once($path.'config.php');
 
  /* Syslog */
