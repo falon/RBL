@@ -244,6 +244,12 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 	// Order results starting from newest message
 	if (!$m_search) {
 		syslog (LOG_INFO,$cf['user'].": No mail found in $type folder. No reports written for $type.");
+	        if ( $ierr = imap_errors() )
+	                foreach ( $ierr as $thiserr )
+	                        syslog (LOG_ERR, $cf['user'].": IMAP Error: $thiserr");
+	        if ( $ierr = imap_alerts() )
+	                foreach ( $ierr as $thiserr )
+	                        syslog (LOG_ALERT, $cf['user'].": IMAP Alert: $thiserr");
 		imap_close( $m_mail );
 		if ( file_exists( $file ) ) unlink ($file);
 		if ( file_exists( $fileb ) ) unlink ($fileb);
@@ -383,6 +389,12 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 	fclose($fpb);
 	syslog (LOG_INFO,$cf['user'].': Report files written. Listing job for '.$type.' terminated.');
 
+	if ( $ierr = imap_errors() )
+		foreach ( $ierr as $thiserr )
+			syslog (LOG_ERR, $cf['user'].": IMAP Error: $thiserr");
+	if ( $ierr = imap_alerts() )
+                foreach ( $ierr as $thiserr )
+                        syslog (LOG_ALERT, $cf['user'].": IMAP Alert: $thiserr");
 	imap_close($m_mail);
 }
 ?>
