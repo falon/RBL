@@ -1,4 +1,6 @@
 *.conf
+contrib/splunk/config.php
+contrib/splunk/splunk.tgz
 config.php
 contrib/amavis/exportAmavisLdap.php
 contrib/ipImap/report/*.html
