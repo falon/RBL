@@ -16,8 +16,7 @@ if ( !isset($options['c']) ) exit ("\n\nUSAGE: $0 -c<file.conf>\n\n");
 if ( !file_exists(dirname(__FILE__) . '/' . $options['c']) ) exit ("\n\nThe file <".$options['c']."> doesn't exists.\nExiting...\n\n");
 
 /************** Start of conf ************************/
-$path   = '/var/www/html/RBL/';  /* Path of library and conf */
-require_once($path.'config.php');
+require_once('config.php');
 
  /* Syslog */
 $tag            .= 'SplunkLister';
@@ -42,7 +41,7 @@ $tag            .= $conf['tag'];
 /************** End of conf *************************/
 
 
-require_once($path.'function.php');
+require_once('function.php');
 
 openlog($tag, LOG_PID, $fac);
 $user = 'Splunk';
