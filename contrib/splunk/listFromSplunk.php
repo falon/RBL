@@ -12,7 +12,7 @@
 
 $shortopts = "c:";  // Required value
 $options = getopt($shortopts);
-if ( !isset($options['c']) ) exit ("\n\nUSAGE: $0 -c<file.conf>\n\n");
+if ( !isset($options['c']) ) exit ("\n\nUSAGE: ${_SERVER['SCRIPT_NAME']} -c<file.conf>\n\n");
 if ( !file_exists(dirname(__FILE__) . '/' . $options['c']) ) exit ("\n\nThe file <".$options['c']."> doesn't exists.\nExiting...\n\n");
 
 /************** Start of conf ************************/
