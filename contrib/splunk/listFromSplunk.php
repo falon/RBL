@@ -107,13 +107,21 @@ foreach ( array_keys($tolist) as $value) {
                 if ( searchAndList ($mysqli,$user,$tables,$typedesc,$value,$unit,$quantity,$reason) ) {
                         syslog (LOG_INFO, "$user: ".'Listing reason: '.$reason);
                         /* Send a email to domain admin if you list an email */
-                        if ( $tables["$typedesc"]['field'] == 'email' ) {
-                                $domain = array_pop(explode('@',$value,2));
-                                $recip = emailToNotify($domainNotify_file,$domain);
-                                $subject = "<$value> is now blocked because exceedes limits on outgoing emails";
-                                if (!empty($recip))
-                                        if ( sendEmailWarn($tplfile,'postmaster@csi.it',$recip,$subject,$value,"$quantity $unit",$reason) )
-                                                syslog(LOG_INFO, "$user: \"$recip\" was notified about the \"$value\" abuse.");
+                        if ( ( $tables["$typedesc"]['field'] == 'email' ) OR ( $tables["$typedesc"]['field'] == 'uid' ) ) {
+				/* Sometime uid are in the form of <user>@<domain> ... */
+				if ( strpos($value, '@') !== FALSE ) {
+                                	$domain = array_pop(explode('@',$value,2));
+					if ( strpos($domain, '@') === FALSE ) {
+                                		$recip = emailToNotify($domainNotify_file,$domain);
+                                		$subject = sprintf('%s <%s> is now blocked because exceedes limits on outgoing emails',
+								$tables["$typedesc"]['field'], $value);
+                                		if (!empty($recip))
+                                        		if ( sendEmailWarn($tplfile,'postmaster@csi.it',$recip,
+								$subject,$value,"$quantity $unit",$reason) )
+                                                		syslog(LOG_INFO, "$user: \"$recip\" was notified about the \"$value\" abuse.");
+					}
+					else syslog(LOG_ERR,"$user: <$domain> contains the '@' char. Notification cannot be sent.");
+				}
                         }
                 }
         }
