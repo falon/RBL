@@ -107,7 +107,7 @@ foreach ( array_keys($tolist) as $value) {
                 if ( searchAndList ($mysqli,$user,$tables,$typedesc,$value,$unit,$quantity,$reason) ) {
                         syslog (LOG_INFO, "$user: ".'Listing reason: '.$reason);
                         /* Send a email to domain admin if you list an email */
-                        if ( ( $tables["$typedesc"]['field'] == 'email' ) OR ( $tables["$typedesc"]['field'] == 'uid' ) ) {
+                        if ( ( $tables["$typedesc"]['field'] == 'email' ) OR ( $tables["$typedesc"]['field'] == 'username' ) ) {
 				/* Sometime uid are in the form of <user>@<domain> ... */
 				if ( strpos($value, '@') !== FALSE ) {
                                 	$domain = array_pop(explode('@',$value,2));
