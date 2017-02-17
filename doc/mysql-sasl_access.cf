@@ -1,0 +1,6 @@
+hosts = inet:rblmanager.example.com:3306
+user = blackman
+password = password
+dbname = rbl
+query = SELECT `reason` FROM `spamusername` WHERE `username` = '%s' AND `active` = '1' AND `exp` > NOW()
+result_format = REJECT %s
