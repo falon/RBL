@@ -24,8 +24,8 @@ smtpd_sender_restrictions =
                 reject_unknown_sender_domain,
                 reject_unlisted_sender,
 ##                reject_unverified_sender,
+		check_sasl_access mysql:/etc/postfix/mysql-sasl_access.cf,
                 check_sender_access regexp:/etc/postfix/banned_senders_rules
-				    mysql:/etc/postfix/mysql-sasl_access.cf
                                     mysql:/etc/postfix/mysql-senderrbl.cf,
 		[Other access OK rules]
 
