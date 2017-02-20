@@ -1,0 +1,17 @@
+; Place this script on $SPLUNK_HOME/bin/scripts/ for your Splunk app alert.
+;
+;
+;
+
+;Threshold value on trigger condition; the same which engage the alert
+threshold = 2
+
+;Blacklist name
+typedesc  = 'Spam Sender'
+
+;How long to list's parameters in MySQL language ;)
+unit = 'DAY'
+quantity = 2
+
+;Syslog */
+tag      = 'Email'
