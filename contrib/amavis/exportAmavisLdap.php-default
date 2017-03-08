@@ -3,7 +3,7 @@
 
 
 /************** Start of conf ************************/
-$path	= '/web/RBL/';
+$path	= '/var/www/html/RBL/';
 
 /* LDAP Conf */
 $server         = 'localhost';

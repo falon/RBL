@@ -7,7 +7,7 @@ function getIP($header,$mxserver,$msa) {
 	$ip = FALSE;
 	$host = FALSE;
 	$dateR = FALSE;
-	if ( preg_match_all('/^Received:\sfrom(?:.|\r\n\s)*?[\[\(]\s*(?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[\]\)](?:.|\r\n\s)+by(?:\s|\r\n\s+)(?P<host>\S+).*(?:\s|\r\n\s\s)+.*;\s+(?P<date>.*)/m',$header,$received) ) {
+	if ( preg_match_all('/^Received:\sfrom(?:.|\r\n\s)*?[\[\(]\s*(?P<ip>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[\]\)](?:.|\r\n\s)+\s+by(?:\s|\r\n\s+)(?P<host>\S+).*(?:\s|\r\n\s\s)+.*;\s+(?P<date>.*)/m',$header,$received) ) {
 		for ($i = count($received[0])-1;$i>=0;$i--) {
 #			print "Examine ".$received[0][$i]."\n";
 			if ( preg_match($msa,$received['host'][$i]) )
