@@ -8,4 +8,4 @@ After = syslog.target
 
 [Service]
 ExecStart=/usr/local/RBL/contrib/ipImap/getip.php
-ExecStartPost=/bin/bash -c "find /usr/local/RBL/contrib/ipImap/report/*.html -type f -ctime +14 -exec rm -rf {} \;"
+ExecStartPost=/bin/bash -c "/usr/bin/find /usr/local/RBL/contrib/ipImap/report/*.html -type f -ctime +14 -exec rm -rf {} \;"
