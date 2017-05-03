@@ -89,10 +89,12 @@ input[type=email]:focus {
     box-shadow: 0px 0px 9px #dbbd25;
 }
 
-input[type=submit] {
+input[type=submit],
+input[type=reset]  {
   border: 1px outset yellow;
 }
-input[type=submit]:active {
+input[type=submit]:active,
+input[type=reset]:active  {
   border: 1px inset gold;
 }
 

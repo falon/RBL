@@ -34,7 +34,7 @@ if ( ($tables["$_"]['field']=='username') AND ($_POST['Value']!='ALL') ) {
 		case 'anonymous':
 		case 'anybody':
 		case 'anyone':
-		case ( preg_match( '/^anyone@/',$_POST['Value']) == TRUE ) :
+		case ( preg_match( '/^anyone@/',$_POST['Value']) == TRUE ):
 			exit('<pre>&lt;'.$_POST['Value'].'&gt; is not allowed.</pre>');
 	}
 }	

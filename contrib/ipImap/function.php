@@ -98,7 +98,7 @@ function summaryReportAndList ($cf,$myconn,$tables,$category,$ipvet) {
                 unset($ipvet['ip']["$ip"]['count']);
 		$nuid = count($ipvet['ip']["$ip"]);
 		if ( !$cf['onlyReport'] ) {
-			if ( ($nlearn >= $cf['thresholdip']["$category"])AND($nuid >= $cf['thresholduid']["$category"]) ) {
+			if ( ($nlearn >= $cf['thresholdip']["$category"])&&($nuid >= $cf['thresholduid']["$category"]) ) {
 				$reason = "The IP <$ip> has been listed because was marked $nlearn times as $category by $nuid different accounts during last ".$cf['oldestday'].' days.';
 				$listed = searchAndList ($myconn,$cf['user'],$tables,$cf['list']["$category"],$ip,$cf['unit']["$category"],$cf['quantity']["$category"],$reason);
 			}
@@ -169,17 +169,6 @@ function splunksearch ($service,$message_id,$date) {
 	    'latest_time' => date("c",strtotime ($date)+60)
 	));
 
-	/*
-	// Display properties of the job
-	echo '<p>Search job properties:</p><hr/>';
-	echo '<p>Search job ID:' . htmlspecialchars($job['sid']);
-	echo '</p><p>The number of events:' . htmlspecialchars($job['eventCount']);
-	echo '</p><p>The number of results:' . htmlspecialchars($job['resultCount']);
-	echo '</p><p>Search duration:' . htmlspecialchars($job['runDuration']);
-	echo ' seconds';
-	echo '</p><p>This job expires in:' . htmlspecialchars($job['ttl']);
-	echo ' seconds</p>';
-	*/
 
 	if ($job['resultCount'] == 0) return FALSE;
 
@@ -242,7 +231,7 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 
 
 	// Order results starting from newest message
-	if (!$m_search) {
+	if ( empty($m_search) ) {
 		syslog (LOG_INFO,$cf['user'].": No mail found in $type folder. No reports written for $type.");
 	        if ( $ierr = imap_errors() )
 	                foreach ( $ierr as $thiserr )
@@ -272,11 +261,13 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 	fwrite( $fpb,"<h1> Report of bad reported $type mails</h1><h5>$lastup</h5><h2>Detailed Report</h2>" );
 	fwrite( $fpb,'<table><tr><th title="taken from Received header" nowrap>Date Learn</th><th title="taken from Date header" nowrap>Date Received</th><th nowrap>UID</th><th>Message-Id</th><th title="Why is this a bad report?">Reason</th></tr>' );
 
+	$ipuid = array();
 	$ipuid['count'] = 0;
 	$ipuid['uid'] = array();
 	$ipuid['ip'] = array();
 	$ipuid['ip']['count'] = 0;
 	$ipuid['uid']['count'] = 0;
+	$uidbad = array();
 	$uidbad['count'] = 0;
 	$uidbad['uid'] = array();
 
@@ -294,7 +285,7 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 			$uid='NA';
 			syslog (LOG_ERR, $cf['user'].": Error retrieving data for empty Message-ID.");
 		} else {
-			if (!$dateReceived) {
+			if ($dateReceived === FALSE) {
 				$uid='unauthenticated';
 				syslog (LOG_ERR, $cf['user'].": Error retrieving date for $mid. Maybe this mail was not submitted to Learner MSA");
 			} else  
@@ -343,8 +334,8 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
                                 $uidbad['count']++;                       //numeber of unique bad uids
                         }
 			/* The reason of bad report */
-			if (!$host) $reason = 'This mail was not received by recognized MX host';
-			if (!$dateReceived) $reason = 'This mail was not submitted to recognized MSA for learn';
+			if ($host === FALSE) $reason = 'This mail was not received by recognized MX host';
+			if ($dateReceived === FALSE) $reason = 'This mail was not submitted to recognized MSA for learn';
 			if ($uid=='unknown') $reason = 'The uid of this mail was not found in splunk log';
 			if (!isset($reason)) $reason = '?';
 				

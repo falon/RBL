@@ -15,6 +15,7 @@ function addtolist ($myconn,$user,$value,$type,$table,$expUnit,$expQ,$myreason) 
 // https://dev.mysql.com/doc/refman/5.5/en/date-and-time-functions.html#function_timestampadd
 
 	$result=FALSE;
+	$sub=array();
 
 	switch ($type) {
 	  case 'ip':
@@ -115,7 +116,6 @@ function relist ($myconn,$user,$value,$type,$table,$expUnit,$expQ,$myreason) {
 }
 
 function remove ($myconn,$user,$value,$type,$table) {
-        $result=FALSE;
 
         switch ($type) {
           case 'ip':
@@ -166,6 +166,7 @@ function changestatus ($myconn,$user,$value,$status,$type,$table) {
 
 function expire ($myconn,$user,$tables,$expireTime) {
         $return=TRUE;
+	$log=array();
 	$desc = array_keys($tables);
 	foreach ($desc as $tdesc) { 
 		/* QUERY */
@@ -206,6 +207,7 @@ function isListed($row) {
 
 function ask($myconn,$id,$what,$alltables,$typedesc,$value,$lock,$user,$adm) {
 
+	$whynot=NULL;
 	switch ($what) {
 		case 'Ok':
 			if ($lock) return NULL;
@@ -274,7 +276,6 @@ function searchentry ($myconn,$value,$tablelist) {
 
 function countListed ($myconn,$table) {
 /* Return number of current listed items into a rbl table */
-	$number = 0;
 	$query = "SELECT COUNT(*) as `count` FROM `$table` WHERE (`active`=1 AND TIMESTAMPDIFF(MICROSECOND,NOW(),`exp`)>0) GROUP BY `active` ORDER BY `count` DESC LIMIT 1";
 	$row = $myconn->query($query);
 	$number = $row->fetch_array(MYSQLI_ASSOC);
@@ -295,7 +296,7 @@ function isFull($myconn,$typedesc,$alltables) {
 function rlookup ($myconn,$user,$adm,$value,$typedesc,$tables) {
 
 	$type = $tables["$typedesc"]['field'];
-	$table = $tables["$typedesc"]['name'];
+	$whynot=NULL;
 
 	$result = searchentry ($myconn,$value,$tables["$typedesc"]);
 	if ($result) {
@@ -379,7 +380,6 @@ function sendEmailWarn($tplf,$from,$to,$sbj,$emailListed,$intervalToExpire,$deta
 	$body = wordwrap ( $body, 75 , "\r\n" );	
 
 	/* Send the mail! */
-	$params = NULL;
         if ( strlen(ini_get("safe_mode"))< 1) {
                 $old_mailfrom = ini_get("sendmail_from");
                 ini_set("sendmail_from", $from);

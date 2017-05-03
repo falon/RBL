@@ -16,7 +16,7 @@ if ($mysqli->connect_error) {
 }
 syslog (LOG_INFO, $user.': Successfully connected to ' . $mysqli->host_info );
 
-if (remove ($_POST['value'],$type,$table))
+if (remove ($mysqli,$user,$_POST['value'],$type,$table))
  print 'OK '.$typedesc.' &lt;'.$_POST['value'].'&gt; permanently REMOVED!';
 else
  print 'Delete operation ERROR on '.$typedesc.' &lt;'.$_POST['value'].'&gt;; check log.';
