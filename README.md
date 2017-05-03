@@ -1,3 +1,4 @@
+[![Build Status](https://scrutinizer-ci.com/g/falon/RBL/badges/build.png?b=master)](https://scrutinizer-ci.com/g/falon/RBL/build-status/master)
 # RBL Manager
 A complete RBL Management System, with interfaces to Splunk Alert and trap mailboxes.
 
