@@ -160,21 +160,29 @@ function splunksearch ($service,$message_id,$date) {
 	$searchQueryBlocking = 'search (message_id="'. addslashes( $message_id ) .
 				'" OR sasl_username) | transaction message_id queue_id maxspan=3m maxpause=2m | search sasl_username message_id=* | table sasl_username';
 
-
+	/* Doesn't work on Splunk 6.6 for HTTP exceptions
 	// A blocking search returns the job when the search is done
-	/* Wait to finish */
 	$job = $service->getJobs()->create($searchQueryBlocking, array(
 	    'exec_mode' => 'blocking',
 	    'earliest_time' => date("c",strtotime ($date)-120),
 	    'latest_time' => date("c",strtotime ($date)+60)
 	));
 
-
 	if ($job['resultCount'] == 0) return FALSE;
 
 	// Get job results
 	$resultSearch = $job->getResults();
+	*/
 
+	// A one shot search
+        $searchParams = array(
+                'earliest_time' => date("c",strtotime ($date)-120),
+                'latest_time' => date("c",strtotime ($date)+60)
+        );
+
+        // Run a oneshot search that returns the job's results
+        $resultsStream = $service->oneshotSearch($searchQueryBlocking, $searchParams);
+        $resultSearch = new Splunk_ResultsReader($resultsStream);
 
 	// Use the built-in XML parser to display the job results
 	foreach ($resultSearch as $result)
