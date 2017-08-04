@@ -33,7 +33,6 @@ $typedesc  = $conf['typedesc'];
 
  /* How long to list's parameters */
 $unit = $conf['unit'];          /* MySQL language ;) */
-$quantity = $conf['quantity'];
 
  /* Syslog */
 $tag            .= $conf['tag'];
@@ -102,6 +101,7 @@ if ($mysqli->connect_error) {
 syslog(LOG_INFO, $user.': Successfully mysql connected to ' . $mysqli->host_info) ;
 
 foreach ( array_keys($tolist) as $value) {
+	$quantity = $conf['quantity'];
 	$reason = 'On ['.$tolist["$value"][0]."] <$value> sent ".$tolist["$value"][1].' messages to '.$tolist["$value"][2].' recipients.';
         if ( $tolist["$value"][3] >= $threshold ) {
                 if ( searchAndList ($mysqli,$user,$tables,$typedesc,$value,$unit,$quantity,$reason) ) {

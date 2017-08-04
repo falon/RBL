@@ -96,11 +96,12 @@ function summaryReportAndList ($cf,$myconn,$tables,$category,$ipvet) {
 		if ( $ip == 'count' ) continue;
                 $nlearn = $ipvet['ip']["$ip"]['count'];
                 unset($ipvet['ip']["$ip"]['count']);
+		$quantity = $cf['quantity']["$category"]; /* In searchAndList this value is passed by reference and modified */
 		$nuid = count($ipvet['ip']["$ip"]);
 		if ( !$cf['onlyReport'] ) {
 			if ( ($nlearn >= $cf['thresholdip']["$category"])&&($nuid >= $cf['thresholduid']["$category"]) ) {
 				$reason = "The IP <$ip> has been listed because was marked $nlearn times as $category by $nuid different accounts during last ".$cf['oldestday'].' days.';
-				$listed = searchAndList ($myconn,$cf['user'],$tables,$cf['list']["$category"],$ip,$cf['unit']["$category"],$cf['quantity']["$category"],$reason);
+				$listed = searchAndList ($myconn,$cf['user'],$tables,$cf['list']["$category"],$ip,$cf['unit']["$category"],$quantity,$reason);
 			}
 			else $listed = FALSE;
 		}
