@@ -10,9 +10,9 @@ Every member in list can be active (really listed), or inactive (time expired, o
 
 ## Requisite
 
-- PHP > 7 (not tested with PHP5, but it could work).
-- MySQL Server > 5.
-- php-gmp and Haran/PHP.IPv4
+- PHP >= 7.0.0 with your date.timezone in php.ini
+- MySQL Server > 5.6.4 (supporting transaction and foreign key)
+- php-gmp and dautkom/php.ipv4
 - RBLDNS, if you export file zone through RBLDNS Export Plugin.
 - Splunk, or shared output result Splunk folder for the Splunk List Plugin
 - php-ldap for the Amavis Export Plugin
@@ -21,7 +21,9 @@ Every member in list can be active (really listed), or inactive (time expired, o
 ## Basic Installation
 Unfortunately I don't have time to provide a very stupid user installation. Sorry, you must follow these lapidary instructions.
 
-Clone, from home directory `composer require dautkom/php.ipv4`.
+Clone this repository.
+
+From home directory type `composer require dautkom/php.ipv4`.
 
 Move the doc and contrib folders to /usr/local/RBL or other location. Or don't move at all, if you like.
 
@@ -57,6 +59,7 @@ Every list name and key must be unique. If set to FALSE, the field "active" make
 The "limit" field configures the maximum number of active members in every list.
 The "bl" field identifies the list as a blocklist (TRUE) or a whitelist (FALSE), but it is quite useless. It just helps you to make a sane employ of the list.
 The "depend" field defines constraint through lists. For instance, a spam listed item can't be subscribed to a whitelist.
+The "milter" field provides a list of ips or networks to use whitin Postfix miltermap table. See at the Wiki for more details.
 
 The admins can list and relist items by hand through the web GUI. The superadmins (TRUE) can  list and relist up to years intervals. The list and relist facility is allowed only if you enable "require_auth", for safety reason. List and other actions are logged with the authenticated credential.
 
@@ -67,6 +70,14 @@ ln -s /usr/local/RBL/contrib/expire.php /etc/cron.daily/expireRBL.php
 ```
 It will remove all items expired for at least one year, or other specified in `$expireTime`. Expiration must also be activated (`$expire = TRUE`), see at `config.php`.
 
+## Hint populating networks
+### Included networks
+You can't add a new network included into an already existing network. This restriction avoids unnecessary disorder and it is valid for all network lists. You can delete the larger network before to add the smaller one.
+### Overlapping networks
+Again, you can't add a network a network intersecting an existing smaller network. All networks you enter must be not overlapped. Applications like RBLDNS for networks set use for result only the larger network found. Networks which don't overlap avoid misunderstanding and unpredictable behaviour.
+
+Milter neworks born to work with Postfix miltermap tables. In this case, you can define overlapping networks. But remember that the query must return only 'DISABLE' if multiple results occur. A query like we provide in the documentation works.
+
 ## Plugin
 
-The plugins are the real useful core of the lists. See at the wiki.
+The plugins are the real useful core of the lists. See at the [wiki](https://github.com/falon/RBL/wiki).

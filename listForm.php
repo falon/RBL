@@ -1,6 +1,16 @@
 <?php
 if (in_array($user,array_keys(array_filter($adm)))) $extopt = '<option value="MONTH">MONTHS</option><option value="YEAR">YEARS</option>';
 else $extopt = NULL;
+
+if ( $tables["$typedesc"]['milter'] ) {
+	if ( checkMilterConf($tables["$typedesc"]) ) 
+		print '<p>This is a milter table. Please, first add your item as usual. Then you will be able to customize the milter settings.</p>';
+	else {
+		$err = "Error in config about <$typedesc>. Check at your config.php.";
+		syslog (LOG_EMERG, $err);
+		printf ('<p>%s</p>', htmlspecialchars($err) );
+	}	
+}	
 ?>
 <form style="margin:0; text-align: left;" name='ListButton<?php echo $type ?>' enctype="text/plain" method="post" target="_self" action="list.php"  onSubmit="xmlhttpPost('list.php', 'ListButton<?php echo $type ?>', 'Risultato', '<img src=\'/include/pleasewait.gif\'>'); return false;" />
 

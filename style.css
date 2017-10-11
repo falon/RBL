@@ -50,6 +50,7 @@ table {
     }
 }
 
+
 table > tbody > tr {
         background: lightgray;
         overflow: hidden;
@@ -90,12 +91,21 @@ input[type=email]:focus {
 }
 
 input[type=submit],
-input[type=reset]  {
+input[type=reset] {
   border: 1px outset yellow;
 }
+input[type=button] {
+  box-shadow: 0 2px #666;
+  transform: translateY(1px);
+  border-style: outset;
+}
+
 input[type=submit]:active,
-input[type=reset]:active  {
+input[type=reset]:active {
   border: 1px inset gold;
+}
+input[type=button]:active {
+        border-style: inset;
 }
 
 input,select,option:active {
@@ -109,6 +119,10 @@ input,select,option:focus {
         box-shadow: none;
 	background-image: none;
 }
+option:checked {
+         background-color: yellow;
+}
+
 
 .noscroll { display:inline-block; border: 1px inset white;
 		border-radius: 5px 5px 5px 5px;
@@ -268,10 +282,6 @@ blockquote em{
   transform: translateY(1px);
 }
 
-#statusListed { background-color: red; color: white }
-#statusWhiteListed { background-color: forestgreen; color: white }
-#statusOk       {background-color: none }
-#ipfound        {background-color: yellow }
 
 /* Popup */
 .overlay {
@@ -328,3 +338,41 @@ blockquote em{
     width: 70%;
   }
 }
+
+
+/* RBL */
+.button {
+        background-color : slategray;
+        border-color: darkslategray;
+        color : white;
+        font-family : Verdana, Arial, Helvetica, sans-serif;
+        font-weight : normal;
+        font-size: x-small;
+        font-variant: small-caps;
+}
+#bwarn     { background-color: darkgreen;
+         border-color: seagreen
+}
+
+.input_text {
+        background-color: Silver;
+        color: DarkSlateGray;
+        border-color:steelblue;
+        border-width:1;
+        vertical-align: middle
+}
+
+.alarm {
+        background-color: red;
+        color: white;
+}
+
+#attr.off {
+}
+#attr.on {
+        background-color: white;
+}
+#statusListed { background-color: red; color: white }
+#statusWhiteListed { background-color: forestgreen; color: white }
+#statusOk       {background-color: none }
+#ipfound        {background-color: yellow }

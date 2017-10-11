@@ -9,7 +9,7 @@ See the example in doc folder to understand the options.
 
 
 $require_auth = FALSE;
-$version='1.9c';
+$version= file_get_contents('VERSION');
 
 
 /* Admins can list or relist, others can only delist     */
@@ -24,8 +24,8 @@ $admins = array (
 $dbhost = 'localhost';
 $dbport = ini_get("mysqli.default_port");
 $db = 'rbl';
-$userdb = 'root';
-$pwd = '';
+$userdb = 'blackuser';
+$pwd = 'password';
 
 /*
  Types:
@@ -50,7 +50,8 @@ $tables = array (
 		'active'	=> TRUE,
 		'depend'	=> array('Spam IP'),
                 'limit'         => 50,
-		'bl'		=> FALSE
+		'bl'		=> FALSE,
+		'milter'        => FALSE
 		),
         'Spam IP' => array (
                 'name'          => 'spamip',
@@ -58,28 +59,32 @@ $tables = array (
                 'active'        => TRUE,
 		'depend'	=> array('White IP'),
 		'limit'		=> 50,
-                'bl'            => TRUE
+                'bl'            => TRUE,
+		'milter'        => FALSE
                 ),
         'UID' => array (
                 'name'          => 'spamusername',
                 'field'         => 'username',
                 'active'        => TRUE,
                 'limit'         => 50,
-                'bl'            => TRUE
+                'bl'            => TRUE,
+		'milter'        => FALSE
                 ),
         'White Network' => array (
                 'name'          => 'whitenet',
                 'field'         => 'network',
                 'active'        => FALSE,
 		'depend'        => array('Spam Network'),
-                'bl'            => FALSE
+                'bl'            => FALSE,
+		'milter'        => FALSE
                 ),
         'Spam Network' => array (
                 'name'          => 'spamnet',
                 'field'         => 'network',
                 'active'        => FALSE,
 		'depend'        => array('White Network'),
-                'bl'            => TRUE
+                'bl'            => TRUE,
+		'milter'        => FALSE
                 ),
 	'Spam Sender'	=> array (
 		'name'		=> 'spamsender',
@@ -87,7 +92,8 @@ $tables = array (
                 'active'        => TRUE,
 		'depend'        => array('White Sender'),
                 'limit'         => 50,
-                'bl'            => TRUE
+                'bl'            => TRUE,
+		'milter'        => FALSE
 		),
 	'White Sender' => array (
 		'name'		=> 'whitesender',
@@ -95,23 +101,40 @@ $tables = array (
                 'active'        => TRUE,
 		'depend'        => array('Spam Sender'),
                 'limit'         => 50,
-                'bl'            => FALSE
+                'bl'            => FALSE,
+		'milter'        => FALSE
 		),
 	'Spam Domain'		=> array (
 		'name'		=> 'spamdomain',
 		'field'		=> 'domain',
                 'active'        => TRUE,
 		'depend'        => array('White Domain'),
-                'bl'            => TRUE
+                'bl'            => TRUE,
+		'milter'        => FALSE
 		),
         'White Domain'          => array (
                 'name'          => 'whitedomain',
                 'field'         => 'domain',
                 'active'        => FALSE,
 		'depend'        => array('Spam Domain'),
-                'bl'            => FALSE
+                'bl'            => FALSE,
+		'milter'        => FALSE
                 ),
-	);
+        'Milter IP'       => array (
+                'name'          => 'milteripmap',
+                'field'         => 'ip',
+                'active'        => FALSE,
+                'bl'            => FALSE,
+                'milter'        => TRUE
+                ),
+	'Milter Networks'	=> array (
+                'name'          => 'miltermap',
+                'field'         => 'network',
+                'active'        => FALSE,
+                'bl'            => FALSE,
+		'milter'	=> TRUE
+                ),
+        );
 
 
 

@@ -23,6 +23,7 @@ if ( ($tables["$_"]['field']=='network') AND ($_POST['Value']!='ALL') ) {
 		exit ('<pre>&lt;'.$_POST['Value'].'&gt; is NOT a valid Network/Netmask pair.</pre>');
 	if (!$net->address($value[0])->mask($value[1])->isValid(1))
 		exit ('<pre>&lt;'.$_POST['Value'].'&gt; is NOT a valid Network/Netmask.</pre>');
+	$_POST['Value'] = $value[0].'/'.$net->mask($value[1])->convertTo('dec');
 }
 
 if ( ($tables["$_"]['field']=='username') AND ($_POST['Value']!='ALL') ) {
@@ -40,22 +41,19 @@ if ( ($tables["$_"]['field']=='username') AND ($_POST['Value']!='ALL') ) {
 }	
 
 if (empty($_GET)) {
-	if ($tables["$_"]['bl']) print "<p><i>$_</i> is a blocklist of ".$tables["$_"]['field'].'.</p>';
-	else print "<p><i>$_</i> is a whitelist of ".$tables["$_"]['field'].'.</p>';
+	if ($tables["$_"]['milter']) print "<p><i>$_</i> is a miltermap of ".$tables["$_"]['field'].'.</p>';
+	else {
+		if ($tables["$_"]['bl']) print "<p><i>$_</i> is a blocklist of ".$tables["$_"]['field'].'.</p>';
+		else                     print "<p><i>$_</i> is a whitelist of ".$tables["$_"]['field'].'.</p>';
+	}
 }
 
 openlog($tag, LOG_PID, $fac);
 $user = username();
 
-$mysqli = new mysqli($dbhost, $userdb, $pwd, $db, $dbport);
-if ($mysqli->connect_error) {
-            syslog (LOG_EMERG, $user.': Connect Error (' . $mysqli->connect_errno . ') '
-                    . $mysqli->connect_error);
-            exit ($user.': Connect Error (' . $mysqli->connect_errno . ') '
-                    . $mysqli->connect_error);
-}
-
-syslog(LOG_INFO, $user.': Successfully mysql connected to ' . $mysqli->host_info) ;
+if ( ($mysqli = myConnect($dbhost, $userdb, $pwd, $db, $dbport, $tables, $_, $user)) === FALSE )
+	exit ('Connect Error (' . $mysqli->connect_errno . ') '. $mysqli->connect_error);
+	
 rlookup($mysqli,username(),$admins,$_POST['Value'],$_POST['genere'],$tables);
 $mysqli->close();
 closelog();

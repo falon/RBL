@@ -1,6 +1,6 @@
 <?php
 
-$version='1.9d';
+ini_set('error_log', 'syslog');
 
 function username() {
 	if (isset ($_SERVER['REMOTE_USER'])) $user = $_SERVER['REMOTE_USER'];
@@ -10,12 +10,27 @@ function username() {
 }
 
 
-function addtolist ($myconn,$user,$value,$type,$table,$expUnit,$expQ,$myreason) {
+function myConnect($host, $user, $pass, $db, $port, $tablelist, $typedesc, $loguser) {
+        $db = ( $tablelist["$typedesc"]['milter'] ) ? $tablelist["$typedesc"]['name'] : $db;
+	$mysqli = new mysqli($host, $user, $pass, $db, $port);
+        if ($mysqli->connect_error) {
+           	syslog (LOG_EMERG, $loguser.': Connect Error to DB <'.$db.'> (' . $mysqli->connect_errno . ') '
+                    		. $mysqli->connect_error);
+		return FALSE;
+	}
+	syslog(LOG_INFO, $loguser.': Successfully MySQL connected at DB <'.$db.'> to ' . $mysqli->host_info) ;
+	return $mysqli;
+}
+
+function addtolist ($myconn,$user,$value,$tabledesc,$expUnit,$expQ,$myreason,&$err) {
 // See MySQL manual for $expQ and $expUnit at
 // https://dev.mysql.com/doc/refman/5.5/en/date-and-time-functions.html#function_timestampadd
 
 	$result=FALSE;
 	$sub=array();
+	$type = $tabledesc['field'];
+	$milt = $tabledesc['milter'];
+	$table = ($milt) ? milterTable($type) : $tabledesc['name'];
 
 	switch ($type) {
 	  case 'ip':
@@ -34,6 +49,12 @@ function addtolist ($myconn,$user,$value,$type,$table,$expUnit,$expQ,$myreason) 
 		break;
 
 	  case 'network':
+		if (!$milt) {
+			if ( netOverlap($myconn, $tabledesc, $value, $overlappedNet, $user) ) {
+				$err = "<$value> overlaps the existing network <$overlappedNet>";
+				return FALSE;
+			}
+		}
 		list($sub['net'],$sub['mask'])=explode('/',$value);
                 $query= sprintf("INSERT INTO `$table` (
                         `$type` ,
@@ -205,6 +226,36 @@ function isListed($row) {
 }
 
 
+function askMilter($myconn,$id,$obj,$typedesc,$miltId,$value,$user,$adm)  {
+	$milts = readMiltName($myconn,$user);
+	$size = count($milts);
+	if (in_array($user,array_keys($adm))) {
+		$button = <<<END
+		<form style="margin:0; display:inline;" name="Milter$id" enctype="text/plain" method="post" target="_self" action="changeMilter.php" onSubmit="xmlhttpPost('changeMilter.php', 'Milter$id', 'id$id', '<img src=\'/include/pleasewait.gif\'>'); return false;" />
+		<input name="object" type="hidden" value="$obj" /><input name="oldvalues" type="hidden" value="$value" />
+		<input name="type" type="hidden" value="$typedesc" />
+		<input name="user" type="hidden" value="$user" />
+		<input name="miltId" type="hidden" value="$miltId" />
+		<div class="noscroll">
+		<select class="input_text" name="newvalues[]" multiple size="$size">
+END;
+		$activeMilts = explode(',',$value);
+		foreach ( $milts as $milter ) {
+			if ( in_array($milter, $activeMilts) )
+				$selected= 'selected';
+			else
+				$selected= NULL;
+			$button .= sprintf('<option value="%s" %s>%s</option>', $milter, $selected, $milter);
+		}	
+		$button .= '</select></div><input class="button" name="Change" type="submit" value="Change" /></form>';
+		return $button;
+	}
+	return $value;	
+
+
+}
+
+
 function ask($myconn,$id,$what,$alltables,$typedesc,$value,$lock,$user,$adm) {
 
 	$whynot=NULL;
@@ -224,6 +275,7 @@ function ask($myconn,$id,$what,$alltables,$typedesc,$value,$lock,$user,$adm) {
 function consistentListing($myconn,$alltables,$typed,$value,&$warn) {
 /* Check if there are no pending mislisting */
 	$warn = NULL;
+	if (! isset($alltables["$typed"]['depend']) ) return TRUE;
 	foreach ($alltables["$typed"]['depend'] as $listdep) {
 		if ($alltables["$typed"]['field'] != $alltables["$listdep"]['field'] ) {
 			$warn = "Config ERROR: <$typed> and <$listdep> are of different types! I can't check consistency!";
@@ -251,22 +303,62 @@ function searchentry ($myconn,$value,$tablelist) {
 /* Make a MYSQL query and return result */
 
         $type = $tablelist['field'];
-        $table = $tablelist['name'];
+	
+	if ( $tablelist['milter'] ) {
+		$table = milterTable($type);
+		if ($value == 'ALL')
+			$query = sprintf('SELECT *, GROUP_CONCAT(milt.name) as miltnames FROM `%s` LEFT JOIN milt ON (%s.idmilt=milt.id) GROUP by idmilt',
+				$table,$table);
+		else {
+			switch ($type) {
+				case 'network':
+					list($sub['net'],$sub['mask'])=explode('/',$value);
+					$query = sprintf('SELECT * FROM (
+							SELECT *, GROUP_CONCAT(milt.name) as miltnames FROM `%s` LEFT JOIN milt ON (%s.idmilt=milt.id)
+				 				WHERE (
+									inet_aton(\'%s\') >= network AND
+									( inet_aton(\'%s\') | ( inet_aton(\'%s\') ^ (power(2,32)-1) ) )
+										<= network | ( netmask ^ (power(2,32)-1) )
+								)
+				 				GROUP by idmilt
+							) AS val WHERE val.network IS NOT null', $table, $table, $sub['net'], $sub['net'], $sub['mask']);
+					break;
+				case 'ip':
+					$query = sprintf('SELECT * FROM (
+							SELECT *, GROUP_CONCAT(milt.name) as miltnames FROM `%s` LEFT JOIN milt ON (%s.idmilt=milt.id)' .
+                                                		'WHERE `ip` =  INET_ATON(\'%s\')
+							 ) AS val WHERE val.ip IS NOT null', $table, $table, $value);
+					break;
+				default:
+					syslog(LOG_EMERG, 'ALERT: The type <'.$type.'> is not allowed for milter lists.' );
+					return FALSE;
+			}
+		}
+	}
 
-        if ($value == 'ALL') $query = 'select * from '.$table;
-        else {
-                switch ($type) {
-                  case 'ip':
-                        $query= "select * from $table where $type =  INET_ATON('$value')";
-                        break;
-                  case 'network':
-                        list($sub['net'],$sub['mask'])=explode('/',$value);
-                        $query= 'select * from '.$table.' where (((inet_aton(\''.$sub['net'].'\') | (~ inet_aton(\''.$sub['mask'].'\'))) & netmask) = network)';
-                        break;
-                  default:
-                        $query= "select * from $table where $type = '$value'";
-                }
-        }
+	else {
+	        $table = $tablelist['name'];
+	        if ($value == 'ALL') $query = 'select * from '.$table;
+	        else {
+	                switch ($type) {
+	                  case 'ip':
+	                        $query= "select * from $table where $type =  INET_ATON('$value')";
+	                        break;
+	                  case 'network':
+	                        list($sub['net'],$sub['mask'])=explode('/',$value);
+	                        $query= sprintf('select * from `%s`
+						WHERE (
+							inet_aton(\'%s\') >= network AND
+							( inet_aton(\'%s\') | ( inet_aton(\'%s\') ^ (power(2,32)-1) ) )
+								<= network | ( netmask ^ (power(2,32)-1) )
+						)', $table, $sub['net'], $sub['net'], $sub['mask']);
+;
+	                        break;
+	                  default:
+	                        $query= "select * from $table where $type = '$value'";
+	                }
+	        }
+	}
 
 	$result = $myconn->query($query);
 	if($result === false)
@@ -287,7 +379,11 @@ function countListed ($myconn,$table) {
 
 function isFull($myconn,$typedesc,$alltables) {
         if (isset($alltables["$typedesc"]['limit'])) {
-                if ( countListed($myconn,$alltables["$typedesc"]['name']) >= $alltables["$typedesc"]['limit'] ) 
+		if ( $alltables["$typedesc"]['milter'] )
+			$tab = 'net';
+		else
+			$tab = $alltables["$typedesc"]['name'];
+                if ( countListed($myconn,$tab) >= $alltables["$typedesc"]['limit'] ) 
                         return TRUE;
         }
 	return FALSE;
@@ -298,6 +394,13 @@ function rlookup ($myconn,$user,$adm,$value,$typedesc,$tables) {
 	$type = $tables["$typedesc"]['field'];
 	$whynot=NULL;
 
+	$tabhtm = <<<END
+	<table><thead><tr><th>$type</th><th title="The date this object has been listed for the first time">DateAdd</th><th>DateMod</th><th>Exp</th><th>Status</th><th title="Number of times this object has been listed">#List</th>
+END;
+	if ( $tables["$typedesc"]['milter'] )
+		$tabhtm .= '<th title="Milter active for this object">Milters</th>';
+	$tabhtm .= '<th>Authored by</th><th width="250">Reason</th><th>Action</th></tr></thead><tfoot><tr></tr></tfoot><tbody>'."\n";
+
 	$result = searchentry ($myconn,$value,$tables["$typedesc"]);
 	if ($result) {
 		printf("<pre>Your request for $type &lt;$value&gt; returned %d items.\n</pre>", $result->num_rows);
@@ -307,7 +410,7 @@ function rlookup ($myconn,$user,$adm,$value,$typedesc,$tables) {
 	if ($full) print '<p>'.htmlspecialchars("$typedesc has reached maximum value of ".$tables["$typedesc"]['limit'].' listed items.').'</p>';
 
 		if ($result->num_rows) {
-			print '<table><thead><tr><th>'.$type.'</th><th title="The date this object has been listed for the first time">DateAdd</th><th>DateMod</th><th>Exp</th><th>Status</th><th title="Number of times this object has been listed">#List</th><th>Authored by</th><th width="250">Reason</th><th>Action</th></tr></thead><tfoot><tr></tr></tfoot><tbody>'."\n";
+			print $tabhtm;
 			$i=0;
         		while ($riga = $result->fetch_array(MYSQLI_ASSOC)) {
 				if (isListed($riga)) {
@@ -328,7 +431,12 @@ function rlookup ($myconn,$user,$adm,$value,$typedesc,$tables) {
 					$element = $riga["$type"];
 				}
 
-                		printf ("<tr id=id$i><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td>%s</td></tr>\n", $element, $riga['date'], $riga['datemod'], $riga['exp'], $riga['active'], $riga['nlist'], $riga['user'],htmlspecialchars($riga['reason']),ask($myconn,$i,$listed,$tables,$typedesc,$element,$full,$user,$adm));
+				if ( $tables["$typedesc"]['milter'] AND checkMilterConf($tables["$typedesc"]) )
+					printf ("<tr id=id$i><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td nowrap id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td>%s</td></tr>\n",
+					$element, $riga['date'], $riga['datemod'], $riga['exp'], $riga['active'], $riga['nlist'], askMilter($myconn,$i,$element,$typedesc,$riga['idmilt'],$riga['miltnames'],$user,$adm), $riga['user'],htmlspecialchars($riga['reason']),ask($myconn,$i,$listed,$tables,$typedesc,$element,$full,$user,$adm));
+				else
+					 printf ("<tr id=id$i><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td id='status$listed'>%s</td><td>%s</td></tr>\n",
+					$element, $riga['date'], $riga['datemod'], $riga['exp'], $riga['active'], $riga['nlist'], $riga['user'],htmlspecialchars($riga['reason']),ask($myconn,$i,$listed,$tables,$typedesc,$element,$full,$user,$adm));
 				$i++;
         		}
 			print '</tbody></table>';
@@ -346,6 +454,8 @@ function rlookup ($myconn,$user,$adm,$value,$typedesc,$tables) {
 }
 
 
+
+        
 function sendEmailWarn($tplf,$from,$to,$sbj,$emailListed,$intervalToExpire,$detail) {
 	$now = time();
         setlocale (LC_TIME, 'it_IT');
@@ -463,7 +573,164 @@ function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,&$quanti
 }
 
 
+/*************** Functions to check if two net overlap each other ********************/
+
+function ipRange ($range) {
+/* List IP in range */
+	return array_map('long2ip', range( ip2long($range[0]), ip2long($range[1]) ) );
+}
+
+function isIn($netA, $netB) {
+/* TRUE if an IP of $netA is contained in netB */
+	list($addressA,$maskA) = explode('/', $netA);
+	list($addressB,$maskB) = explode('/', $netB);
+	require_once 'vendor/autoload.php';
+	$net = new \dautkom\ipv4\IPv4();
+	$range = $net->address($addressA)->mask($maskA)->getRange();
+	$ips = ipRange($range);
+	foreach ( $ips as $ip )
+		if ( $net->address($addressB)->mask($maskB)->has($ip) )
+			return TRUE;
+	return FALSE;
+}
+
+function netOverlap($myconn, $tabletype, $net, &$thisNet, $loguser) {
+/* return TRUE if $net overlap an existing network into DB */
+	$thisNet = NULL;
+	if ($tabletype['field'] != 'network') {
+		syslog(LOG_ERR, $loguser.': '.$tabletype['name'].' is not a network list.');
+		return FALSE;
+	}
+	$result = searchentry ($myconn,'ALL',$tabletype);
+        if ($result->num_rows) {
+		while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+			$thisNet = long2ip($row['network']).'/'.long2ip($row['netmask']);
+			if ( isIn($thisNet, $net) ) {
+				$result->free();
+				syslog(LOG_INFO, "$loguser: the net <$net> overlaps the existing network <$thisNet>.");
+				return TRUE;
+			}
+		}
+	}
+	$result->free();
+	return FALSE;
+}
+
+/*********************************************************************************************/
+
+
+/* For miltermap */
+function checkMilterConf($table) {
+	if (isset($table['milter'])) {
+        	if ($table['milter'] ===  TRUE) {
+			switch ( $table['field'] ) {
+				case 'network':
+				case 'ip':
+					return TRUE;
+			}
+		}
+	}
+	return FALSE;
+}			
+
+/*
+function enterDBMilt($myconn,$tables,$loguser) {
+        if (!($myconn->select_db($tables('name')))) {
+                syslog(LOG_ERR, $loguser.': Can\'t enter into DB '.$tables('name'));
+                return FALSE;
+        }
+	return TRUE;
+}
+*/
+
+function milterTable($t) {
+	/* Return the milter object table for type t  or FALSE on error */
+        switch ($t) {
+                case 'network':
+                        return 'net';
+                case 'ip':
+                        return 'ips';
+                default:
+			syslog(LOG_EMERG, "ALERT: type <$t> not allowed in configuration. ");
+                        return FALSE;
+        }
+}
+
+
+function readMiltName($myconn,$loguser) {
+	$milters=array();
+	$query = 'SELECT `name` FROM `config`';
+
+        $result = $myconn->query($query);
+        if($result === false) {
+                syslog(LOG_EMERG, "$loguser: ALERT: Query <$query> failed: ".$myconn->error);
+		return FALSE;
+	}
+	if ($result->num_rows) {
+		while ($milt = $result->fetch_array(MYSQLI_ASSOC))
+			$milters[] = $milt['name'];
+	}
+	$result->free();
+	return $milters;
+}
+
+function changeMilter ($myconn,$loguser,$miltVal,$table,$miltID) {
+	$query = array();
+	foreach ( $miltVal as $value => $action ) {
+		switch ( $action ) {
+			case 'keep':
+				break;
+			case 'add':
+				$query[] = sprintf( "INSERT INTO `milt` (
+                		        	`id` ,
+                        			`name` 
+                			)
+                			VALUES (
+                        			%d ,
+						'%s'
+					)",$miltID,$value);
+				break;
+			case 'del':
+				$query[] = "DELETE FROM  `milt` WHERE (`id` = '$miltID' AND `name` = '$value')";
+		}
+	}
+	if ( count($query) ) /* This "if" is redundant, because if I call this I already checked there is a change */
+		/* I update datemod because the user couldn't change */
+		$query[] = sprintf('UPDATE `%s` SET
+						`user`=\'%s\',
+						`datemod`= CURRENT_TIMESTAMP
+					 WHERE `idmilt`=%d', $table, $loguser, $miltID);
+
+
+	/* Start a safe transaction: it commits only if all queries happen */
+	$myconn->autocommit(FALSE);
+	$myconn->begin_transaction(MYSQLI_TRANS_START_READ_ONLY);
+	$ok = TRUE;
+	foreach ( $query as $q ) {
+		if ($myconn->query($q) !== TRUE) {
+			$ok = FALSE;
+			syslog(LOG_ERR, "$loguser: Error: ".$myconn->error);
+		}
+	}
+	if ( $ok ) {
+		if ( $myconn->commit() )
+			syslog(LOG_INFO, "$loguser: Milter setting changed successfully.");
+		else {
+			syslog(LOG_ERR, "$loguser: Milter setting NOT changed for an unpredictable COMMIT error.");
+			if ( $myconn->rollback() )
+				syslog(LOG_INFO, "$loguser: rollback succeeded.");
+			else
+				syslog(LOG_ERR, "$loguser: rollback failed. Your db could be compromized. Check it!");
+			$ok = FALSE;
+		}
+	}
+	else
+		syslog(LOG_ERR, "$loguser: Error: Milter setting NOT changed. See at above errors.");
+	return $ok;
+		
+}
 	
+
 /*
 function checkEmailAddress($email) {
 	if(preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/", $email))

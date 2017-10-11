@@ -1,0 +1,26 @@
+hosts = unix:/var/lib/mysql/mysql.sock
+user = blackman
+password = password
+dbname = miltermap
+#query = SELECT conf FROM config WHERE name IN( SELECT name FROM milt WHERE id=( SELECT idmilt FROM net WHERE ((inet_aton('%s')&netmask)=network) AND active='1' AND exp>NOW() ) )
+query = SELECT conf FROM config WHERE name IN( SELECT name
+    FROM milt WHERE id IN (
+        SELECT idmilt FROM net WHERE
+                ((inet_aton('%s')&netmask)=network)
+                        AND active='1' AND exp>NOW()
+    ) AND name='DISABLE ALL'
+ UNION
+ SELECT name
+    FROM milt WHERE id IN (
+        SELECT idmilt FROM net WHERE
+                ((inet_aton('%s')&netmask)=network)
+                        AND active='1' AND exp>NOW()
+    ) AND NOT EXISTS (SELECT name
+    	FROM milt WHERE id IN (
+        	SELECT idmilt FROM net WHERE
+                	((inet_aton('%s')&netmask)=network)
+                        	AND active='1' AND exp>NOW()
+    	) AND name='DISABLE ALL')
+ )
+result_format = %s
+require_result_set = yes
