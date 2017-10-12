@@ -120,7 +120,9 @@ input,select,option:focus {
 	background-image: none;
 }
 option:checked {
+	 color: blue;
          background-color: yellow;
+	 text-shadow: text-shadow: 1px 1px orange;
 }
 
 
@@ -131,12 +133,9 @@ option:checked {
 		overflow:hidden;
 		vertical-align: middle;
 }
-.noscroll select { padding:8 10 8 10; margin:-5px -20px -5px -5px; }
-
-option:checked {
-	 background-color: yellow;
+@-moz-document url-prefix() {
+	.noscroll select   { padding:8 10 8 10; margin:-5px -20px -5px -5px; }
 }
-
 
 #wrapper {
     margin: 0 auto;
