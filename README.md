@@ -74,9 +74,9 @@ It will remove all items expired for at least one year, or other specified in `$
 ### Included networks
 You can't add a new network included into an already existing network. This restriction avoids unnecessary disorder and it is valid for all network lists. You can delete the larger network before to add the smaller one.
 ### Overlapping networks
-Again, you can't add a network a network intersecting an existing smaller network. All networks you enter must be not overlapped. Applications like RBLDNS for networks set use for result only the larger network found. Networks which don't overlap avoid misunderstanding and unpredictable behaviour.
+Again, you can't add a network intersecting an existing network. All networks you enter must not overlap. Applications like RBLDNS for networks set use for result only the larger network found. Networks which don't overlap avoid misunderstanding and unpredictable behaviour.
 
-Milter neworks born to work with Postfix miltermap tables. In this case, you can define overlapping networks. But remember that the query must return only 'DISABLE' if multiple results occur. A query like we provide in the documentation works.
+Milter neworks born to work with Postfix miltermap tables. In this case, you can define overlapping networks. In particular, you can define a network larger than another already defined. But remember that the query must return only 'DISABLE' if multiple results occur. A query like we provide in the documentation works.
 
 ## Plugin
 
