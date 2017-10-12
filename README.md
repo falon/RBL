@@ -76,7 +76,7 @@ You can't add a new network included into an already existing network. This rest
 ### Overlapping networks
 Again, you can't add a network intersecting an existing network. All networks you enter must not overlap. Applications like RBLDNS for networks set use for result only the larger network found. Networks which don't overlap avoid misunderstanding and unpredictable behaviour.
 
-Milter neworks born to work with Postfix miltermap tables. In this case, you can define overlapping networks. In particular, you can define a network larger than another already defined. But remember that the query must return only 'DISABLE' if multiple results occur. A query like we provide in the documentation works.
+Milter neworks come to work with Postfix miltermap tables. In this case, you can define overlapping networks. In particular, you can define a network larger than another already defined. But remember that the query must return only 'DISABLE' if multiple results occur. A query like we provide in the documentation (_smtpd_miltermap_ file) works.
 
 ## Plugin
 
