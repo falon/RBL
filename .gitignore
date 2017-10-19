@@ -1,4 +1,5 @@
 *.conf
+_config.yml
 contrib/splunk/config.php
 contrib/splunk/splunk.tgz
 contrib/splunk/alert.eml
