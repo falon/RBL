@@ -8,4 +8,4 @@ contrib/amavis/exportAmavisLdap.php
 contrib/ipImap/report/*.html
 vendor
 doc/ipintomysql.txt
-composer.*
+composer.lock

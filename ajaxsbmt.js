@@ -64,6 +64,7 @@ function getquerystring(formname) {
 					|| elemType == "IMAGE"
                     || elemType == "HIDDEN"
 		    || elemType == "NUMBER"
+		    || elemType == "DATE"
 		    || elemType == "EMAIL")
                 GetElemValue(elemName, element.value);
             else if (elemType == "CHECKBOX" && element.checked)
