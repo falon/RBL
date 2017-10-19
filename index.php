@@ -8,7 +8,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js?load=effects" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
-<h1> RBL System Management</h1> 
+<h1> RBL Management System</h1> 
 <?php
 require_once('config.php');
 require_once('function.php');
