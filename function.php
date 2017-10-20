@@ -568,7 +568,7 @@ function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,&$quanti
                 /* First time list value */
                 case 0:
                         $result->free();
-                        return addtolist ($myconn,$loguser,$value,$type,$table,$unit,$quantity,$reason);
+                        return addtolist ($myconn,$loguser,$value,$tables["$typedesc"],$unit,$quantity,$reason,$_);
         }
 }
 
