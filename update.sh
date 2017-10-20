@@ -86,5 +86,6 @@ echo Remember to check configuration file in :
 echo RBL/config.php
 echo $LPATH/contrib/amavis/exportAmavisLdap.php
 echo $LPATH/contrib/splunk/*.conf
+echo 'Change $path in ipImap/getip.php'
 
 echo DONE!
