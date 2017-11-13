@@ -1,17 +1,18 @@
-; Place this script on $SPLUNK_HOME/bin/scripts/ for your Splunk app alert.
-;
-;
-;
-
 ;Threshold value on trigger condition; the same which engage the alert
 threshold = 2
 
 ;Blacklist name
 typedesc  = 'Spam Sender'
 
-;How long to list's parameters in MySQL language ;)
+;How long to list parameters in MySQL language ;)
 unit = 'DAY'
 quantity = 2
 
-;Syslog */
+;Syslog
 tag      = 'Email'
+
+;Splunk password of the username who own the webhook alert.
+;You must know it.
+splunkpassword = 'changeme'
+;Splunk daemon port
+splunkport = 8089

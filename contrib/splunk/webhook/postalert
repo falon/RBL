@@ -1,4 +1,18 @@
 Array
 (
-    [{test_data:_this_is_test_json_data}] => 
+    [sid] => scheduler__admin__postfix__RMD53cb038e5bc1899c7_at_1510131600_1915
+    [result] => Array
+        (
+            [NumMessaggi] => 1
+            [from] => marco.favero@csi.it
+            [FattoreX] => 1
+            [MEDIAMessaggi] => 1
+            [TotDestinatari] => 1
+            [Periodo] => 08 Nov 2017 - 09:50 to 09:55
+        )
+
+    [results_link] => http://vm-sys-splunk01.csi.it:8000/app/postfix/@go?sid=scheduler__admin__postfix__RMD53cb038e5bc1899c7_at_1510131600_1915
+    [search_name] => Abuse sender FROM mailfarm DEC
+    [app] => postfix
+    [owner] => admin
 )

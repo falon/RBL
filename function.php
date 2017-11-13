@@ -94,42 +94,50 @@ function addtolist ($myconn,$user,$value,$tabledesc,$expUnit,$expQ,$myreason,&$e
 	return $result;
 }
 
-function relist ($myconn,$user,$value,$type,$table,$expUnit,$expQ,$myreason) {
+function relist ($myconn,$user,$value,$type,$table,$expUnit,$expQ,$myreason, $exptime = 0) {
 
 	$result=FALSE;
+	if ( $exptime ) { /* Entry already listed */
+		$nlist = '`nlist`';
+		$exptime = sprintf('\'%s\'', $exptime);  /* Eh MySQL... an hour lost to notice this */
+	}
+	else {
+		$exptime = 'CURRENT_TIMESTAMP';
+		$nlist = '`nlist` + 1';
+	}
 
         switch ($type) {
 	  case 'ip':
                 $query= sprintf("UPDATE `$table` SET
 			`active` = '1',
 			`user` = '%s',
-			`exp` = TIMESTAMPADD(%s,%d,CURRENT_TIMESTAMP),
-			`nlist` = `nlist` + 1,
+			`exp` = TIMESTAMPADD(%s,%d,%s),
+			`nlist` = %s,
 			`reason` = '%s'
-			WHERE `$table`.`$type` = INET_ATON('%s') LIMIT 1" ,$user,$expUnit,$expQ,$myreason,$value);
+			WHERE `$table`.`$type` = INET_ATON('%s') LIMIT 1" ,$user,$expUnit,$expQ,$exptime,$nlist,$myreason,$value);
 		break;
           case 'network':
 		list($sub['net'],$sub['mask'])=explode('/',$value);
                 $query= sprintf("UPDATE `$table` SET
                         `active` = '1',
                         `user` = '%s',
-                        `exp` = TIMESTAMPADD(%s,%d,CURRENT_TIMESTAMP),
-                        `nlist` = `nlist` + 1,
+                        `exp` = TIMESTAMPADD(%s,%d,%s),
+                        `nlist` = %s,
                         `reason` = '%s'
-                        WHERE (`$table`.`$type` = INET_ATON('%s') AND `$table`.`netmask` = INET_ATON('%s')) LIMIT 1" ,$user,$expUnit,$expQ,$myreason,$sub['net'],$sub['mask']);
+                        WHERE (`$table`.`$type` = INET_ATON('%s') AND `$table`.`netmask` = INET_ATON('%s')) LIMIT 1" ,$user,$expUnit,$expQ,$exptime,$nlist,$myreason,$sub['net'],$sub['mask']);
 		break;
 	  default:
                 $query= sprintf("UPDATE `$table` SET
                         `active` = '1',
                         `user` = '%s',
-                        `exp` = TIMESTAMPADD(%s,%d,CURRENT_TIMESTAMP),
-                        `nlist` = `nlist` + 1,
+                        `exp` = TIMESTAMPADD(%s,%d,%s),
+                        `nlist` = %s,
                         `reason` = '%s'
-			WHERE `$table`.`$type` = '%s' LIMIT 1" ,$user,$expUnit,$expQ,$myreason,$value);
+			WHERE `$table`.`$type` = '%s' LIMIT 1" ,$user,$expUnit,$expQ,$exptime,$nlist,$myreason,$value);
 	}
 
         if ($myconn->query($query) === TRUE) {
-            syslog(LOG_INFO, "$user: relist $type <$value> on <$table> for $expQ $expUnit.");
+            syslog(LOG_INFO, "$user: relist $type <$value> on <$table> for $expQ $expUnit from $exptime.");
 		$result=TRUE;
         }
         else syslog (LOG_ERR, "$user: Error: ". $myconn->error);
@@ -460,7 +468,7 @@ function sendEmailWarn($tplf,$from,$to,$sbj,$emailListed,$intervalToExpire,$deta
 	$now = time();
         setlocale (LC_TIME, 'it_IT');
         $date = date("r",$now);
-	$messageID = md5(uniqid($now,1)) . '@' . $_SERVER["HOSTNAME"];
+	$messageID = md5(uniqid($now,1)) . '@' . gethostname();
 	$mua = 'PHP/' . phpversion();
 
 	/* Parsing headers */
@@ -514,7 +522,7 @@ function emailToNotify($notify_file,$dom) {
 }
 
 
-function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,&$quantity,$reason) {
+function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,&$quantity,&$reason) {
 
 /* Search and list value */
         $type = $tables["$typedesc"]['field'];
@@ -552,18 +560,21 @@ function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,&$quanti
         switch ($result->num_rows) {
                 /* Relist value if already present */
                 case 1:
-                        /* Entry already listed */
                         if ( isListed($thisentry) ) {
-                                syslog(LOG_INFO, $loguser.': '.$value.' already listed. Nothing to do.');
-                                $result->free();
-                                return FALSE;
+				/* Entry already listed */
+				$expdate = $thisentry['exp'];
+				$reason = sprintf('%s. Already listed. Adding 1 DAY to previous expire date.',
+					 $reason);
+				$quantity = 1;
+				$unit = 'DAY';
                         }
-
-                        /* Entry delisted */
-                        $result->free();
-			$quantity *= $thisentry['nlist'];
-                        return relist ($myconn,$loguser,$value,$type,$table,$unit,$quantity,$reason);
-
+			else {
+                        	/* Entry delisted */
+				$quantity *= $thisentry['nlist'];
+				$expdate = 0; /* This forces expiration from CURRENT_TIMESTAMP */
+			}
+			$result->free();
+                        return relist ($myconn,$loguser,$value,$type,$table,$unit,$quantity,$reason, $expdate);
 
                 /* First time list value */
                 case 0:
@@ -730,6 +741,25 @@ function changeMilter ($myconn,$loguser,$miltVal,$table,$miltID) {
 		
 }
 	
+
+function curl_get($url, array $get = NULL, array $options = array(), $loguser)
+{
+    $defaults = array(
+        CURLOPT_URL => $url. (strpos($url, '?') === FALSE ? '?' : ''). http_build_query($get),
+        CURLOPT_HEADER => 0,
+        CURLOPT_RETURNTRANSFER => TRUE,
+        CURLOPT_TIMEOUT => 4
+    );
+
+    $ch = curl_init();
+    curl_setopt_array($ch, ($options + $defaults));
+    if( ! $result = curl_exec($ch))
+    {
+        syslog(LOG_ERR, sprintf('%s: CURL Error: <%s>', $loguser, curl_error($ch)));
+    }
+    curl_close($ch);
+    return $result;
+}
 
 /*
 function checkEmailAddress($email) {
