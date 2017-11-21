@@ -15,7 +15,8 @@
 
 
 /************** Conf *******************/
-require_once(dirname(__FILE__)  . '/../config.php');
+$base = '/var/www/html/RBL';
+require_once($base . '/config.php');
 
  /* Syslog basic */
 $tag            .= 'SplunkLister';
@@ -58,7 +59,7 @@ $splpwd = $conf['splunkpassword'];
 /************** End of conf *************************/
 
 openlog($tag, LOG_PID, $fac);
-require_once('../function.php');
+require_once($base . '/function.php');
 
 
 /* check you select a blocklist */
@@ -90,10 +91,6 @@ $webhook = json_decode($raw, true);
 /* result link example
 [results_link] => http://<splunkhost>:8000/app/postfix/@go?sid=scheduler__admin__postfix__RMD53cb038e5bc1899c7_at_1510131600_1915
 */
-
-#$webhook['results_link'] = 'http://vm-sys-splunk01.csi.it:8000/app/postfix/@go?sid=scheduler__admin__postfix__RMD53cb038e5bc1899c7_at_1510131600_1915';
-#$webhook['app'] = 'postfix';
-#$webhook['owner'] = 'admin';
 
 if (preg_match_all('/^https?\:\/\/(?<splunkhost>[\w\.\-]+)\:8000\/app\/(?<splunkapp>[\w\.\-]+)\/\@go\?sid=(?<job>[\w\.\-\d]+)$/',
 	$webhook['results_link'], $out, PREG_PATTERN_ORDER) === FALSE) {
@@ -152,15 +149,9 @@ for ($i=1; $i<$nr; $i++) {	/* We skip first header line (i=0) */
 
 /* Make MYSQL connection */
 
-$mysqli = new mysqli($dbhost, $userdb, $pwd, $db, $dbport);
-if ($mysqli->connect_error) {
-        syslog (LOG_EMERG, $user.': Connect Error (' . $mysqli->connect_errno . ') '
-        . $mysqli->connect_error);
-        exit (254);
-
-}
-
-syslog(LOG_INFO, $user.': Successfully mysql connected to ' . $mysqli->host_info) ;
+$mysqli = myConnect($host, $userdb, $pwd, $db, $dbport, $tables, $typedesc, $user);
+if ( $mysqli === FALSE )
+	exit (254);
 
 foreach ( array_keys($tolist) as $value) {
         $quantity = $conf['quantity'];

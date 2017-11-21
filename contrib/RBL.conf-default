@@ -1,0 +1,55 @@
+## I'm /etc/httpd/conf.d/RBL.conf
+
+## Only authenticated user in RBL root
+# Enable this if you dont'have yet elsewhere
+#<VirtualHost *:80>
+#   ServerName server.example.com
+#   Redirect permanent / https://server.example.com/
+#</VirtualHost>
+
+<Directory /var/www/html/include>
+	AllowOverride None
+        AuthType None
+        Require all granted
+</Directory>
+Alias /include "/var/www/html/include"
+
+<Directory /var/www/html/RBL>
+    Options FollowSymLinks
+    AllowOverride None
+    AuthBasicProvider authservice
+    AuthName "Welcome to RBL Manager!"
+    AuthType basic
+    <RequireAny>
+            Require valid-user
+    </RequireAny>
+</Directory>
+
+## Splunk webhook must be accessed with plain unauthenticated HTTP
+Listen 8090
+<VirtualHost *:8090>
+    DocumentRoot "/var/www/html/RBL/contrib/splunk/webhook"
+    <Directory /var/www/html/RBL/contrib/splunk/webhook>
+    	AuthType None
+    	Require all granted
+    </Directory>
+</VirtualHost>
+
+## Spam reports can be accessed from unauthenticated users.
+## If you don't like, remove the follow <Directory>.
+Alias /spamreport "/var/www/html/RBL/contrib/ipImap/report"
+<Directory "/var/www/html/RBL/contrib/ipImap/report">
+        AllowOverride None
+        <RequireAll>
+                Require all granted
+        </RequireAll>
+</Directory>
+
+## Finally, these folders can't be accessed at all
+<Directory "/var/www/html/RBL/contrib">
+	Require all denied
+</Directory>
+
+<Directory "/var/www/html/RBL/doc">
+        Require all denied
+</Directory>

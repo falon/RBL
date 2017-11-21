@@ -13,8 +13,9 @@
 require_once('config.php');
 require_once('function.php');
 
-
-if ( $require_auth ) if ( username() == 'unknown' ) exit ("<p>You MUST configure your server to use authentication.</p>");
+checkSSL();
+if ( $require_auth )
+	if ( username() == 'unknown' ) exit ("<p>You MUST configure your server to use authentication.</p>");
 
 
 if ( $imapListActive )

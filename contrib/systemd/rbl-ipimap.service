@@ -7,5 +7,5 @@ Description=RBL IP Reputation Subscriber
 After = syslog.target
 
 [Service]
+ExecStartPre=/usr/bin/find /usr/local/RBL/contrib/ipImap/report/*.html -type f -ctime +14 -delete
 ExecStart=/usr/local/RBL/contrib/ipImap/getip.php
-ExecStartPost=/bin/bash -c "/usr/bin/find /usr/local/RBL/contrib/ipImap/report/*.html -type f -ctime +14 -exec rm -rf {} \;"

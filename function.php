@@ -9,6 +9,16 @@ function username() {
 	return $user;
 }
 
+function checkSSL() {
+	if ( empty( $_SERVER['HTTPS'] ) )
+		printf ('<div id="content">Ehi sysadmin! Your site is not secure. Please enable SSL on your server and configure a redirect, such as' .
+			'<pre>' .
+			htmlspecialchars('<VirtualHost *:80>' . "\n" .
+			'  ServerName %s' . "\n" .
+			'  Redirect permanent / https://%s/' . "\n" .
+			'</VirtualHost>') .
+			'</pre></div>', gethostname(), gethostname());
+}
 
 function myConnect($host, $user, $pass, $db, $port, $tablelist, $typedesc, $loguser) {
         $db = ( $tablelist["$typedesc"]['milter'] ) ? $tablelist["$typedesc"]['name'] : $db;

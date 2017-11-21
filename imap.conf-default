@@ -54,7 +54,7 @@ reportTemplateFooter	= templateF.html
 tag			= learner
 
 [SplunkSDK]
-splpath			= '/web/include/splunk-sdk-php-1.0.1/'
+splpath			= '/var/www/html/include/splunk-sdk-php-1.0.1/'
 splunkConn[host]	= splunk.example.com
 splunkConn[port]	= 8089
 splunkConn[username]	= admin
