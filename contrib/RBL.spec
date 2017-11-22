@@ -52,15 +52,15 @@ rm -rf %{buildroot}/
 
 %if %systemd
 mkdir -p %{buildroot}%{_unitdir}
-install -m 0755 contrib/systemd/rbl-amavis.service %{buildroot}%{_unitdir}
-install -m 0755 contrib/systemd/rbl-amavis.timer %{buildroot}%{_unitdir}
-install -m 0755 contrib/systemd/rbl-expire.service %{buildroot}%{_unitdir}
-install -m 0755 contrib/systemd/rbl-expire.timer %{buildroot}%{_unitdir}
-install -m 0755 contrib/systemd/rbl-ipimap.service %{buildroot}%{_unitdir}
-install -m 0755 contrib/systemd/rbl-ipimap.timer %{buildroot}%{_unitdir}
-install -m 0755 contrib/systemd/rbl-rbldns@.service %{buildroot}%{_unitdir}
-install -m 0755 contrib/systemd/rbl-rbldns@spamip.service %{buildroot}%{_unitdir}
-install -m 0755 contrib/systemd/rbl-rbldns@whiteip.service %{buildroot}%{_unitdir}
+install -m 0644 contrib/systemd/rbl-amavis.service %{buildroot}%{_unitdir}
+install -m 0644 contrib/systemd/rbl-amavis.timer %{buildroot}%{_unitdir}
+install -m 0644 contrib/systemd/rbl-expire.service %{buildroot}%{_unitdir}
+install -m 0644 contrib/systemd/rbl-expire.timer %{buildroot}%{_unitdir}
+install -m 0644 contrib/systemd/rbl-ipimap.service %{buildroot}%{_unitdir}
+install -m 0644 contrib/systemd/rbl-ipimap.timer %{buildroot}%{_unitdir}
+install -m 0644 contrib/systemd/rbl-rbldns@.service %{buildroot}%{_unitdir}
+install -m 0644 contrib/systemd/rbl-rbldns@spamip.service %{buildroot}%{_unitdir}
+install -m 0644 contrib/systemd/rbl-rbldns@whiteip.service %{buildroot}%{_unitdir}
 sed -i 's|\/usr\/local\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_unitdir}/*.service
 %endif
 rm -rf contrib/systemd contrib/RPM
