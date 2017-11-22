@@ -10,31 +10,23 @@ Every member in list can be active (really listed), or inactive (time expired, o
 
 ## Requisite
 
-- PHP >= 7.0.0 with your date.timezone in php.ini
+- PHP >= 7.1 with your date.timezone in php.ini
 - MySQL Server > 5.6.4 (supporting transaction and foreign key)
 - php-gmp and dautkom/php.ipv4
 - RBLDNS, if you export file zone through RBLDNS Export Plugin.
-- Splunk, or shared output result Splunk folder for the Splunk List Plugin
+- Splunk with webhook for the Splunk List Plugin
 - php-ldap for the Amavis Export Plugin
 - php-imap, php-xml and Splunk SDK for the SPAM Learn Observer
 
 ## Basic Installation
-Unfortunately I don't have time to provide a very stupid user installation. Sorry, you must follow these lapidary instructions.
+Red Hat 7 ready? See at the build folder and install the RPM file. Your system may complain that no php-7 package can be found. You can try with the [Remi distribution](https://rpms.remirepo.net/).
 
+Otherwise you can try these lapidary instructions.
 Clone this repository.
 
 From home directory type `composer require dautkom/php.ipv4`.
 
 Move the doc and contrib folders to /usr/local/RBL or other location. Or don't move at all, if you like.
-
-### Database MySQL
-Check at the `doc/db.sql` and `doc/grant.sql`. Default values work with default config. Arrange them in your environment.
-You can separate the MySQL host from the web host.
-```
-mysql -u root < doc/db.sql
-mysql -u root < doc/grant.sql
-```
-### config.php
 Move
 ```
 ajaxsbmt.js
@@ -44,6 +36,15 @@ style.css
 to `/include` folder relative to Document Root of web server.
 
 Copy config.php-default to config.php
+
+### Database MySQL
+Check at the `doc/db.sql` and `doc/grant.sql`. Default values work with default config. Arrange them in your environment.
+You can separate the MySQL host from the web host.
+```
+mysql -u root < doc/db.sql
+mysql -u root < doc/grant.sql
+```
+### config.php
 
 Customize the DB part ($dbhost, $userdb, $db, $pwd)
 
@@ -64,7 +65,7 @@ The "milter" field provides a list of ips or networks to use whitin Postfix milt
 The admins can list and relist items by hand through the web GUI. The superadmins (TRUE) can  list and relist up to years intervals. The list and relist facility is allowed only if you enable "require_auth", for safety reason. List and other actions are logged with the authenticated credential.
 
 ### Expire task
-Install the expire daily task to prevent an indefinitely DB growing. You should write a systemd timer or crontab such as
+Install the expire daily task to prevent an indefinitely DB growing. A systemd timer is included in RPM package. Otherwise you can install a crontab such as
 ```
 ln -s /usr/local/RBL/contrib/expire.php /etc/cron.daily/expireRBL.php
 ```

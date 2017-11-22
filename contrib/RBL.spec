@@ -21,6 +21,7 @@ Requires: php-json >= 7.1
 Requires: php-ldap >= 7.1
 Requires: php-mysqlnd >= 7.1
 Requires: php-gmp >= 7.1
+Requires: php-xml >= 7.1
 BuildRequires: composer >= 1.5.2
 #Requires: remi-release >= 7.3
 
@@ -44,11 +45,11 @@ Splunk alert.
 rm -rf %{buildroot}/
 
 %prep
+%autosetup -n %{bigname}-master
 
 
 %install
 
-cd %{bigname}-master
 %if %systemd
 mkdir -p %{buildroot}%{_unitdir}
 install -m 0755 contrib/systemd/rbl-amavis.service %{buildroot}%{_unitdir}
@@ -62,6 +63,7 @@ install -m 0755 contrib/systemd/rbl-rbldns@spamip.service %{buildroot}%{_unitdir
 install -m 0755 contrib/systemd/rbl-rbldns@whiteip.service %{buildroot}%{_unitdir}
 sed -i 's|\/usr\/local\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_unitdir}/*.service
 %endif
+rm -rf contrib/systemd contrib/RPM
 
 # Include dir
 mkdir -p %{buildroot}%{_datadir}/include
@@ -69,6 +71,7 @@ install -m0444 ajaxsbmt.js %{buildroot}%{_datadir}/include
 install -m0444 pleasewait.gif %{buildroot}%{_datadir}/include
 wget -qO- 'https://github.com/splunk/splunk-sdk-php/archive/1.0.1.tar.gz' | tar xvz -C %{buildroot}%{_datadir}/include
 install -m0444 style.css  %{buildroot}%{_datadir}/include
+rm -rf ajaxsbmt.js pleasewait.gif
 
 # Web HTTPD conf
 
@@ -93,7 +96,7 @@ sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_da
 ##Composer requirement
 composer --working-dir="%{buildroot}%{_datadir}/%{bigname}" require dautkom/php.ipv4
 ## Remove unnecessary files
-rm %{buildroot}%{_datadir}/%{bigname}/_config.yml %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.spec %{buildroot}%{_datadir}/%{bigname}/vendor/dautkom/php.ipv4/.gitignore
+rm %{buildroot}%{_datadir}/%{bigname}/_config.yml %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.spec %{buildroot}%{_datadir}/%{bigname}/vendor/dautkom/php.ipv4/.gitignore %{buildroot}%{_datadir}/%{bigname}/composer.*
 
 ##File list
 find %{buildroot}%{_datadir}/%{bigname} -mindepth 1 -type f | grep -v \.conf$ | grep -v \.git | grep -v '\-default$' | grep -v ipImap/report/*\.html | grep -v config\.php | grep -v template/ | grep -v contrib/rbldns/conf\.default | grep -v RBL\.spec | grep -v 'doc/' | grep -v %{bigname}/LICENSE | grep -v %{bigname}/README\.md | grep -v contrib/amavis/exportAmavisLdap\.php | sed -e "s@$RPM_BUILD_ROOT@@" > FILELIST
@@ -114,7 +117,7 @@ find %{buildroot}%{_datadir}/%{bigname} -mindepth 1 -type f | grep -v \.conf$ | 
 %systemd_postun_with_restart %{upname}-expire.timer
 %endif
 
-%files -f %{buildroot}%{_datadir}/%{bigname}/FILELIST
+%files -f FILELIST
 %{_datadir}/include
 %{_unitdir}
 %license %{_datadir}/%{bigname}/LICENSE
@@ -131,6 +134,6 @@ find %{buildroot}%{_datadir}/%{bigname} -mindepth 1 -type f | grep -v \.conf$ | 
 %config(noreplace) %{_datadir}/%{bigname}/contrib/rbldns/conf.default
 
 %changelog
-* Mon Nov 20 2017 Marco Favero <marco.favero@csi.it> - Initial version
-- Build for 2.1 official version
+* Mon Nov 22 2017 Marco Favero <marco.favero@csi.it> - Initial version
+- Build for 2.2 official version
 
