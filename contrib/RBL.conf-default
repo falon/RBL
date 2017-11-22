@@ -24,6 +24,7 @@ Alias /include "/var/www/html/include"
             Require valid-user
     </RequireAny>
 </Directory>
+Alias /RBL "/var/www/html/RBL"
 
 ## Splunk webhook must be accessed with plain unauthenticated HTTP
 Listen 8090
@@ -34,6 +35,7 @@ Listen 8090
     	Require all granted
     </Directory>
 </VirtualHost>
+Alias /webhook "/var/www/html/RBL/contrib/splunk/webhook"
 
 ## Spam reports can be accessed from unauthenticated users.
 ## If you don't like, remove the follow <Directory>.
