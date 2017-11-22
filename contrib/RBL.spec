@@ -100,6 +100,7 @@ rm %{buildroot}%{_datadir}/%{bigname}/_config.yml %{buildroot}%{_datadir}/%{bign
 
 ##File list
 find %{buildroot}%{_datadir}/%{bigname} -mindepth 1 -type f | grep -v \.conf$ | grep -v \.git | grep -v '\-default$' | grep -v ipImap/report/*\.html | grep -v config\.php | grep -v template/ | grep -v contrib/rbldns/conf\.default | grep -v RBL\.spec | grep -v 'doc/' | grep -v %{bigname}/LICENSE | grep -v %{bigname}/README\.md | grep -v contrib/amavis/exportAmavisLdap\.php | sed -e "s@$RPM_BUILD_ROOT@@" > FILELIST
+mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 
 %post
 %if %systemd
@@ -120,6 +121,7 @@ find %{buildroot}%{_datadir}/%{bigname} -mindepth 1 -type f | grep -v \.conf$ | 
 %files -f FILELIST
 %{_datadir}/include
 %{_unitdir}
+%dir %{_datadir}/%{bigname}/contrib/rbldns/yourbl
 %license %{_datadir}/%{bigname}/LICENSE
 %doc %{_datadir}/%{bigname}/README.md
 %doc %{_datadir}/%{bigname}/doc

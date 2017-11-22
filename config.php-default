@@ -9,7 +9,7 @@ See the example in doc folder to understand the options.
 
 
 $require_auth = FALSE;
-$version= file_get_contents('VERSION');
+$version= file_get_contents(__DIR__.'/VERSION');
 
 
 /* Admins can list or relist, others can only delist     */
