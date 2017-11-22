@@ -1,9 +1,10 @@
 *.conf
 _config.yml
+
 contrib/splunk/config.php
 contrib/splunk/splunk.tgz
 contrib/splunk/alert.eml
-contrib/splunk/template
+template
 config.php
 contrib/amavis/exportAmavisLdap.php
 contrib/ipImap/report/*.html

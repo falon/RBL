@@ -21,7 +21,7 @@ Requires: php-json >= 7.1
 Requires: php-ldap >= 7.1
 Requires: php-mysqlnd >= 7.1
 Requires: php-gmp >= 7.1
-Requires: composer >= 2.5.2
+BuildRequires: composer >= 1.5.2
 #Requires: remi-release >= 7.3
 
 
@@ -40,7 +40,8 @@ Every entry has an expiration time. You can manage the entries
 manually, or by authomated process from Spam Learning system or
 Splunk alert.
 
-
+%clean
+rm -rf %{buildroot}/
 
 %prep
 
@@ -70,27 +71,32 @@ wget -qO- 'https://github.com/splunk/splunk-sdk-php/archive/1.0.1.tar.gz' | tar 
 install -m0444 style.css  %{buildroot}%{_datadir}/include
 
 # Web HTTPD conf
-install -m0444 contrib/%{bigname}.conf-default %{buildroot}%{_sysconfdir}/httpd/conf.d/%{bigname}.conf
+
+install -D -m0444 contrib/%{bigname}.conf-default %{buildroot}%{_sysconfdir}/httpd/conf.d/%{bigname}.conf
 sed -i 's|\/var\/www\/html\/include|%{_datadir}/include|' %{buildroot}%{_sysconfdir}/httpd/conf.d/%{bigname}.conf
 sed -i 's|\/var\/www\/html\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_sysconfdir}/httpd/conf.d/%{bigname}.conf
 
 # RBL manager application files
+mkdir -p %{buildroot}%{_datadir}/%{bigname}
 cp -a * %{buildroot}%{_datadir}/%{bigname}/
-cp -p %{buildroot}%{_datadir}/%{bigname}/imap.conf-default %{buildroot}%{_datadir}/%{bigname}/imap.conf
+mv %{buildroot}%{_datadir}/%{bigname}/imap.conf-default %{buildroot}%{_datadir}/%{bigname}/imap.conf
 sed -i 's|\/var\/www\/html\/include|%{_datadir}/include|' %{buildroot}%{_datadir}/%{bigname}/imap.conf
-cp -p %{buildroot}%{_datadir}/%{bigname}/config.php-default %{buildroot}%{_datadir}/%{bigname}/config.php
-cp -p %{buildroot}%{_datadir}/%{bigname}/notifyDomains.conf-default %{buildroot}%{_datadir}/%{bigname}/notifyDomains.conf
-cp -p %{buildroot}%{_datadir}/%{bigname}/contrib/splunk/listEmail.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/splunk/listEmail.conf
-cp -pr %{buildroot}%{_datadir}/%{bigname}/template-default %{buildroot}%{_datadir}/%{bigname}/template
-cp -p %{buildroot}%{_datadir}/%{bigname}/contrib/amavis/exportAmavisLdap.php-default  %{buildroot}%{_datadir}/%{bigname}/contrib/amavis/exportAmavisLdap.php
+mv %{buildroot}%{_datadir}/%{bigname}/config.php-default %{buildroot}%{_datadir}/%{bigname}/config.php
+mv %{buildroot}%{_datadir}/%{bigname}/notifyDomains.conf-default %{buildroot}%{_datadir}/%{bigname}/notifyDomains.conf
+mv %{buildroot}%{_datadir}/%{bigname}/contrib/splunk/listEmail.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/splunk/listEmail.conf
+mv %{buildroot}%{_datadir}/%{bigname}/template-default %{buildroot}%{_datadir}/%{bigname}/template
+mv %{buildroot}%{_datadir}/%{bigname}/contrib/amavis/exportAmavisLdap.php-default  %{buildroot}%{_datadir}/%{bigname}/contrib/amavis/exportAmavisLdap.php
 sed -i 's|\/var\/www\/html\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/amavis/exportAmavisLdap.php
 sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/expire.php
 sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/exportdns.php
 sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/splunk/webhook/readPost.php
-##File list
-find %{buildroot}%{_datadir}/%{bigname} -mindepth 1 -type f | grep -v '*.conf' | grep -v _config.yml | grep -v .git | grep -v '*-default' | grep -v 'ipImap/report/*.html' | grep -v config.php | grep -v 'template/' | grep -v 'contrib/rbldns/conf.default' | grep -v '*.spec' | sed -e "s@$RPM_BUILD_ROOT@@" > FILELIST
 ##Composer requirement
 composer --working-dir="%{buildroot}%{_datadir}/%{bigname}" require dautkom/php.ipv4
+## Remove unnecessary files
+rm %{buildroot}%{_datadir}/%{bigname}/_config.yml %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.spec %{buildroot}%{_datadir}/%{bigname}/vendor/dautkom/php.ipv4/.gitignore
+
+##File list
+find %{buildroot}%{_datadir}/%{bigname} -mindepth 1 -type f | grep -v \.conf$ | grep -v \.git | grep -v '\-default$' | grep -v ipImap/report/*\.html | grep -v config\.php | grep -v template/ | grep -v contrib/rbldns/conf\.default | grep -v RBL\.spec | grep -v 'doc/' | grep -v %{bigname}/LICENSE | grep -v %{bigname}/README\.md | grep -v contrib/amavis/exportAmavisLdap\.php | sed -e "s@$RPM_BUILD_ROOT@@" > FILELIST
 
 %post
 %if %systemd
@@ -108,9 +114,12 @@ composer --working-dir="%{buildroot}%{_datadir}/%{bigname}" require dautkom/php.
 %systemd_postun_with_restart %{upname}-expire.timer
 %endif
 
-%files -f FILELIST
-%license LICENSE
-%doc doc
+%files -f %{buildroot}%{_datadir}/%{bigname}/FILELIST
+%{_datadir}/include
+%{_unitdir}
+%license %{_datadir}/%{bigname}/LICENSE
+%doc %{_datadir}/%{bigname}/README.md
+%doc %{_datadir}/%{bigname}/doc
 %config(noreplace) %{_datadir}/%{bigname}/config.php
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/%{bigname}.conf
 %config(noreplace) %{_datadir}/%{bigname}/imap.conf
