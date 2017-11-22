@@ -5,9 +5,9 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.2
-Release: 0.1%{?dist}
+Release: 2%{?dist}
 Group: System Environment/Daemons
-License: Apache
+License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
 Source0: https://github.com/falon/%{bigname}/archive/master.zip
 BuildArch:	noarch
