@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 /* Config */
-$path='/web/RBL/';
+$path='/var/www/html/RBL/';
 include_once($path.'config.php');
 require_once($path.'function.php');
 if ( !isset($version) ) {
