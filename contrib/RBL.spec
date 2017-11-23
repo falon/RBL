@@ -137,7 +137,8 @@ mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 %config(noreplace) %{_datadir}/%{bigname}/contrib/rbldns/conf.default
 
 %changelog
-* Mon Nov 22 2017 Marco Favero <marco.favero@csi.it> - Initial version
-- Build for 2.2 official version
 * Thu Nov 23 2017 Marco Favero <marco.favero@csi.it> 2.2-3
 - modified rbl-ipimap.service
+
+* Mon Nov 22 2017 Marco Favero <marco.favero@csi.it> - Initial version
+- Build for 2.2 official version
