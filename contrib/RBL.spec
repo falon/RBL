@@ -5,7 +5,7 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.2
-Release: 3%{?dist}
+Release: 5%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -84,6 +84,7 @@ mkdir -p %{buildroot}%{_datadir}/%{bigname}
 cp -a * %{buildroot}%{_datadir}/%{bigname}/
 mv %{buildroot}%{_datadir}/%{bigname}/imap.conf-default %{buildroot}%{_datadir}/%{bigname}/imap.conf
 sed -i 's|\/var\/www\/html\/include|%{_datadir}/include|' %{buildroot}%{_datadir}/%{bigname}/imap.conf
+sed -i 's|\/var\/www\/html\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/ipImap/getip.php
 mv %{buildroot}%{_datadir}/%{bigname}/config.php-default %{buildroot}%{_datadir}/%{bigname}/config.php
 mv %{buildroot}%{_datadir}/%{bigname}/notifyDomains.conf-default %{buildroot}%{_datadir}/%{bigname}/notifyDomains.conf
 mv %{buildroot}%{_datadir}/%{bigname}/contrib/splunk/listEmail.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/splunk/listEmail.conf
@@ -137,8 +138,9 @@ mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 %config(noreplace) %{_datadir}/%{bigname}/contrib/rbldns/conf.default
 
 %changelog
-* Thu Nov 23 2017 Marco Favero <marco.favero@csi.it> 2.2-3
+* Thu Nov 23 2017 Marco Favero <marco.favero@csi.it> 2.2-5
 - modified rbl-ipimap.service
+- fixed path in getip.php
 
 * Mon Nov 22 2017 Marco Favero <marco.favero@csi.it> - Initial version
 - Build for 2.2 official version
