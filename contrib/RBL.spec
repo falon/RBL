@@ -5,7 +5,7 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -115,7 +115,8 @@ mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 
 %postun
 %if %systemd
-%systemd_postun_with_restart %{upname}-expire.timer
+%systemd_postun_with_restart %{upname}-*.service
+%systemd_postun_with_restart %{upname}-*.timer
 %endif
 
 %files -f FILELIST
@@ -138,4 +139,5 @@ mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 %changelog
 * Mon Nov 22 2017 Marco Favero <marco.favero@csi.it> - Initial version
 - Build for 2.2 official version
-
+* Thu Nov 23 2017 Marco Favero <marco.favero@csi.it> 2.2-3
+- modified rbl-ipimap.service
