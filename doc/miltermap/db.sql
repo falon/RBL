@@ -8,7 +8,8 @@ USE `miltermap`;
 
 CREATE TABLE `config` (
   `name` varchar(30) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  `conf` tinytext COLLATE utf8_bin NOT NULL
+  `conf` tinytext COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 INSERT INTO `config` (`name`, `conf`) VALUES
@@ -18,7 +19,9 @@ INSERT INTO `config` (`name`, `conf`) VALUES
 
 CREATE TABLE `milt` (
   `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(30) CHARACTER SET ascii COLLATE ascii_bin NOT NULL
+  `name` varchar(30) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  PRIMARY KEY (`id`,`name`) USING BTREE,
+  KEY `miltname` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE `net` (
@@ -31,23 +34,14 @@ CREATE TABLE `net` (
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `nlist` tinyint(3) UNSIGNED NOT NULL DEFAULT '1',
   `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'unknown',
-  `reason` tinytext COLLATE utf8_bin NOT NULL
+  `reason` tinytext COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`idmilt`,`network`,`netmask`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-
-ALTER TABLE `config`
-  ADD PRIMARY KEY (`name`) USING BTREE;
-
-ALTER TABLE `milt`
-  ADD PRIMARY KEY (`id`,`name`) USING BTREE,
-  ADD KEY `miltname` (`name`);
-
-ALTER TABLE `net`
-  ADD PRIMARY KEY (`idmilt`,`network`,`netmask`);
 
 ALTER TABLE `milt`
   ADD CONSTRAINT `miltname` FOREIGN KEY (`name`) REFERENCES `config` (`name`) ON DELETE CASCADE,
   ADD CONSTRAINT `miltid` FOREIGN KEY (`id`) REFERENCES `net` (`idmilt`) ON DELETE CASCADE;
+
 
 --
 -- Database: `milteripmap` (ip)
@@ -85,7 +79,6 @@ CREATE TABLE `ips` (
   `reason` tinytext COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`idmilt`,`ip`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
 
 ALTER TABLE `milt`
   ADD CONSTRAINT `miltname` FOREIGN KEY (`name`) REFERENCES `config` (`name`) ON DELETE CASCADE,
