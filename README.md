@@ -1,11 +1,11 @@
 [![Build Status](https://scrutinizer-ci.com/g/falon/RBL/badges/build.png?b=master)](https://scrutinizer-ci.com/g/falon/RBL/build-status/master)
 # RBL Manager
-A complete RBL Management System, with interfaces to Splunk Alert and trap mailboxes.
+A complete RBL Management System, with interfaces to Splunk Alert and trap or learning mailboxes.
 
 ![screenshot](doc/RBL.JPG)
 ## Abstract
 A complete tool to create and manage a time expiring lists of IP, networks, usernames and email address.
-All the active members can be exported into RBLDNS zone format. The lists are stored into MySQL server, which can be accessed by Postfix for any policy enforcements. A Splunk plugin allow an authomated listing mechanism to block SPAM source.
+All the active members can be exported into RBLDNS zone format. The lists are stored into MySQL server, which can be accessed by Postfix for any policy enforcements. A Splunk alert interface allow an authomated listing mechanism to block SPAM source. Spam or ham mailboxes can be queried to list source ips. A Postfix miltertable can be configured with your milter configurations.
 Every member in list can be active (really listed), or inactive (time expired, or deactivated by administrative task).
 
 ## Requisite
@@ -19,8 +19,12 @@ Every member in list can be active (really listed), or inactive (time expired, o
 - php-imap, php-xml and Splunk SDK for the SPAM Learn Observer
 
 ## Basic Installation
-Red Hat 7 ready? See at the build folder and install the RPM file. Your system may complain that no php-7 package can be found. You can try with the [Remi distribution](https://rpms.remirepo.net/).
+### By RPM
+Red Hat 7 ready? See at the build folder and install the RPM file:
+`yum install https://github.com/falon/RBL/raw/master/contrib/RPM/rblmanager-<version>.el7.noarch.rpm`
+Your system may complain that no php-7 package can be found. You can try with the [Remi distribution](https://rpms.remirepo.net/).
 
+###By source
 Otherwise you can try these lapidary instructions.
 Clone this repository.
 
@@ -36,9 +40,12 @@ style.css
 to `/include` folder relative to Document Root of web server.
 
 Copy config.php-default to config.php
+You must now configure crontab or systemd script at your need. For each plugin you are using configure paths and configuration files.
 
+## Configuration
+Please, follow these steps even if you installed RBL Manager by RPM.
 ### Database MySQL
-Check at the `doc/db.sql` and `doc/grant.sql`. Default values work with default config. Arrange them in your environment.
+Check at the `doc/db.sql` and `doc/grant.sql`. Default values work only with provided default config. Arrange them in your environment.
 You can separate the MySQL host from the web host.
 ```
 mysql -u root < doc/db.sql
@@ -65,7 +72,7 @@ The "milter" field provides a list of ips or networks to use whitin Postfix milt
 The admins can list and relist items by hand through the web GUI. The superadmins (TRUE) can  list and relist up to years intervals. The list and relist facility is allowed only if you enable "require_auth", for safety reason. List and other actions are logged with the authenticated credential.
 
 ### Expire task
-Install the expire daily task to prevent an indefinitely DB growing. A systemd timer is included in RPM package. Otherwise you can install a crontab such as
+Install the expire daily task to prevent an indefinitely DB growing. A systemd timer is included in the RPM package. Otherwise you can install a crontab such as
 ```
 ln -s /usr/local/RBL/contrib/expire.php /etc/cron.daily/expireRBL.php
 ```
