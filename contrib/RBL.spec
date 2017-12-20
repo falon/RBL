@@ -41,6 +41,17 @@ Every entry has an expiration time. You can manage the entries
 manually, or by authomated process from Spam Learning system or
 Splunk alert.
 
+%package mailClassifier
+Summary: A complete view on authentication and spam classification of your mails.
+Group: System Environment/Web
+Requires: dspam-client >= 3.10.2
+
+%description mailClassifier
+Show how your mail are authenticated by DKIM, SPF and DMARC.
+View the Spam Classification by Spamassassin and DSPAM. Optionally,
+learn your mails using DSPAM Client.
+
+
 %clean
 rm -rf %{buildroot}/
 
@@ -78,6 +89,8 @@ rm -rf ajaxsbmt.js pleasewait.gif
 install -D -m0444 contrib/%{bigname}.conf-default %{buildroot}%{_sysconfdir}/httpd/conf.d/%{bigname}.conf
 sed -i 's|\/var\/www\/html\/include|%{_datadir}/include|' %{buildroot}%{_sysconfdir}/httpd/conf.d/%{bigname}.conf
 sed -i 's|\/var\/www\/html\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_sysconfdir}/httpd/conf.d/%{bigname}.conf
+install -D -m0444 contrib/mailClassifier/%{bigname}-mailClassifier.conf %{buildroot}%{_sysconfdir}/httpd/conf.d/
+sed -i 's|\/var\/www\/html\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_sysconfdir}/httpd/conf.d/%{bigname}-mailClassifier.conf
 
 # RBL manager application files
 mkdir -p %{buildroot}%{_datadir}/%{bigname}
@@ -90,17 +103,22 @@ mv %{buildroot}%{_datadir}/%{bigname}/notifyDomains.conf-default %{buildroot}%{_
 mv %{buildroot}%{_datadir}/%{bigname}/contrib/splunk/listEmail.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/splunk/listEmail.conf
 mv %{buildroot}%{_datadir}/%{bigname}/template-default %{buildroot}%{_datadir}/%{bigname}/template
 mv %{buildroot}%{_datadir}/%{bigname}/contrib/amavis/exportAmavisLdap.php-default  %{buildroot}%{_datadir}/%{bigname}/contrib/amavis/exportAmavisLdap.php
+mv %{buildroot}%{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 sed -i 's|\/var\/www\/html\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/amavis/exportAmavisLdap.php
 sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/expire.php
 sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/exportdns.php
 sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/splunk/webhook/readPost.php
+sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/mailClassifier/index.php
+sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/mailClassifier/learn.php
+sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/mailClassifier/list.php
+sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_datadir}/%{bigname}/contrib/mailClassifier/result.php
 ##Composer requirement
 composer --working-dir="%{buildroot}%{_datadir}/%{bigname}" require dautkom/php.ipv4
 ## Remove unnecessary files
 rm %{buildroot}%{_datadir}/%{bigname}/_config.yml %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.spec %{buildroot}%{_datadir}/%{bigname}/vendor/dautkom/php.ipv4/.gitignore %{buildroot}%{_datadir}/%{bigname}/composer.*
 
 ##File list
-find %{buildroot}%{_datadir}/%{bigname} -mindepth 1 -type f | grep -v \.conf$ | grep -v \.git | grep -v '\-default$' | grep -v ipImap/report/*\.html | grep -v config\.php | grep -v template/ | grep -v contrib/rbldns/conf\.default | grep -v RBL\.spec | grep -v 'doc/' | grep -v %{bigname}/LICENSE | grep -v %{bigname}/README\.md | grep -v contrib/amavis/exportAmavisLdap\.php | sed -e "s@$RPM_BUILD_ROOT@@" > FILELIST
+find %{buildroot}%{_datadir}/%{bigname} -mindepth 1 -type f | grep -v \.conf$ | grep -v \.git | grep -v '\-default$' | grep -v ipImap/report/*\.html | grep -v config\.php | grep -v template/ | grep -v contrib/rbldns/conf\.default | grep -v contrib/mailClassifier | grep -v RBL\.spec | grep -v 'doc/' | grep -v %{bigname}/LICENSE | grep -v %{bigname}/README\.md | grep -v contrib/amavis/exportAmavisLdap\.php | sed -e "s@$RPM_BUILD_ROOT@@" > FILELIST
 mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 
 %post
@@ -137,7 +155,14 @@ mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 %config(noreplace) %{_datadir}/%{bigname}/template/mailWarn.eml
 %config(noreplace) %{_datadir}/%{bigname}/contrib/rbldns/conf.default
 
+%files mailClassifier
+%{_datadir}/%{bigname}/contrib/mailClassifier
+%config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
+
 %changelog
+* Wed Dec 20 2017 Marco Favero <marco.favero@csi.it> 2.3-0
+- New version with mailClassifier (no other changes)
+
 * Thu Nov 23 2017 Marco Favero <marco.favero@csi.it> 2.2-5
 - modified rbl-ipimap.service
 - fixed path in getip.php

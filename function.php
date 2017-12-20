@@ -786,6 +786,5 @@ function checkIP($ip)
 	return TRUE;
 }
 */
-
 ?>
 

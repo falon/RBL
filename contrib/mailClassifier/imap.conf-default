@@ -1,0 +1,15 @@
+[imap]
+mailhost        = imap.example.com
+authuser        = admin
+authpassword    = password
+oldestday       = 15
+dspamtospamass	= false
+; Current learn values are 'false' and 'dspamc'
+learn		= false
+
+[host]
+ar[]            = mx1.example.com
+ar[]            = mx2.example.com
+
+[syslog]
+tag		= mailClass
