@@ -1,6 +1,7 @@
 <?php
 
 function imapFolder($cf, $username) {
+	$return = array();
 	$open='{'.$cf['mailhost'].':143/imap/novalidate-cert/authuser='.$cf['authuser'].'}';
         $m_mail = imap_open($open, $username, $cf['authpassword'], OP_READONLY)
                 or syslog (LOG_EMERG, $cf['user'].': Error in IMAP connection to <'.$cf['mailhost'].'>: ' . imap_last_error());
@@ -62,12 +63,10 @@ function dspamLevel($prob, $conf) {
 	return round(($t_prob + ($conf*100)) / 2);
 }
 
-function imapInfo($header,$ARhosts,$dpl=false, $learn=false) {
+function imapInfo($user,$header,$ARhosts,$dpl=false, $learn=false) {
 /* Get relevant Info from header's mail */
 /* Each line must end with /r/n         */
 
-        $dateC = NULL;
-	$mid = NULL;
 	$result = array(
                 'date' => NULL,
                 'from' => NULL,
@@ -130,8 +129,8 @@ function imapInfo($header,$ARhosts,$dpl=false, $learn=false) {
 	$received=NULL;
 	if ($k>1) $result['warn'][] = 'The trusted SPF AR Headers are present more than once. Something wrong.';
 
+	$k=0;
         if ( preg_match_all('/^Authentication\-Results:\s+(?<host>[\w\.]+);(?:\s+|\r\n\s+)dkim=(?<dkim>\w+)\s+[\w\s\(\)\-]+header\.d=(?<DKIMdom>[\w\.]+)/m',$header,$received) ) {
-		$k=0;
 		for ($i = count($received[0])-1;$i>=0;$i--) {
 	                foreach ($ARhosts as $mx) {
         	                if ($mx == $received['host'][$i]) {
@@ -293,11 +292,9 @@ function formLearn($type, $par) {
 		default:
 			return $return;
 	}
-	return $return;
 }
 
 function printTableRow($row, $learn, $init=true) {
-	$bg = NULL;
 	$color = 'inherit';
 	if ($init) 
 		$row=formatVal($row,$learn);

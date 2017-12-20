@@ -63,7 +63,7 @@ print '<table>';
 printTableHeader($folder,$data,TRUE,sprintf('Found %d suitable mails.',count($headers)));
 
 foreach ( $headers AS $header ) {
-	$values = imapInfo($header,$conf['host']['ar'],$confimap['dspamtospamass'],$confimap['learn']);
+	$values = imapInfo($username, $header,$conf['host']['ar'],$confimap['dspamtospamass'],$confimap['learn']);
 	print '<tr>';
 	printTableRow($values, $confimap['learn']);
 	print '</tr>';
