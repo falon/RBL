@@ -12,11 +12,13 @@ openlog($tag, LOG_PID, $fac);
 
 $conf['imap']['user'] = username();
 $folders=imapFolder($conf['imap'], $_POST['username']);
-print '<option  value="" selected disabled>Choose a folder</option>';
-foreach ( $folders as $folder )
-        printf('<option  value="%s">%s</option>',
-		$folder,
-		htmlspecialchars(mb_convert_encoding($folder, "UTF-8", "UTF7-IMAP")));
+if (is_array($folders)) {
+	print '<option  value="" selected disabled>Choose a folder</option>';
+	foreach ( $folders as $folder )
+        	printf('<option  value="%s">%s</option>',
+			$folder,
+			htmlspecialchars(mb_convert_encoding($folder, "UTF-8", "UTF7-IMAP")));
+}
 closelog();
 ?>
 </select>
