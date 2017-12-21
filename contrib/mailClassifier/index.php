@@ -6,6 +6,11 @@
 <script  src="/include/ajaxsbmt.js" type="text/javascript"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js?load=effects" type="text/javascript" charset="utf-8"></script>
+<style>
+table {
+	max-width: 95%
+}
+</style>
 </head>
 <body>
 <h1> Mail Classifier</h1> 

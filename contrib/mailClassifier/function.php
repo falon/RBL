@@ -63,6 +63,18 @@ function dspamLevel($prob, $conf) {
 	return round(($t_prob + ($conf*100)) / 2);
 }
 
+function dspamType($classSpam) {
+	switch($classSpam) {
+		case 'HAM':
+			return 'Innocent';
+		case 'SPAM':
+			return 'Spam';
+		default:
+			/* this should never happens */
+			return $classSpam;
+	}
+}
+
 function imapInfo($user,$header,$ARhosts,$dpl=false, $learn=false) {
 /* Get relevant Info from header's mail */
 /* Each line must end with /r/n         */
@@ -150,7 +162,7 @@ function imapInfo($user,$header,$ARhosts,$dpl=false, $learn=false) {
 			$result['spam']['status']=$received['spamstatus'][0];
                 	$result['spam']['score'] = $received['score'][0];
 			$result['spam']['th'] = $received['th'][0];
-			$result['dspam']['type'] = $received['dtype'][0];
+			$result['dspam']['type'] = dspamType($received['dtype'][0]);
 			$result['dspam']['level'] =$received['dlevel'][0];
         	}
         	if (count($received[0])>1) $result['warn'][] = 'The Spamassassin Headers are present more than once. I consider only the last one.';

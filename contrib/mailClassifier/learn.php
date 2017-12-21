@@ -32,6 +32,6 @@ if ( preg_match ('/^X-DSPAM-Result:\s+(?P<user>[\w\.\@]+);\s+result="(?P<result>
 printf('<p>Message learned successfully with following result:</p><ul><li>Owner: <b>%s</b></li><li>Result: <b>%s</b></li><li>Class: <b>%s</b></li></ul>',
 	htmlentities($received['user']),
         $received['result'], $received['class']);
-?>
 closelog();
+?>
 </div>
