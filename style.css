@@ -38,6 +38,11 @@ table {
 	text-shadow: 1px 1px lime;
 }
 
+.cellfix {
+        word-wrap: break-word;
+        max-width: 150px
+}
+
 .blink {
     animation-duration: 1s;
     animation-name: blink;

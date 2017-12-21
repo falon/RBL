@@ -346,7 +346,7 @@ function printTableRow($row, $learn, $init=true) {
 				
 			$alpha = (is_numeric($val)AND($key=='type')) ? round($val/100,1) : 1.0;
 			$bg = sprintf(" style=\"background-color: $color\"", $alpha);		
-			printf ('<td%s>%s</td>',$bg, $val);
+			printf ('<td class="cellfix"%s>%s</td>',$bg, $val);
 		}
 	}
 }

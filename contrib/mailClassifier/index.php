@@ -53,7 +53,7 @@ print <<<END
 END;
 
 ?>
-<DIV id="Result" style="overflow-x:auto;"></DIV>
+<DIV id="Result" style="overflow: auto;"></DIV>
 <hr>
 <h5 style="margin-top:1ex;margin-bottom:0;text-align: center">Your Mail Classifier is presented by <i>RBL Tool System</i> - Version <?php echo $version; ?></h5>
 </body>
