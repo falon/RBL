@@ -22,8 +22,8 @@ if ($ret != 0) {
 	syslog(LOG_ERR, $username.': Learn Error: '.$err);	
 	exit (sprintf('<p>%s</p>',htmlentities($err)));
 }
-syslog(LOG_INFO,'%s: Learn result: "%s"',$username, $out[0]);  
-if ( preg_match ('/^X-DSPAM-Result:\s+(?P<user>[\w\.\@]+);\s+result="(?P<result>\w+)";\s+class="(?P<class>\w+)";\s+probability=(?P<prob>[\d\.]+);\s+confidence=(?P<conf>[\d\.]+);\s+signature=(?P<sig>[\w\,]+)$/',$out[0],$received) != 1) {
+syslog(LOG_INFO, sprintf('%s: Learn result: "%s"',$username, $out[0]));  
+if ( preg_match ('/^X-DSPAM-Result:\s+(?P<user>[\w\.\-\_\+\%\@]+);\s+result="(?P<result>\w+)";\s+class="(?P<class>\w+)";\s+probability=(?P<prob>[\d\.]+);\s+confidence=(?P<conf>[\d\.]+);\s+signature=(?P<sig>[\w\,]+)$/',$out[0],$received) != 1) {
 		$err = 'DSPAM Client returned an unparseable result.';
 		syslog(LOG_ERR, $username.': Learn Error: '.$err);
                 exit (sprintf('<p>%s</p>',htmlentities($err)));
