@@ -6,11 +6,6 @@
 <script  src="/include/ajaxsbmt.js" type="text/javascript"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js?load=effects" type="text/javascript" charset="utf-8"></script>
-<style>
-table {
-	max-width: 95%
-}
-</style>
 </head>
 <body>
 <h1> Mail Classifier</h1> 
@@ -58,7 +53,7 @@ print <<<END
 END;
 
 ?>
-<DIV id="Result"></DIV>
+<DIV id="Result" style="overflow-x:auto;"></DIV>
 <hr>
 <h5 style="margin-top:1ex;margin-bottom:0;text-align: center">Your Mail Classifier is presented by <i>RBL Tool System</i> - Version <?php echo $version; ?></h5>
 </body>
