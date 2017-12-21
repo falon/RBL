@@ -4,8 +4,8 @@
 
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
-Version: 2.2
-Release: 5%{?dist}
+Version: 2.3
+Release: 0%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -45,6 +45,7 @@ Splunk alert.
 Summary: A complete view on authentication and spam classification of your mails.
 Group: System Environment/Web
 Requires: dspam-client >= 3.10.2
+Requires: rblmanager = 2.3-0%{?dist}
 
 %description mailClassifier
 Show how your mail are authenticated by DKIM, SPF and DMARC.
@@ -115,10 +116,11 @@ sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_da
 ##Composer requirement
 composer --working-dir="%{buildroot}%{_datadir}/%{bigname}" require dautkom/php.ipv4
 ## Remove unnecessary files
-rm %{buildroot}%{_datadir}/%{bigname}/_config.yml %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.spec %{buildroot}%{_datadir}/%{bigname}/vendor/dautkom/php.ipv4/.gitignore %{buildroot}%{_datadir}/%{bigname}/composer.*
+rm %{buildroot}%{_datadir}/%{bigname}/_config.yml %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/mailClassifier/%{bigname}-mailClassifier.conf %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.spec %{buildroot}%{_datadir}/%{bigname}/vendor/dautkom/php.ipv4/.gitignore %{buildroot}%{_datadir}/%{bigname}/composer.*
 
 ##File list
 find %{buildroot}%{_datadir}/%{bigname} -mindepth 1 -type f | grep -v \.conf$ | grep -v \.git | grep -v '\-default$' | grep -v ipImap/report/*\.html | grep -v config\.php | grep -v template/ | grep -v contrib/rbldns/conf\.default | grep -v contrib/mailClassifier | grep -v RBL\.spec | grep -v 'doc/' | grep -v %{bigname}/LICENSE | grep -v %{bigname}/README\.md | grep -v contrib/amavis/exportAmavisLdap\.php | sed -e "s@$RPM_BUILD_ROOT@@" > FILELIST
+find %{buildroot}%{_datadir}/%{bigname}/contrib/mailClassifier -mindepth 1 -type f | grep -v \.conf$ | grep -v '\-default$' | sed -e "s@$RPM_BUILD_ROOT@@" > FLMC
 mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 
 %post
@@ -155,8 +157,8 @@ mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 %config(noreplace) %{_datadir}/%{bigname}/template/mailWarn.eml
 %config(noreplace) %{_datadir}/%{bigname}/contrib/rbldns/conf.default
 
-%files mailClassifier
-%{_datadir}/%{bigname}/contrib/mailClassifier
+%files mailClassifier -f FLMC
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/%{bigname}-mailClassifier.conf
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
