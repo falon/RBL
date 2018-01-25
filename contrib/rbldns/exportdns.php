@@ -94,6 +94,7 @@ if ($result->num_rows) {
                                         $element[] = long2ip($riga['network']).'/'.long2ip($riga['netmask']);
                                         break;
                                   default:
+					$type = $tables["$typedesc"]['field'];
                                         $element[] = $riga["$type"];
 			}
 		}
