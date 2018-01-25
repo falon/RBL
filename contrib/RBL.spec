@@ -5,7 +5,7 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.3.1
-Release: 4%{?dist}
+Release: 0%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -45,7 +45,7 @@ Splunk alert.
 Summary: A complete view on authentication and spam classification of your mails.
 Group: System Environment/Web
 Requires: dspam-client >= 3.10.2
-Requires: rblmanager = 2.3-4%{?dist}
+Requires: rblmanager = 2.3.1-0%{?dist}
 
 %description mailClassifier
 Show how your mail are authenticated by DKIM, SPF and DMARC.
