@@ -788,10 +788,12 @@ function nsdom($dom) {
 
 function isValid($dom) {
 /* Return TRUE id domain has NS or A record */
-	if (checkdnsrr ( $dom , 'NS' ))
-		return TRUE;
-	if (checkdnsrr ( $dom , 'A' ))
-		return TRUE;
+	if (preg_match('/^(?!:\/\/)([a-zA-Z0-9-]+\.){0,5}[a-zA-Z0-9-][a-zA-Z0-9-]+\.[a-zA-Z]{2,64}?\.{0,1}$/i',$dom) === 1) {
+		if (checkdnsrr ( $dom , 'NS' ))
+			return TRUE;
+		if (checkdnsrr ( $dom , 'A' ))
+			return TRUE;
+	}
 	return FALSE;
 }
 
