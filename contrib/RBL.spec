@@ -4,7 +4,7 @@
 
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
-Version: 2.3
+Version: 2.3.1
 Release: 4%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
@@ -162,6 +162,9 @@ mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Thu Jan 25 2018 Marco Favero <marco.favero@csi.it> 2.3.1-0
+- New minor version with domain names sanity check
+
 * Thu Dec 21 2017 Marco Favero <marco.favero@csi.it> 2.3-4
 - Minor change in presentation, minor fixes
 
