@@ -10,7 +10,8 @@ if ( $tables["$typedesc"]['milter'] ) {
 		syslog (LOG_EMERG, $err);
 		printf ('<p>%s</p>', htmlspecialchars($err) );
 	}	
-}	
+}
+
 ?>
 <form style="margin:0; text-align: left;" name='ListButton<?php echo $type ?>' enctype="text/plain" method="post" target="_self" action="list.php"  onSubmit="xmlhttpPost('list.php', 'ListButton<?php echo $type ?>', 'Risultato', '<img src=\'/include/pleasewait.gif\'>'); return false;" />
 

@@ -419,6 +419,11 @@ END;
 		$tabhtm .= '<th title="Milter active for this object">Milters</th>';
 	$tabhtm .= '<th>Authored by</th><th width="250">Reason</th><th>Action</th></tr></thead><tfoot><tr></tr></tfoot><tbody>'."\n";
 
+	if ($type == 'domain')
+		$value = nsdom($value);
+	if (is_null($value))
+		return FALSE;
+
 	$result = searchentry ($myconn,$value,$tables["$typedesc"]);
 	if ($result) {
 		printf("<pre>Your request for $type &lt;$value&gt; returned %d items.\n</pre>", $result->num_rows);
@@ -769,6 +774,25 @@ function curl_get($url, array $get = NULL, array $options = array(), $loguser)
     }
     curl_close($ch);
     return $result;
+}
+
+
+function nsdom($dom) {
+/* Return the first upper domain (or domain itself) with NS record */
+	if (checkdnsrr ( $dom , 'NS' ))
+		return rtrim($dom, '.');
+	if (checkdnsrr ( $dom , 'A' )) 
+		return nsdom( ltrim(strstr($dom, '.'), '.') );
+	return NULL;
+}
+
+function isValid($dom) {
+/* Return TRUE id domain has NS or A record */
+	if (checkdnsrr ( $dom , 'NS' ))
+		return TRUE;
+	if (checkdnsrr ( $dom , 'A' ))
+		return TRUE;
+	return FALSE;
 }
 
 /*

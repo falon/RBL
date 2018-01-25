@@ -10,7 +10,7 @@ if ( ($tables["$_"]['field']=='email') AND ($_POST['Value']!='ALL') )
 		exit ('<pre>&lt;'.$_POST['Value'].'&gt; is NOT a valid email address.</pre>');
 
 if ( ($tables["$_"]['field']=='domain') AND ($_POST['Value']!='ALL') )
-        if (!(filter_var(gethostbyname($_POST['Value']), FILTER_VALIDATE_IP)))
+        if (!(isValid($_POST['Value'])))
 		exit ('<pre>&lt;'.$_POST['Value'].'&gt; is NOT a valid domain.</pre>');
 
 if ( ($tables["$_"]['field']=='ip')  AND ($_POST['Value']!='ALL') )
