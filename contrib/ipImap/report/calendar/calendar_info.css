@@ -1,3 +1,0 @@
-/* calendar version info box - Don't modify please! */
-#info { width: 9px; height: 9px; position: relative; z-index: 140; }
-#info #about { font-family: Tahoma; font-size: 11px; color: #191970; width: 150px; height: 1px; top: 0px; left: 0px; position: absolute; overflow: hidden; display: block; /*z-index: 1000;*/ -webkit-transition: all .3s ease; -moz-transition: all .3s ease; -ms-transition: all .3s ease; -o-transition: all .3s ease; transition: all .3s ease; border: 0px solid #191970; cursor: default; padding: 1px 2px; }
