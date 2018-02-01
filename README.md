@@ -4,8 +4,8 @@ A complete RBL Management System, with interfaces to Splunk Alert and trap or le
 
 ![screenshot](doc/RBL.JPG)
 ## Abstract
-A complete tool to create and manage a time expiring lists of IP, networks, usernames and email address.
-All the active members can be exported into RBLDNS zone format. The lists are stored into MySQL server, which can be accessed by Postfix for any policy enforcements. A Splunk alert interface allow an authomated listing mechanism to block SPAM source. Spam or ham mailboxes can be queried to list source ips. A Postfix miltertable can be configured with your milter configurations.
+A complete tool to create and manage a time expiring lists of IPs, networks, usernames and email addresses.
+All the active members can be exported into RBLDNS zone format. The lists are stored into MySQL server, which can be accessed by Postfix for any policy enforcements. A Splunk alert interface allow an authomated listing mechanism to block SPAM source. Spam or ham mailboxes can be queried to list source ips. A Postfix miltertable can be configured.
 Every member in list can be active (really listed), or inactive (time expired, or deactivated by administrative task).
 
 ## Requisite
