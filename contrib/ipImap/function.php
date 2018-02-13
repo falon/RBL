@@ -84,24 +84,28 @@ function array_msort($array, $cols)
 }
 
 
-function summaryReportAndList ($cf,$myconn,$tables,$category,$ipvet) {
-	$nips = $ipvet['count'];
+function summaryReportAndList ($cf,$myconn,$tables,$category,$vet,$key) {
+	$nk = $vet['count'];
 
-	if ( empty($ipvet) ) return NULL;
-	$return = '<h3>Statistics by IP</h3><table><tr><th>IP</th><th>Learned by</th><th>Learned times</th><th title="This field doesn\'t say if this ip is currently listed, but it says if this IP has listed now!">Listed Now</th></tr>'."\n";
+	if ( empty($vet) ) return NULL;
 	
-	$ips = array_keys($ipvet['ip']);
+	$return = sprintf('<h3>Statistics by %s</h3><table><tr><th>%s</th><th>Learned by</th><th>Learned times</th><th title="This field doesn\'t say if this %s is currently listed, but it says if this %s has listed now!">Listed Now</th></tr>'."\n", strtoupper($key),strtoupper($key),$key,$key);
+	
+	$values = array_keys($vet["$key"]);
 
-	foreach ( $ips as $ip ) {
-		if ( $ip == 'count' ) continue;
-                $nlearn = $ipvet['ip']["$ip"]['count'];
-                unset($ipvet['ip']["$ip"]['count']);
-		$quantity = $cf['quantity']["$category"]; /* In searchAndList this value is passed by reference and modified */
-		$nuid = count($ipvet['ip']["$ip"]);
-		if ( !$cf['onlyReport'] ) {
-			if ( ($nlearn >= $cf['thresholdip']["$category"])&&($nuid >= $cf['thresholduid']["$category"]) ) {
-				$reason = "The IP <$ip> has been listed because was marked $nlearn times as $category by $nuid different accounts during last ".$cf['oldestday'].' days.';
-				$listed = searchAndList ($myconn,$cf['user'],$tables,$cf['list']["$category"],$ip,$cf['unit']["$category"],$quantity,$reason);
+	foreach ( $values as $value ) {
+		if ( $value == 'count' ) continue;
+                $nlearn = $vet["$key"]["$value"]['count'];
+                unset($vet["$key"]["$value"]['count']);
+		$quantity = $cf["listing$key"]['quantity']["$category"]; /* In searchAndList this value is
+										passed by reference and modified */
+		$nuid = count($vet["$key"]["$value"]);
+		if ( !$cf["listing$key"]['onlyReport']["$category"] ) {
+			if ( ($nlearn >= $cf["listing$key"]['threshold']["$category"])&&($nuid >= $cf["listing$key"]['thresholduid']["$category"]) ) {
+				$reason = sprintf(
+				'The %s <%s> has been listed because was marked %u times as %s by %u different accounts during last %u days.',
+				strtoupper($key),$value,$nlearn,$category,$nuid,$cf['imap']['oldestday']);
+				$listed = searchAndList ($myconn,$cf['syslog']['user'],$tables,$cf["listing$key"]['list']["$category"],$value,$cf["listing$key"]['unit']["$category"],$quantity,$reason);
 			}
 			else $listed = FALSE;
 		}
@@ -120,35 +124,36 @@ function summaryReportAndList ($cf,$myconn,$tables,$category,$ipvet) {
 				  )
 		);
 		
-		$return .='<tr><td rowspan="'.$nuid.'">'.$ip.'</td>';
-		$return .= sprintf ('<td>%s</td><td rowspan="'.$nuid.'">%u</td><td rowspan="'.$nuid.'" '.$nowlist["$listed"]['style'].'>%s</td></tr>',$ipvet['ip']["$ip"][0],$nlearn,$nowlist["$listed"]['name']);
+		$return .='<tr><td rowspan="'.$nuid.'">'.$value.'</td>';
+		$return .= sprintf ('<td>%s</td><td rowspan="'.$nuid.'">%u</td><td rowspan="'.$nuid.'" '.$nowlist["$listed"]['style'].'>%s</td></tr>',$vet["$key"]["$value"][0],$nlearn,$nowlist["$listed"]['name']);
 		$rowuid=NULL;
                 for ($j=1;$j<$nuid;$j++) $rowuid .= '<tr><td>%s</td></tr>';
-		array_shift($ipvet['ip']["$ip"]);
-                $return .= vsprintf ($rowuid,$ipvet['ip']["$ip"]);
+		array_shift($vet["$key"]["$value"]);
+                $return .= vsprintf ($rowuid,$vet["$key"]["$value"]);
 
 	}
-	$return .= sprintf ('<tr><th title="unique ips">%u</th><th title="unique uids">%u</th><th>%u</th></table>',$ipvet['ip']['count'],$ipvet['uid']['count'],$nips);
+	$return .= sprintf ('<tr><th title="unique %s">%u</th><th title="unique uids">%u</th><th>%u</th></table>',$key,$vet["$key"]['count'],$vet['uid']['count'],$nk);
 
 
 	/* Statistics by UID */
 	/* Not used for listing purpose, but useful to you! */
-	$return .= '<h3>Statistics by UID</h3><table><tr><th>UID</th><th>IP learned</th><th>Learned times</th></tr>'."\n";
-	$uids = array_keys($ipvet['uid']);
+	$return .= sprintf('<h3>Statistics by UID</h3><table><tr><th>UID</th><th>%s learned</th><th>Learned times</th></tr>'."\n",$key);
+	$uids = array_keys($vet['uid']);
         foreach ( $uids as $uid ) {
 		if ( $uid == 'count' ) continue;	
-	        $nlearn = $ipvet['uid']["$uid"]['count'];
-	        unset ( $ipvet['uid']["$uid"]['count'] );
-		$nip = count($ipvet['uid']["$uid"]);
+	        $nlearn = $vet['uid']["$uid"]['count'];
+	        unset ( $vet['uid']["$uid"]['count'] );
+		$nip = count($vet['uid']["$uid"]);
 		$return .='<tr><td rowspan="'.$nip.'">'.$uid.'</td>';
-		$return .= sprintf ('<td>%s</td><td rowspan="'.$nip.'">%u</td></tr>',$ipvet['uid']["$uid"][0],$nlearn);
+		$return .= sprintf ('<td>%s</td><td rowspan="'.$nip.'">%u</td></tr>',$vet['uid']["$uid"][0],$nlearn);
                 $rowuid=NULL;
                 for ($j=1;$j<$nip;$j++) $rowuid .= '<tr><td>%s</td></tr>';
-                array_shift($ipvet['uid']["$uid"]);
-                $return .= vsprintf ($rowuid,$ipvet['uid']["$uid"]);
+                array_shift($vet['uid']["$uid"]);
+                $return .= vsprintf ($rowuid,$vet['uid']["$uid"]);
 
         }
-        $return .= sprintf ('<tr><th title="unique uids">%u</th><th title="unique ips">%u</th><th>%u</th></table>',$ipvet['uid']['count'],$ipvet['ip']['count'],$nips);	
+        $return .= sprintf ('<tr><th title="unique uids">%u</th><th title="unique %s">%u</th><th>%u</th></table>',
+			$vet['uid']['count'],$key,$vet["$key"]['count'],$nk);
 
 
 	return $return;
@@ -223,50 +228,171 @@ function splunksearch ($service,$message_id,$date) {
 	  }
 }
 
+/*
+        Function to read body taken from
+        https://www.electrictoolbox.com/php-imap-message-body-attachments/
+*/
+
+function flattenParts($messageParts, $flattenedParts = array(), $prefix = '', $index = 1, $fullPrefix = true) {
+
+        foreach($messageParts as $part) {
+                $flattenedParts[$prefix.$index] = $part;
+                if(isset($part->parts)) {
+                        if($part->type == 2) {
+                                $flattenedParts = flattenParts($part->parts, $flattenedParts, $prefix.$index.'.', 0, false);
+                        }
+                        elseif($fullPrefix) {
+                                $flattenedParts = flattenParts($part->parts, $flattenedParts, $prefix.$index.'.');
+                        }
+                        else {
+                                $flattenedParts = flattenParts($part->parts, $flattenedParts, $prefix);
+                        }
+                        unset($flattenedParts[$prefix.$index]->parts);
+                }
+                $index++;
+        }
+
+        return $flattenedParts;
+
+}
+
+function getPart($connection, $messageNumber, $partNumber, $encoding) {
+
+        $data = imap_fetchbody($connection, $messageNumber, $partNumber);
+        switch($encoding) {
+                case 0: return $data; // 7BIT
+                case 1: return $data; // 8BIT
+                case 2: return $data; // BINARY
+                case 3: return base64_decode($data); // BASE64
+                case 4: return quoted_printable_decode($data); // QUOTED_PRINTABLE
+                case 5: return $data; // OTHER
+        }
+
+
+}
+/***********************************/
+
+function getDomains ($text) {
+	$pattern = '~[a-z]+://\S+~';
+	$ret = array();
+	$num_found = preg_match_all($pattern, $text, $out);
+	if ( ($num_found !== FALSE) && ($num_found>0) ) {
+		foreach ($out[0] as $url)
+			$ret[] = parse_url($url, PHP_URL_HOST);
+	}
+	return array_values(array_unique($ret));
+}
+
+function parseURL ($connection,$messageNumber) {
+	$message = '';
+	$structure = imap_fetchstructure($connection, $messageNumber);
+	if (isset($structure->parts)) {
+		$flattenedParts = flattenParts($structure->parts);
+		foreach($flattenedParts as $partNumber => $part) {
+
+			switch($part->type) {
+		
+				case 0:
+					// the HTML or plain text part of the email
+					$message .= getPart($connection, $messageNumber, $partNumber, $part->encoding);
+				break;
+		
+				case 1:
+					// multi-part headers, can ignore
+		
+				break;
+				case 2:
+					// attached message headers, can ignore
+				break;
+			
+				case 3: // application
+				case 4: // audio
+				case 5: // image
+				case 6: // video
+				case 7: // other
+				break;
+	
+			}
+	
+		}
+	}
+	else
+		$message = getPart($connection, $messageNumber, 1, $structure->encoding);
+
+	if ( !empty($message) )
+		return getDomains($message);
+	return array();
+}
+
+function humanKey($key) {
+	switch($key) {
+		case 'ip':
+			return 'ips';
+		case 'dom':
+			return 'domains';
+	}
+	return $key;
+}
+
+function writeFileHeader($f,$conf,$key,$type,$rtime) {
+        fwrite( $f, file_get_contents(dirname(__FILE__) . '/' . $conf['report']['reportTemplateHeader']) );
+        fwrite( $f,sprintf('<h1> Report of %s %s</h1><h5>%s</h5><h2>Detailed Report</h2>',$type, strtoupper(humanKey($key)),$rtime) );
+        if ($conf["listing$key"]['onlyReport']["$type"]) {
+                fwrite( $f,sprintf('<p>None of the below %s have been listed because listing is not active in configuration.</p>',
+		strtoupper(humanKey($key))) );
+		syslog(LOG_INFO, sprintf('%s: Report only for %s %s: no listing activated in configuration.',
+			$conf['syslog']['user'],$type,humanKey($key))
+		);
+	}
+        fwrite( $f,sprintf('<table><tr><th title="taken from Received header" nowrap>Date of Learn</th><th title="taken from Date header" nowrap>Date of Write</th><th nowrap>UID</th><th nowrap>%s</th><th title="How many times this uid learns">#UID</th><th title="Number of times this learned %s appears in different mails">#%s</th><th nowrap>Received by</th><th>Message-Id</th></tr>',
+	strtoupper($key),strtoupper($key),strtoupper($key)) );
+}
+
 
 function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
-	$file = dirname(__FILE__) . '/' . $cf['reportFile']["$type"];
-	$fileb= dirname(__FILE__) . '/' . $cf['badreportFile']["$type"];
-	$m_mail = imap_open('{'.$cf['mailhost'].':143/imap/novalidate-cert/authuser='.$cf['authuser'].'}'.$cf['folder']["$type"], $cf['account'],$cf['authpassword'], OP_READONLY)
-        	or syslog (LOG_EMERG, $cf['user'].': Error in IMAP connection to <'.$cf['mailhost'].'>: ' . imap_last_error());
+	$file = dirname(__FILE__) . '/' . $cf['report']['reportFile']["$type"];
+	$filed = dirname(__FILE__) . '/' . $cf['report']['reportDomFile']["$type"];
+	$fileb= dirname(__FILE__) . '/' . $cf['report']['badreportFile']["$type"];
+	$m_mail = imap_open('{'.$cf['imap']['mailhost'].':143/imap/novalidate-cert/authuser='.$cf['imap']['authuser'].'}'.$cf['imap']['folder']["$type"], $cf['imap']['account'],$cf['imap']['authpassword'], OP_READONLY)
+        	or syslog (LOG_EMERG, $cf['syslog']['user'].': Error in IMAP connection to <'.$cf['imap']['mailhost'].'>: ' . imap_last_error());
 	if ( !$m_mail ) exit(254);
 		
 
-	syslog (LOG_INFO,$cf['user'].': Successfully connected to <'.$cf['mailhost'].">; Reading $type messages of last ".$cf['oldestday'].' days...');
+	syslog (LOG_INFO,$cf['syslog']['user'].': Successfully connected to <'.$cf['imap']['mailhost'].">; Reading $type messages of last ".$cf['imap']['oldestday'].' days...');
 	//get all messages
-	$dateTh = date ( "d-M-Y", strToTime ( '-'.$cf['oldestday'].' days' ) );
+	$dateTh = date ( "d-M-Y", strToTime ( '-'.$cf['imap']['oldestday'].' days' ) );
         $dateN  = date ( "d-M-Y", strToTime ( "now" ) );
         $m_search=imap_search ($m_mail, "SINCE \"$dateTh\" BEFORE \"$dateN\"" );
 
-
 	// Order results starting from newest message
 	if ( empty($m_search) ) {
-		syslog (LOG_INFO,$cf['user'].": No mail found in $type folder. No reports written for $type.");
+		syslog (LOG_INFO,$cf['syslog']['user'].": No mail found in $type folder. No reports written for $type.");
 	        if ( $ierr = imap_errors() )
 	                foreach ( $ierr as $thiserr )
-	                        syslog (LOG_ERR, $cf['user'].": IMAP Error: $thiserr");
+	                        syslog (LOG_ERR, $cf['syslog']['user'].": IMAP Error: $thiserr");
 	        if ( $ierr = imap_alerts() )
 	                foreach ( $ierr as $thiserr )
-	                        syslog (LOG_ALERT, $cf['user'].": IMAP Alert: $thiserr");
+	                        syslog (LOG_ALERT, $cf['syslog']['user'].": IMAP Alert: $thiserr");
 		imap_close( $m_mail );
 		if ( file_exists( $file ) ) unlink ($file);
+		if ( file_exists( $filed ) ) unlink ($filed);
 		if ( file_exists( $fileb ) ) unlink ($fileb);
 		return FALSE;
 	}
 	$nmes = count ($m_search);
-	syslog (LOG_INFO,$cf['user'].": Found $nmes mail in $type folder.");
+	syslog (LOG_INFO,$cf['syslog']['user'].": Found $nmes mail in $type folder.");
 	if ($nmes>0) rsort($m_search);
 
 	// Create report file
 
 	$fp = fopen($file, 'w');
+	$fpd= fopen($filed, 'w');
 	$fpb= fopen($fileb, 'w');
 	$lastup = "Last Update: " . date ("d F Y H:i", time());
-	fwrite( $fp, file_get_contents(dirname(__FILE__) . '/' . $cf['reportTemplateHeader']) );
-	fwrite( $fp,"<h1> Report of IP sending $type</h1><h5>$lastup</h5><h2>Detailed Report</h2>" );
-	if ($cf['onlyReport']) fwrite( $fp,'<p>None of the below IP has been listed because listing is not active in configuration.</p>');
-	fwrite( $fp,'<table><tr><th title="taken from Received header" nowrap>Date of Learn</th><th title="taken from Date header" nowrap>Date of Write</th><th nowrap>UID</th><th nowrap>IP</th><th title="How many times this uid learns">#UID</th><th title="Number of times this learned IP appears in different mails">#IP</th><th nowrap>Received by</th><th>Message-Id</th></tr>' );
-	fwrite( $fpb,file_get_contents(dirname(__FILE__) . '/' . $cf['reportTemplateHeader']) );
+	writeFileHeader($fp,$cf,'ip',$type,$lastup);
+	writeFileHeader($fpd,$cf,'dom',$type,$lastup);
+
+	fwrite( $fpb,file_get_contents(dirname(__FILE__) . '/' . $cf['report']['reportTemplateHeader']) );
 	fwrite( $fpb,"<h1> Report of bad reported $type mails</h1><h5>$lastup</h5><h2>Detailed Report</h2>" );
 	fwrite( $fpb,'<table><tr><th title="taken from Received header" nowrap>Date Learn</th><th title="taken from Date header" nowrap>Date Received</th><th nowrap>UID</th><th>Message-Id</th><th title="Why is this a bad report?">Reason</th></tr>' );
 
@@ -276,6 +402,12 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 	$ipuid['ip'] = array();
 	$ipuid['ip']['count'] = 0;
 	$ipuid['uid']['count'] = 0;
+	$domuid = array();
+	$domuid['count'] = 0;
+	$domuid['dom'] = array();
+	$domuid['dom']['count'] = 0;
+	$domuid['uid'] = array();
+	$domuid['uid']['count'] = 0;
 	$uidbad = array();
 	$uidbad['count'] = 0;
 	$uidbad['uid'] = array();
@@ -289,20 +421,23 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 		$head = imap_fetchheader($m_mail, $onem );
 	        //$obj = imap_rfc822_parse_headers( $head);
 
-	        list ($ip,$host,$dateReceived,$dateClient,$mid) =  getIP( $head,$cf['mx'],$cf['msalearn'] );
+	        list ($ip,$host,$dateReceived,$dateClient,$mid) =  getIP( $head,$cf['mx_hostname']['mx'],$cf['msa']['msalearn'] );
 		if (empty($mid)) {
 			$uid='NA';
-			syslog (LOG_ERR, $cf['user'].": Error retrieving data for empty Message-ID.");
+			syslog (LOG_ERR, $cf['syslog']['user'].": Error retrieving data for empty Message-ID.");
 		} else {
 			if ($dateReceived === FALSE) {
 				$uid='unauthenticated';
-				syslog (LOG_ERR, $cf['user'].": Error retrieving date for $mid. Maybe this mail was not submitted to Learner MSA");
+				syslog (LOG_ERR, $cf['syslog']['user'].": Error retrieving date for $mid. Maybe this mail was not submitted to Learner MSA");
 			} else  
 				if ( !($uid = splunksearch ($splunkconn, trim($mid,'<>'), $dateReceived)) ) {
-					syslog (LOG_ERR, $cf['user'].": Error retrieving uid from Splunk log for $mid.");
+					syslog (LOG_ERR, $cf['syslog']['user'].": Error retrieving uid from Splunk log for $mid.");
 					$uid='unknown';
 				}
 		}
+
+		/* Extract domains url in body */
+		$domains = parseURL ($m_mail,$onem);
 
 	        /* Update count of each ip */
 	        if ($host and ($uid!='NA') and ($uid!='unauthenticated') and ($uid!='unknown')) { /* IP is received by MX servers  and learned by valid uid */
@@ -329,6 +464,39 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 				$ipuid['ip']["$ip"][]=$uid;
 				$ipuid['ip']['count']++;			//number of unique ips
                         }
+
+			foreach ($domains as $dom) {
+				$domuid['count']++;
+				if (in_array($uid,array_keys($domuid['uid']))) {
+					$domuid['uid']["$uid"]['count']++;               //number of learn by this uid
+					if (!in_array($dom,$domuid['uid']["$uid"]))
+						$domuid['uid']["$uid"][]=$dom;		//domains learned by this uid
+				}
+				else {
+					$domuid['uid']["$uid"]['count'] = 1;
+					$domuid['uid']["$uid"][]=$dom;
+					$domuid['uid']['count']++;			//number of unique uids
+				}
+
+				if (in_array($dom,array_keys($domuid['dom']))) {
+					$domuid['dom']["$dom"]['count']++;	//number of learn with this domain
+					if (!in_array($uid,$domuid['dom']["$dom"]))
+						$domuid['dom']["$dom"][]=$uid;	//uids that learned this domain
+				}
+				else {
+					$domuid['dom']["$dom"]['count'] = 1;
+					$domuid['dom']["$dom"][]=$uid;
+					$domuid['dom']['count']++;		//number of unique domains
+				}
+
+				fwrite($fpd,
+					updateReport (
+						$dom,$uid,$domuid['dom']["$dom"]['count'],
+						$domuid['uid']["$uid"]['count'],$host,
+						$dateClient,$mid,$dateReceived
+					)
+				);
+			}
 
 	        	/* Update HTML report */
 	        	fwrite($fp,updateReport ( $ip,$uid,$ipuid['ip']["$ip"]['count'],$ipuid['uid']["$uid"]['count'],$host,$dateClient,$mid,$dateReceived) );
@@ -358,43 +526,52 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 	/* Summary Report */
 	$ipuid['ip'] = array_msort( $ipuid['ip'], array('count'=>SORT_DESC) );
 	$ipuid['uid'] = array_msort( $ipuid['uid'], array('count'=>SORT_DESC) );
+	$domuid['dom'] = array_msort( $domuid['dom'], array('count'=>SORT_DESC) );
+	$domuid['uid'] = array_msort( $domuid['uid'], array('count'=>SORT_DESC) );
 	$uidbad['uid'] = array_msort( $uidbad['uid'], array('count'=>SORT_DESC) );
 	
 	fwrite($fp, '</table>');
-	fwrite($fp, '<hr><h2>Summary Report</h2><h5>Listing policy: ip must be learned at least '.$cf['thresholdip']["$type"].' times from at least '.$cf['thresholduid']["$type"].' different valid uids.</h5>' );
+	fwrite($fpd, '</table>');
+	fwrite($fp, '<hr><h2>Summary Report</h2><h5>Listing policy: ip must be learned at least '.$cf['listingip']['threshold']["$type"].' times from at least '.$cf['listingip']['thresholduid']["$type"].' different valid uids.</h5>' );
+	fwrite($fpd, '<hr><h2>Summary Report</h2><h5>Listing policy: domains must be learned at least '.$cf['listingdom']['threshold']["$type"].' times from at least '.$cf['listingdom']['thresholduid']["$type"].' different valid uids.</h5>' );
 
         /* Make MYSQL connection */
-	if ( $cf['onlyReport'] )
+	if ( $cf['listingip']['onlyReport']["$type"] && $cf['listingdom']['onlyReport']["$type"] )
 		$mysqli = NULL;
 	else {
         	$mysqli = new mysqli($myconnArray['dbhost'], $myconnArray['userdb'], $myconnArray['pwd'], $myconnArray['db'], $myconnArray['dbport']);
         	if ($mysqli->connect_error) {
-                	syslog (LOG_EMERG, $cf['user'].': Connect Error (' . $mysqli->connect_errno . ') '
+                	syslog (LOG_EMERG, $cf['syslog']['user'].': Connect Error (' . $mysqli->connect_errno . ') '
                 	. $mysqli->connect_error);
                 	exit (254);
         	}
-        	syslog(LOG_INFO, $cf['user'].': Successfully mysql connected to ' . $mysqli->host_info) ;
+        	syslog(LOG_INFO, $cf['syslog']['user'].': Successfully mysql connected to ' . $mysqli->host_info) ;
 	}
 	/***********************/
 
-	fwrite($fp, summaryReportAndList ($cf,$mysqli,$tables,$type,$ipuid) );
-	if ( !$cf['onlyReport'] )
-		$mysqli->close();
-	fwrite($fp,file_get_contents(dirname(__FILE__) . '/' . $cf['reportTemplateFooter']));
+	fwrite($fp, summaryReportAndList ($cf,$mysqli,$tables,$type,$ipuid, 'ip') );
+	fwrite($fp,file_get_contents(dirname(__FILE__) . '/' . $cf['report']['reportTemplateFooter']));
 	fclose($fp);
+
+	fwrite($fpd, summaryReportAndList ($cf,$mysqli,$tables,$type,$domuid, 'dom') );
+	fwrite($fpd,file_get_contents(dirname(__FILE__) . '/' . $cf['report']['reportTemplateFooter']));
+	fclose($fpd);
+	
+	if ( !($cf['listingip']['onlyReport']["$type"] && $cf['listingdom']['onlyReport']["$type"]) )
+		$mysqli->close();
 
 	fwrite($fpb, '</table>');
 	fwrite( $fpb,summaryBadReport( $uidbad ) );
-	fwrite($fpb,file_get_contents(dirname(__FILE__) . '/' . $cf['reportTemplateFooter']));
+	fwrite($fpb,file_get_contents(dirname(__FILE__) . '/' . $cf['report']['reportTemplateFooter']));
 	fclose($fpb);
-	syslog (LOG_INFO,$cf['user'].': Report files written. Listing job for '.$type.' terminated.');
+	syslog (LOG_INFO,$cf['syslog']['user'].': Report files written. Listing job for '.$type.' terminated.');
 
 	if ( $ierr = imap_errors() )
 		foreach ( $ierr as $thiserr )
-			syslog (LOG_ERR, $cf['user'].": IMAP Error: $thiserr");
+			syslog (LOG_ERR, $cf['syslog']['user'].": IMAP Error: $thiserr");
 	if ( $ierr = imap_alerts() )
                 foreach ( $ierr as $thiserr )
-                        syslog (LOG_ALERT, $cf['user'].": IMAP Alert: $thiserr");
+                        syslog (LOG_ALERT, $cf['syslog']['user'].": IMAP Alert: $thiserr");
 	imap_close($m_mail);
 }
 ?>

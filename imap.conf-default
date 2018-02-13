@@ -19,30 +19,50 @@ msalearn	= '/^msa\d{2}\.example\.com$/'
 mx[] 		= mx1.example.com
 mx[] 		= mx2.example.com
 
-[listing]
+[listingip]
 ; In MySQL Language. See at config.php for list names
 quantity[spam]		= 5
 unit[spam]		= DAY
 list[spam]		= 'Spam IP'
 ; Thresholds
 ; read at least <ip> ip learned by <uid> different uids
-thresholdip[spam]	= 10
+threshold[spam]		= 10
 thresholduid[spam]	= 6
+onlyReport[spam]        = TRUE
 
 quantity[ham]		= 1
 unit[ham]		= WEEK
 list[ham]		= 'White IP'
-;Thresholds (same mean as spam)
-thresholdip[ham]	= 6
+;Thresholds
+threshold[ham]		= 6
 thresholduid[ham]	= 3
+onlyReport[ham]        = TRUE
 
-user			= 'UC Learner'
+[listingdom]
+; In MySQL Language. See at config.php for list names
+quantity[spam]          = 5
+unit[spam]              = DAY
+list[spam]              = 'Spam Domain'
+; Thresholds
+; read at least <dom> domain learned by <uid> different uids
+threshold[spam]		= 10
+thresholduid[spam]      = 6
+onlyReport[spam]        = TRUE
+
+quantity[ham]           = 1
+unit[ham]               = WEEK
+list[ham]               = 'White Domain'
+;Thresholds
+threshold[ham]		= 6
+thresholduid[ham]       = 3
+onlyReport[ham]         = TRUE
 
 
 [report]
-onlyReport		= False				; set True for a DEMO or False if you want to list.
 reportFile[spam]	= report/learnspamip-{date}.html
 reportFile[ham]         = report/learnhamip-{date}.html
+reportDomFile[spam]     = report/learnspamdomain-{date}.html
+reportDomFile[ham]      = report/learnhamdomain-{date}.html
 
 badreportFile[spam]	= report/badspamlearn-{date}.html
 badreportFile[ham]      = report/badhamlearn-{date}.html
@@ -52,6 +72,7 @@ reportTemplateFooter	= templateF.html
 
 [syslog]
 tag			= learner
+user                    = 'UC Learner'
 
 [SplunkSDK]
 splpath			= '/var/www/html/include/splunk-sdk-php-1.0.1/'
