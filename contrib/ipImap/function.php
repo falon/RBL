@@ -273,7 +273,8 @@ function getPart($connection, $messageNumber, $partNumber, $encoding) {
 /***********************************/
 
 function getDomains ($text) {
-	$pattern = '/((?:https?:\/\/)?(?:[a-z0-9-]+\.)*(?:(?:[a-z0-9-]+\.)[a-z]+))\S+/';
+	/* Pattern from http://blog.mattheworiordan.com/post/13174566389/url-regular-expression-for-links-with-or-without */
+	$pattern = '/((?:(?:[A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)(?:(?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/';
 	$ret = array();
 	$num_found = preg_match_all($pattern, $text, $out);
 	if ( ($num_found !== FALSE) && ($num_found>0) ) {
