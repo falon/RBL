@@ -273,7 +273,7 @@ function getPart($connection, $messageNumber, $partNumber, $encoding) {
 /***********************************/
 
 function getDomains ($text) {
-	$pattern = '~[a-z]+://\S+~';
+	$pattern = '/((?:https?:\/\/)?(?:[a-z0-9-]+\.)*(?:(?:[a-z0-9-]+\.)[a-z]+))\S+/';
 	$ret = array();
 	$num_found = preg_match_all($pattern, $text, $out);
 	if ( ($num_found !== FALSE) && ($num_found>0) ) {
