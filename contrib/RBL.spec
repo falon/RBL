@@ -4,7 +4,7 @@
 
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
-Version: 2.4.0
+Version: 2.4.1
 Release: 0%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
@@ -45,7 +45,7 @@ Splunk alert.
 Summary: A complete view on authentication and spam classification of your mails.
 Group: System Environment/Web
 Requires: dspam-client >= 3.10.2
-Requires: rblmanager = 2.4.0-0%{?dist}
+Requires: rblmanager = 2.4.1-0%{?dist}
 
 %description mailClassifier
 Show how your mail are authenticated by DKIM, SPF and DMARC.
@@ -129,7 +129,7 @@ mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 %endif
 case "$1" in
   2)
-	echo -en "\n\n\e[33mRemember to check the changes in imap.conf.\e[39m\n"
+	echo -en "\n\n\e[33mRemember to check the changes in imap.conf.\e[39m\n\n"
   ;;
 esac
 
@@ -167,6 +167,9 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Tue Feb 13 2018 Marco Favero <marco.favero@csi.it> 2.4.1-0
+- Fixed regexp in getDomain function for Learn Tool.
+
 * Tue Feb 13 2018 Marco Favero <marco.favero@csi.it> 2.4.0-0
 - New version with ability to autolist domains with Learn Tool.
 
