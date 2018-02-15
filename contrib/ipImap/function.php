@@ -272,19 +272,24 @@ function getPart($connection, $messageNumber, $partNumber, $encoding) {
 }
 /***********************************/
 
-function getDomains ($text) {
-	/* Pattern from http://blog.mattheworiordan.com/post/13174566389/url-regular-expression-for-links-with-or-without */
-	$pattern = '/((?:(?:[A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)(?:(?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/';
+function getDomains ($text,$exclude) {
+	/* Pattern from https://mathiasbynens.be/demo/url-regex */
+	/* Current choice: @gruber */
+	$pattern = '#\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#iS';
 	$ret = array();
 	$num_found = preg_match_all($pattern, $text, $out);
 	if ( ($num_found !== FALSE) && ($num_found>0) ) {
-		foreach ($out[0] as $url)
-			$ret[] = parse_url($url, PHP_URL_HOST);
+		foreach ($out[0] as $url) {
+			$dom=parse_url($url, PHP_URL_HOST);
+			if (!( empty($dom) || in_array($dom,$exclude) ))
+				$ret[] = $dom;
+		}
 	}
+	print_r($out[0]);
 	return array_values(array_unique($ret));
 }
 
-function parseURL ($connection,$messageNumber) {
+function parseURL ($connection,$messageNumber, $exclusionList) {
 	$message = '';
 	$structure = imap_fetchstructure($connection, $messageNumber);
 	if (isset($structure->parts)) {
@@ -321,7 +326,7 @@ function parseURL ($connection,$messageNumber) {
 		$message = getPart($connection, $messageNumber, 1, $structure->encoding);
 
 	if ( !empty($message) )
-		return getDomains($message);
+		return getDomains($message, $exclusionList);
 	return array();
 }
 
@@ -438,7 +443,7 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 		}
 
 		/* Extract domains url in body */
-		$domains = parseURL ($m_mail,$onem);
+		$domains = parseURL ($m_mail,$onem,$cf['listingdom']['exclude']);
 
 	        /* Update count of each ip */
 	        if ($host and ($uid!='NA') and ($uid!='unauthenticated') and ($uid!='unknown')) { /* IP is received by MX servers  and learned by valid uid */
