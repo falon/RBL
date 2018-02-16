@@ -57,7 +57,8 @@ threshold[ham]		= 6
 thresholduid[ham]       = 3
 onlyReport[ham]         = TRUE
 
-exclude[]               = www.w3.org
+exclude[]               = w3.org
+exclude[]		= googleapis.com
 
 [report]
 reportFile[spam]	= report/learnspamip-{date}.html

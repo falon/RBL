@@ -280,12 +280,11 @@ function getDomains ($text,$exclude) {
 	$num_found = preg_match_all($pattern, $text, $out);
 	if ( ($num_found !== FALSE) && ($num_found>0) ) {
 		foreach ($out[0] as $url) {
-			$dom=parse_url($url, PHP_URL_HOST);
+			$dom=nsdom(parse_url($url, PHP_URL_HOST));
 			if (!( empty($dom) || in_array($dom,$exclude) ))
 				$ret[] = $dom;
 		}
 	}
-	print_r($out[0]);
 	return array_values(array_unique($ret));
 }
 
