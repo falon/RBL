@@ -167,6 +167,9 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Tue Feb 16 2018 Marco Favero <marco.favero@csi.it> 2.4.3-0
+- Fixed listing domains: recursive check against NS record.
+
 * Tue Feb 15 2018 Marco Favero <marco.favero@csi.it> 2.4.2-0
 - Fixed regexp in getDomain function for Learn Tool.
 - Added domains exclusion list in imap.conf
