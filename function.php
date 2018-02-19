@@ -778,10 +778,10 @@ function curl_get($url, array $get = NULL, array $options = array(), $loguser)
 
 
 function nsdom($dom) {
-/* Return the first upper domain (or domain itself) with NS record */
+/* Return the first lowercase upper domain (or domain itself) with NS record */
 /* checkdnsrr doesn't work with alias... use dns_get_record */
 	if (dns_get_record ( $dom , DNS_NS ))
-		return rtrim($dom, '.');
+		return strtolower(rtrim($dom, '.'));
 	if (dns_get_record ( $dom , DNS_A )) 
 		return nsdom( ltrim(strstr($dom, '.'), '.') );
 	return NULL;
