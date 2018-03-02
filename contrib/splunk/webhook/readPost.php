@@ -149,7 +149,7 @@ for ($i=1; $i<$nr; $i++) {	/* We skip first header line (i=0) */
 
 /* Make MYSQL connection */
 
-$mysqli = myConnect($host, $userdb, $pwd, $db, $dbport, $tables, $typedesc, $user);
+$mysqli = myConnect($dbhost, $userdb, $pwd, $db, $dbport, $tables, $typedesc, $user);
 if ( $mysqli === FALSE )
 	exit (254);
 
