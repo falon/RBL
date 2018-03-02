@@ -92,7 +92,7 @@ $webhook = json_decode($raw, true);
 [results_link] => http://<splunkhost>:8000/app/postfix/@go?sid=scheduler__admin__postfix__RMD53cb038e5bc1899c7_at_1510131600_1915
 */
 
-if (preg_match_all('/^https?\:\/\/(?<splunkhost>[\w\.\-]+)\:8000\/app\/(?<splunkapp>[\w\.\-]+)\/\@go\?sid=(?<job>[\w\.\-\d]+)$/',
+if (preg_match_all('/^https?\:\/\/(?<splunkhost>[\w\.\-]+)\:8000(?:\/[\w\-\_\d]+)*\/app\/(?<splunkapp>[\w\.\-\_\d]+)\/\@go\?sid=(?<job>[\w\.\-\d]+)$/',
 	$webhook['results_link'], $out, PREG_PATTERN_ORDER) === FALSE) {
 	syslog(LOG_ALERT,
         	sprintf('%s: unexpected error: can\'t parse the results link returned by webhook (<%s>).',
