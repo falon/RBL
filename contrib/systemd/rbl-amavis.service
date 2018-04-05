@@ -4,6 +4,7 @@
 
 [Unit]
 Description=RBL Amavis Export
+OnFailure=status-email-user@%n.service
 
 [Service]
 ExecStart=/usr/local/RBL/contrib/amavis/exportAmavisLdap.php

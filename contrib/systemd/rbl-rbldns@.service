@@ -2,6 +2,7 @@
 Description = RBLDNS Exporter for %i list
 AssertPathExists=/usr/local/RBL/contrib/rbldns/yourbl
 After = syslog.target
+OnFailure=status-email-user@%i.service
 
 [Service]
 WorkingDirectory=/usr/local/RBL/contrib/rbldns/yourbl

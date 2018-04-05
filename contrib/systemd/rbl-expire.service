@@ -5,6 +5,7 @@
 [Unit]
 Description=RBL Expire Tool
 After = syslog.target
+OnFailure=status-email-user@%n.service
 
 [Service]
 ExecStart=/usr/local/RBL/contrib/expire.php

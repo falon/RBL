@@ -4,7 +4,7 @@
 
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
-Version: 2.4.3
+Version: 2.4.4
 Release: 0%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
@@ -45,7 +45,7 @@ Splunk alert.
 Summary: A complete view on authentication and spam classification of your mails.
 Group: System Environment/Web
 Requires: dspam-client >= 3.10.2
-Requires: rblmanager = 2.4.3-0%{?dist}
+Requires: rblmanager = 2.4.4-0%{?dist}
 
 %description mailClassifier
 Show how your mail are authenticated by DKIM, SPF and DMARC.
@@ -73,6 +73,9 @@ install -m 0644 contrib/systemd/rbl-ipimap.timer %{buildroot}%{_unitdir}
 install -m 0644 contrib/systemd/rbl-rbldns@.service %{buildroot}%{_unitdir}
 install -m 0644 contrib/systemd/rbl-rbldns@spamip.service %{buildroot}%{_unitdir}
 install -m 0644 contrib/systemd/rbl-rbldns@whiteip.service %{buildroot}%{_unitdir}
+install -m 0644 contrib/systemd/status-email-sysadmin@.service %{buildroot}%{_unitdir}
+mkdir -p %{buildroot}/usr/bin
+install -m 0755 contrib/systemd/systemd-email %{buildroot}/usr/bin
 sed -i 's|\/usr\/local\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_unitdir}/*.service
 %endif
 rm -rf contrib/systemd contrib/RPM
@@ -148,6 +151,7 @@ esac
 %files -f FILELIST
 %{_datadir}/include
 %{_unitdir}
+/usr/bin/systemd-email
 %dir %{_datadir}/%{bigname}/contrib/rbldns/yourbl
 %license %{_datadir}/%{bigname}/LICENSE
 %doc %{_datadir}/%{bigname}/README.md
@@ -167,6 +171,10 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Thu Apr 05 2018 Marco Favero <marco.favero@csi.it> 2.4.4-0
+- Minor fixes on SPF Result for mailClassifier
+- Added systemd email notifier to all services.
+
 * Tue Feb 16 2018 Marco Favero <marco.favero@csi.it> 2.4.3-0
 - Fixed listing domains: recursive check against NS record.
 

@@ -1,0 +1,8 @@
+[Unit]
+Description=status email for %i to sysadmin
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemd-email recipient@example.com %i
+User=nobody
+Group=systemd-journal

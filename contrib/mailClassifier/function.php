@@ -125,7 +125,7 @@ function imapInfo($user,$header,$ARhosts,$dpl=false, $learn=false) {
 	$received=NULL;
 	if ($k>1) $result['warn'][] = 'The trusted DMARC AR Headers are present more than once. Something wrong.';
 
-        if ( preg_match_all('/^Authentication\-Results:\s+(?<host>[\w\.]+);(?:\s+|\r\n\s+)spf=(?<spf>\w+)\s+smtp\.(?:mailfrom|helo)=(?<SPFfrom>[\w\.]+)/m',$header,$received) ) {
+        if ( preg_match_all('/^Authentication\-Results:\s+(?<host>[\w\.]+);(?:\s+|\r\n\s+)spf=(?<spf>\w+)\s+smtp\.(?:mailfrom|helo)=(?<SPFfrom>[\w\.\-\+]+)/m',$header,$received) ) {
 		$k=0;
 		for ($i = count($received[0])-1;$i>=0;$i--) {
 			foreach ($ARhosts as $mx) {
