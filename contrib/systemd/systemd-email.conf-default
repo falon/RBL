@@ -1,0 +1,2 @@
+FROM=postmaster@example.com
+TO=recipient@example.com
