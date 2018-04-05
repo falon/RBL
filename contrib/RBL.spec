@@ -76,7 +76,7 @@ install -m 0644 contrib/systemd/rbl-rbldns@whiteip.service %{buildroot}%{_unitdi
 install -m 0644 contrib/systemd/status-email-sysadmin@.service %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}/usr/bin
 install -m 0755 contrib/systemd/systemd-email %{buildroot}/usr/bin
-install -D -m0644 contrib/systemd/systemd-email.conf %{buildroot}%{_sysconfdir}/sysconfig
+install -D -m0644 contrib/systemd/systemd-email.conf-default %{buildroot}%{_sysconfdir}/sysconfig/systemd-email.conf
 sed -i 's|\/usr\/local\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_unitdir}/*.service
 %endif
 rm -rf contrib/systemd contrib/RPM
