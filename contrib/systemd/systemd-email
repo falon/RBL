@@ -7,10 +7,10 @@
 # $1: the recipient of the mail
 # $2: the service name
 
+source /etc/sysconfig/systemd-email.conf
+
 SENDMAIL=$(/usr/bin/which sendmail)
-DOMAIN=example.com
-FROM=postmaster@$DOMAIN
-MessageID=$(date +%s | sha256sum | base64 | head -c 32)@$DOMAIN
+MessageID=$(date +%s | sha256sum | base64 | head -c 32)@$HOSTNAME
 
 $SENDMAIL -f $FROM -t <<ERRMAIL
 From: "$HOSTNAME Systemd" <$FROM>

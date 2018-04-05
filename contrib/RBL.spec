@@ -5,7 +5,7 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.4.4
-Release: 0%{?dist}
+Release: 1%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -45,7 +45,7 @@ Splunk alert.
 Summary: A complete view on authentication and spam classification of your mails.
 Group: System Environment/Web
 Requires: dspam-client >= 3.10.2
-Requires: rblmanager = 2.4.4-0%{?dist}
+Requires: rblmanager = 2.4.4-1%{?dist}
 
 %description mailClassifier
 Show how your mail are authenticated by DKIM, SPF and DMARC.
@@ -76,6 +76,7 @@ install -m 0644 contrib/systemd/rbl-rbldns@whiteip.service %{buildroot}%{_unitdi
 install -m 0644 contrib/systemd/status-email-sysadmin@.service %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}/usr/bin
 install -m 0755 contrib/systemd/systemd-email %{buildroot}/usr/bin
+install -D -m0644 contrib/systemd/systemd-email.conf %{buildroot}%{_sysconfdir}/sysconfig
 sed -i 's|\/usr\/local\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_unitdir}/*.service
 %endif
 rm -rf contrib/systemd contrib/RPM
@@ -156,6 +157,7 @@ esac
 %license %{_datadir}/%{bigname}/LICENSE
 %doc %{_datadir}/%{bigname}/README.md
 %doc %{_datadir}/%{bigname}/doc
+%config(noreplace) %{_sysconfdir}/sysconfig/systemd-email.conf
 %config(noreplace) %{_datadir}/%{bigname}/config.php
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/%{bigname}.conf
 %config(noreplace) %{_datadir}/%{bigname}/imap.conf
@@ -171,6 +173,9 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Thu Apr 05 2018 Marco Favero <marco.favero@csi.it> 2.4.4-1
+- systemd-email installs as a config file.
+
 * Thu Apr 05 2018 Marco Favero <marco.favero@csi.it> 2.4.4-0
 - Minor fixes on SPF Result for mailClassifier
 - Added systemd email notifier to all services.
