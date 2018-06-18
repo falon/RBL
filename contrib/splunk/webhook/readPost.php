@@ -166,7 +166,7 @@ foreach ( array_keys($tolist) as $value) {
                                         $domain = substr(strrchr($value, '@'), 1);
                                         if ( strpos($domain, '@') === FALSE ) {
                                                 $recip = emailToNotify($domainNotify_file,$domain);
-                                                $subject = sprintf('%s <%s> is now blocked because exceedes limits on outgoing emails',
+                                                $subject = sprintf('%s <%s> is now blocked because exceeds limits on outgoing emails',
                                                                 $tables["$typedesc"]['field'], $value);
                                                 if (!empty($recip))
                                                         if ( sendEmailWarn($tplfile,'postmaster@csi.it',$recip,
