@@ -5,7 +5,7 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.4.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -22,7 +22,8 @@ Requires: php-ldap >= 7.1
 Requires: php-mysqlnd >= 7.1
 Requires: php-gmp >= 7.1
 Requires: php-xml >= 7.1
-BuildRequires: composer >= 1.5.2
+Requires: FalonCommon >= 0.1.0
+BuildRequires: composer >= 1.8.0
 #Requires: remi-release >= 7.3
 
 
@@ -45,7 +46,7 @@ Splunk alert.
 Summary: A complete view on authentication and spam classification of your mails.
 Group: System Environment/Web
 Requires: dspam-client >= 3.10.2
-Requires: rblmanager = 2.4.4-1%{?dist}
+Requires: rblmanager = 2.4.4-2%{?dist}
 
 %description mailClassifier
 Show how your mail are authenticated by DKIM, SPF and DMARC.
@@ -83,11 +84,7 @@ rm -rf contrib/systemd contrib/RPM
 
 # Include dir
 mkdir -p %{buildroot}%{_datadir}/include
-install -m0444 ajaxsbmt.js %{buildroot}%{_datadir}/include
-install -m0444 pleasewait.gif %{buildroot}%{_datadir}/include
 wget -qO- 'https://github.com/splunk/splunk-sdk-php/archive/1.0.1.tar.gz' | tar xvz -C %{buildroot}%{_datadir}/include
-install -m0444 style.css  %{buildroot}%{_datadir}/include
-rm -rf ajaxsbmt.js pleasewait.gif
 
 # Web HTTPD conf
 
@@ -121,6 +118,7 @@ sed -i 's|\/var\/www\/html/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_da
 composer --working-dir="%{buildroot}%{_datadir}/%{bigname}" require dautkom/php.ipv4
 ## Remove unnecessary files
 rm %{buildroot}%{_datadir}/%{bigname}/_config.yml %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.conf-default %{buildroot}%{_datadir}/%{bigname}/contrib/mailClassifier/%{bigname}-mailClassifier.conf %{buildroot}%{_datadir}/%{bigname}/contrib/%{bigname}.spec %{buildroot}%{_datadir}/%{bigname}/vendor/dautkom/php.ipv4/.gitignore %{buildroot}%{_datadir}/%{bigname}/composer.*
+rm -rf %{buildroot}%{_datadir}/%{bigname}/vendor/dautkom/php.ipv4/.git
 
 ##File list
 find %{buildroot}%{_datadir}/%{bigname} -mindepth 1 -type f | grep -v \.conf$ | grep -v \.git | grep -v '\-default$' | grep -v ipImap/report/*\.html | grep -v config\.php | grep -v template/ | grep -v contrib/rbldns/conf\.default | grep -v contrib/mailClassifier | grep -v RBL\.spec | grep -v 'doc/' | grep -v %{bigname}/LICENSE | grep -v %{bigname}/README\.md | grep -v contrib/amavis/exportAmavisLdap\.php | sed -e "s@$RPM_BUILD_ROOT@@" > FILELIST
@@ -173,6 +171,10 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Thu Jan 03 2019 Marco Favero <marco.favero@csi.it> 2.4.4-2
+- updated dependency composer and dautkom/php.ipv4.
+- separated include dir in package falon-common (now required).
+
 * Thu Apr 05 2018 Marco Favero <marco.favero@csi.it> 2.4.4-1
 - systemd-email installs as a config file.
 
@@ -209,5 +211,6 @@ esac
 - modified rbl-ipimap.service
 - fixed path in getip.php
 
-* Mon Nov 22 2017 Marco Favero <marco.favero@csi.it> - Initial version
+* Mon Nov 22 2017 Marco Favero <marco.favero@csi.it> 2.2
+- Initial version
 - Build for 2.2 official version

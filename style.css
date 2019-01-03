@@ -161,14 +161,22 @@ option:checked {
         float: right;
 }
 
+@keyframes mybackground {
+  from {background: yellow;}
+  to {background: LightGoldenrodYellow;}
+}
+
 #content {
+    display: block;
+    animation-name: mybackground;
+    animation-duration: 4s;
     background: LightGoldenrodYellow;
     border-radius: 10px;
     border: 1px solid #ebebeb;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 10px;
-    width: 80%;
+    max-width: 80%;
     padding-left: 5px;
 }
 
@@ -343,6 +351,33 @@ blockquote em{
   }
 }
 
+#containerblock {
+  display:                 flex;
+  display:                 -webkit-flex; /* Safari 8 */
+  flex-wrap:               wrap;
+  -webkit-flex-wrap:       wrap;         /* Safari 8 */
+  justify-content:         center;
+  -webkit-justify-content: center;       /* Safari 8 */
+    animation-name: mybackground;
+    animation-duration: 4s;
+    background: LightGoldenrodYellow;
+    border-radius: 10px;
+    border: 1px solid #ebebeb;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    width: 80%;
+    padding-left: 5px;
+}
+
+.block
+{
+  max-width:          600px;
+  height:             150px;
+  margin:             10px;
+  padding:	      10px;
+  vertical-align:     middle;
+}
 
 /* RBL */
 .button {

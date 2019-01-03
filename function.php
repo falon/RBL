@@ -419,7 +419,7 @@ END;
 		$tabhtm .= '<th title="Milter active for this object">Milters</th>';
 	$tabhtm .= '<th>Authored by</th><th width="250">Reason</th><th>Action</th></tr></thead><tfoot><tr></tr></tfoot><tbody>'."\n";
 
-	if ($type == 'domain')
+	if (($type == 'domain') AND ($value != 'ALL'))
 		$value = nsdom($value);
 	if (is_null($value))
 		return FALSE;
