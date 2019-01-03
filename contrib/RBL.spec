@@ -5,7 +5,7 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.4.4
-Release: 3%{?dist}
+Release: 4%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -46,7 +46,7 @@ Splunk alert.
 Summary: A complete view on authentication and spam classification of your mails.
 Group: System Environment/Web
 Requires: dspam-client >= 3.10.2
-Requires: rblmanager = 2.4.4-3%{?dist}
+Requires: rblmanager = 2.4.4-4%{?dist}
 
 %description mailClassifier
 Show how your mail are authenticated by DKIM, SPF and DMARC.
@@ -171,6 +171,10 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Thu Jan 03 2019 Marco Favero <marco.favero@csi.it> 2.4.4-4
+- removed unnecessary file style.css
+- removed include section in httpd conf file
+
 * Thu Jan 03 2019 Marco Favero <marco.favero@csi.it> 2.4.4-2
 - updated dependency composer and dautkom/php.ipv4.
 - separated include dir in package falon-common (now required).
