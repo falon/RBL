@@ -7,13 +7,6 @@
 #   Redirect permanent / https://server.example.com/
 #</VirtualHost>
 
-<Directory /var/www/html/include>
-	AllowOverride None
-        AuthType None
-        Require all granted
-</Directory>
-Alias /include "/var/www/html/include"
-
 <Directory /var/www/html/RBL>
     Options FollowSymLinks
     AllowOverride None

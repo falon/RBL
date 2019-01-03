@@ -5,7 +5,7 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.4.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -22,7 +22,7 @@ Requires: php-ldap >= 7.1
 Requires: php-mysqlnd >= 7.1
 Requires: php-gmp >= 7.1
 Requires: php-xml >= 7.1
-Requires: FalonCommon >= 0.1.0
+Requires: FalonCommon >= 0.1.1
 BuildRequires: composer >= 1.8.0
 #Requires: remi-release >= 7.3
 
