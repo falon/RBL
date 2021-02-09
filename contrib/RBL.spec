@@ -5,7 +5,7 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.4.4
-Release: 4%{?dist}
+Release: 5%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -23,7 +23,10 @@ Requires: php-mysqlnd >= 7.1
 Requires: php-gmp >= 7.1
 Requires: php-xml >= 7.1
 Requires: FalonCommon >= 0.1.1
-BuildRequires: composer >= 1.8.0
+Requires: systemd-unit-status-email
+BuildRequires: php-mysqlnd
+BuildRequires: php-gmp
+#BuildRequires: composer >= 1.8.0
 #Requires: remi-release >= 7.3
 
 
@@ -76,8 +79,6 @@ install -m 0644 contrib/systemd/rbl-rbldns@spamip.service %{buildroot}%{_unitdir
 install -m 0644 contrib/systemd/rbl-rbldns@whiteip.service %{buildroot}%{_unitdir}
 install -m 0644 contrib/systemd/status-email-sysadmin@.service %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}/usr/bin
-install -m 0755 contrib/systemd/systemd-email %{buildroot}/usr/bin
-install -D -m0644 contrib/systemd/systemd-email.conf-default %{buildroot}%{_sysconfdir}/sysconfig/systemd-email.conf
 sed -i 's|\/usr\/local\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_unitdir}/*.service
 %endif
 rm -rf contrib/systemd contrib/RPM
@@ -150,12 +151,10 @@ esac
 %files -f FILELIST
 %{_datadir}/include
 %{_unitdir}
-/usr/bin/systemd-email
 %dir %{_datadir}/%{bigname}/contrib/rbldns/yourbl
 %license %{_datadir}/%{bigname}/LICENSE
 %doc %{_datadir}/%{bigname}/README.md
 %doc %{_datadir}/%{bigname}/doc
-%config(noreplace) %{_sysconfdir}/sysconfig/systemd-email.conf
 %config(noreplace) %{_datadir}/%{bigname}/config.php
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/%{bigname}.conf
 %config(noreplace) %{_datadir}/%{bigname}/imap.conf
@@ -171,6 +170,9 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Tue Feb 09 2021 Marco Favero <marco.favero@csi.it> 2.4.4-5
+- removed systemd-email
+
 * Thu Jan 03 2019 Marco Favero <marco.favero@csi.it> 2.4.4-4
 - removed unnecessary file style.css
 - removed include section in httpd conf file

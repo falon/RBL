@@ -1,9 +1,0 @@
-[Unit]
-Description=status email for %i to sysadmin
-
-[Service]
-Type=oneshot
-EnvironmentFile=/etc/sysconfig/systemd-email.conf
-ExecStart=/usr/bin/systemd-email ${TO} %i
-User=nobody
-Group=systemd-journal
