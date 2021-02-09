@@ -12,7 +12,7 @@
 <?php
 
 $_POST['Value'] = str_replace('_','.',array_keys($_GET)[0]);
-$_POST['genere'] = 'Spam IP';
+$_POST['genere'] = base64_decode(array_keys($_GET)[1], TRUE);
 require_once('result.php');
 ?>
 <hr>

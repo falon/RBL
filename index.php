@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>I RBL You!</title>
+<title>RBLMS</title>
 <link rel="stylesheet" type="text/css" href="/include/style.css">
 <link rel="SHORTCUT ICON" href="favicon.ico">
 <script  src="/include/ajaxsbmt.js" type="text/javascript"></script>
@@ -8,7 +8,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js?load=effects" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
-<h1> RBL Management System</h1> 
+<h1><b>R</b>eal <b>T</b>ime <b>B</b>lock<b>L</b>ist <b>M</b>anagement <b>S</b>ystem</h1> 
 <?php
 require_once('config.php');
 require_once('function.php');
@@ -46,8 +46,8 @@ END;
 <DIV id='Risultato'></DIV>
 <div style="clear: both">
 <hr>
-<p>This more than DNSBL service works with authomated listing mechanisms. RFC6471 compliants. HTML5 browser required.</p>
-<h5 style="margin-top:1ex;margin-bottom:0;text-align: center">Just your Personal <i>RBL Tool System</i> - Version <?php echo $version; ?></h5>
+<p>RBLMS works with authomated listing mechanisms. RFC6471 compliants. HTML5 browser required.</p>
+<h5 style="margin-top:1ex;margin-bottom:0;text-align: center">Just your Personal <i>RBLMS</i> - Version <?php echo $version; ?></h5>
 </div>
 </body>
 </html>

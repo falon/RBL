@@ -54,7 +54,7 @@ $user = username();
 if ( ($mysqli = myConnect($dbhost, $userdb, $pwd, $db, $dbport, $tables, $_, $user)) === FALSE )
 	exit ('Connect Error (' . $mysqli->connect_errno . ') '. $mysqli->connect_error);
 	
-rlookup($mysqli,username(),$admins,$_POST['Value'],$_POST['genere'],$tables);
+rlookup($mysqli,$user,$admins,$_POST['Value'],$_POST['genere'],$tables);
 $mysqli->close();
 closelog();
 ?>
