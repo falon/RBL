@@ -5,7 +5,7 @@
 [Unit]
 Description=RBL IP Reputation Subscriber
 After = syslog.target
-OnFailure=status-email-user@%n.service
+OnFailure=status-email-sysadmin@%n.service
 
 [Service]
 ExecStartPre=/usr/bin/sh -c "/usr/bin/find /usr/local/RBL/contrib/ipImap/report/*.html -type f -ctime +14 -delete"
