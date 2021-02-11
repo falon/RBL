@@ -5,7 +5,7 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.4.4
-Release: 5%{?dist}
+Release: 7%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -49,7 +49,7 @@ Splunk alert.
 Summary: A complete view on authentication and spam classification of your mails.
 Group: System Environment/Web
 Requires: dspam-client >= 3.10.2
-Requires: rblmanager = 2.4.4-4%{?dist}
+Requires: rblmanager = %{version}-%{release}
 
 %description mailClassifier
 Show how your mail are authenticated by DKIM, SPF and DMARC.
@@ -75,9 +75,6 @@ install -m 0644 contrib/systemd/rbl-expire.timer %{buildroot}%{_unitdir}
 install -m 0644 contrib/systemd/rbl-ipimap.service %{buildroot}%{_unitdir}
 install -m 0644 contrib/systemd/rbl-ipimap.timer %{buildroot}%{_unitdir}
 install -m 0644 contrib/systemd/rbl-rbldns@.service %{buildroot}%{_unitdir}
-install -m 0644 contrib/systemd/rbl-rbldns@spamip.service %{buildroot}%{_unitdir}
-install -m 0644 contrib/systemd/rbl-rbldns@whiteip.service %{buildroot}%{_unitdir}
-install -m 0644 contrib/systemd/status-email-sysadmin@.service %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}/usr/bin
 sed -i 's|\/usr\/local\/%{bigname}|%{_datadir}/%{bigname}|' %{buildroot}%{_unitdir}/*.service
 %endif
@@ -170,6 +167,12 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Thu Feb 11 2021 Marco Favero <marco.favero@csi.it> 2.4.4-7
+- removed obsoleted .include directive from systemd units.
+
+* Tue Feb 09 2021 Marco Favero <marco.favero@csi.it> 2.4.4-6
+- minor bug fixes
+
 * Tue Feb 09 2021 Marco Favero <marco.favero@csi.it> 2.4.4-5
 - removed systemd-email
 
