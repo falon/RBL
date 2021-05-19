@@ -21,9 +21,25 @@ Every member in list can be active (really listed), or inactive (time expired, o
 
 ## Basic Installation
 ### By RPM
-Red Hat 7 ready? See at the build folder and install the RPM file:
-`yum install https://github.com/falon/RBL/raw/master/contrib/RPM/rblmanager-<version>.el7.noarch.rpm`
-Your system may complain that no php-7 package can be found. You can try with the [Remi distribution](https://rpms.remirepo.net/).
+In EL8 try with:
+```
+curl -1sLf \
+  'https://dl.cloudsmith.io/public/csi/shared/setup.rpm.sh' \
+  | sudo -E bash
+```
+```
+curl -1sLf \
+  'https://dl.cloudsmith.io/public/csi/rblmanager/setup.rpm.sh' \
+  | sudo -E bash
+```
+
+Then:
+
+`dnf install rblmanager`
+
+If you want to install the mailClassifier too:
+
+`dnf install rblmanager-mailClassifier`
 
 ### By source
 Otherwise you can try these lapidary instructions.
