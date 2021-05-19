@@ -4,7 +4,7 @@ require ('config.php');
 
 $_ = htmlentities(serialize($adm));
 $button = <<<END
-<form style="margin:0; display:inline;" name="RelistButton$id" enctype="text/plain" method="post" target="_self" action="relistForm.php" onSubmit="xmlhttpPost('relistForm.php', 'RelistButton$id', 'id$id', '<img src=\'/include/pleasewait.gif\'>'); return false;" />
+<form style="margin:0; display:inline;" name="RelistButton$id" enctype="text/plain" accept-charset="utf-8" method="post" target="_self" action="relistForm.php" onSubmit="xmlhttpPost('relistForm.php', 'RelistButton$id', 'id$id', '<img src=\'/include/pleasewait.gif\'>'); return false;" />
 END;
 
 $button .= <<<END

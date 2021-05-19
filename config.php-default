@@ -120,6 +120,13 @@ $tables = array (
                 'bl'            => FALSE,
 		'milter'        => FALSE
                 ),
+        'Spam Text'             => array (
+                'name'          => 'spamhash',
+                'field'         => 'text',
+                'active'        => FALSE,
+                'bl'            => TRUE,
+                'milter'        => FALSE
+        ),
         'Milter IP'       => array (
                 'name'          => 'milteripmap',
                 'field'         => 'ip',

@@ -92,7 +92,10 @@ if ($result->num_rows) {
                                         break;
                                   case 'network':
                                         $element[] = long2ip($riga['network']).'/'.long2ip($riga['netmask']);
-                                        break;
+					break;
+				  case 'text':
+					$element[] = sha1($riga['text']);
+					break;
                                   default:
 					$type = $tables["$typedesc"]['field'];
                                         $element[] = $riga["$type"];

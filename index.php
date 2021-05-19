@@ -3,12 +3,13 @@
 <title>RBLMS</title>
 <link rel="stylesheet" type="text/css" href="/include/style.css">
 <link rel="SHORTCUT ICON" href="favicon.ico">
+<meta charset="utf-8" />
 <script  src="/include/ajaxsbmt.js" type="text/javascript"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js?load=effects" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
-<h1><b>R</b>eal <b>T</b>ime <b>B</b>lock<b>L</b>ist <b>M</b>anagement <b>S</b>ystem</h1> 
+<h1><b>R</b>eal <b>T</b>ime <b>B</b>lock<b>L</b>ist <b>M</b>anagement <b>S</b>ystem</h1>
 <?php
 require_once('config.php');
 require_once('function.php');
@@ -22,7 +23,7 @@ if ( $imapListActive )
 	print ' <p style="text-align: right"><a href="/spamreport" target="_new">SPAM Learn Observer</a></p>';
 
 print <<<END
-<form name="check" action="result.php" onSubmit="xmlhttpPost('result.php', 'check', 'Risultato', '<img src=\'/include/pleasewait.gif\'>'); return false;" enctype="text/plain" method="post" target="_self">
+<form name="check" action="result.php" accept-charset="utf-8" onSubmit="xmlhttpPost('result.php', 'check', 'Risultato', '<img src=\'/include/pleasewait.gif\'>'); return false;" enctype="text/plain" method="post" target="_self">
                         Lookup&nbsp;<select class="input_text" name="genere" size="1">
 END;
 

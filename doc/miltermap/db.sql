@@ -28,7 +28,7 @@ CREATE TABLE `net` (
   `idmilt` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `network` int(4) UNSIGNED NOT NULL,
   `netmask` int(4) UNSIGNED NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `exp` timestamp NOT NULL DEFAULT '2038-01-19 03:14:07',
   `active` tinyint(1) NOT NULL DEFAULT '1',
@@ -70,7 +70,7 @@ CREATE TABLE `milt` (
 CREATE TABLE `ips` (
   `idmilt` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `ip` int(4) unsigned NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `exp` timestamp NOT NULL DEFAULT '2038-01-19 03:14:07',
   `active` tinyint(1) NOT NULL DEFAULT '1',

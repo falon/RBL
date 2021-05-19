@@ -1,16 +1,18 @@
-%global systemd (0%{?fedora} >= 18) || (0%{?rhel} >= 7)
+%global systemd (0%{?fedora} >= 18) || (0%{?rhel} >= 8)
 %global upname rbl
 %global bigname RBL
 
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
-Version: 2.4.4
-Release: 7%{?dist}
+Version: 2.5.0
+Release: 0%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
 Source0: https://github.com/falon/%{bigname}/archive/master.zip
-BuildArch:	noarch
+Vendor: Falon Entertainment
+Packager: Marco Favero <marco.favero@csi.it>
+BuildArch: noarch
 
 # Required for all versions
 Requires: httpd >= 2.4.6
@@ -20,6 +22,8 @@ Requires: php-imap >= 7.1
 Requires: php-json >= 7.1
 Requires: php-ldap >= 7.1
 Requires: php-mysqlnd >= 7.1
+Requires: php-common >= 7.1
+Requires: php-mbstring >= 7.1
 Requires: php-gmp >= 7.1
 Requires: php-xml >= 7.1
 Requires: FalonCommon >= 0.1.1
@@ -61,6 +65,7 @@ learn your mails using DSPAM Client.
 rm -rf %{buildroot}/
 
 %prep
+spectool -R -f -g %{_topdir}/SPECS/RBL.spec
 %autosetup -n %{bigname}-master
 
 
@@ -167,6 +172,9 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Wed May 19 2021 Marco Favero <marco.favero@csi.it> 2.5.0-0
+- added support for HASHBL with UTF8 characters.
+
 * Thu Feb 11 2021 Marco Favero <marco.favero@csi.it> 2.4.4-7
 - removed obsoleted .include directive from systemd units.
 
@@ -191,14 +199,14 @@ esac
 - Minor fixes on SPF Result for mailClassifier
 - Added systemd email notifier to all services.
 
-* Tue Feb 16 2018 Marco Favero <marco.favero@csi.it> 2.4.3-0
+* Fri Feb 16 2018 Marco Favero <marco.favero@csi.it> 2.4.3-0
 - Fixed listing domains: recursive check against NS record.
 
-* Tue Feb 15 2018 Marco Favero <marco.favero@csi.it> 2.4.2-0
+* Thu Feb 15 2018 Marco Favero <marco.favero@csi.it> 2.4.2-0
 - Fixed regexp in getDomain function for Learn Tool.
 - Added domains exclusion list in imap.conf
 
-* Tue Feb 14 2018 Marco Favero <marco.favero@csi.it> 2.4.1-0
+* Wed Feb 14 2018 Marco Favero <marco.favero@csi.it> 2.4.1-0
 - Fixed regexp in getDomain function for Learn Tool.
 
 * Tue Feb 13 2018 Marco Favero <marco.favero@csi.it> 2.4.0-0
@@ -220,6 +228,6 @@ esac
 - modified rbl-ipimap.service
 - fixed path in getip.php
 
-* Mon Nov 22 2017 Marco Favero <marco.favero@csi.it> 2.2
+* Wed Nov 22 2017 Marco Favero <marco.favero@csi.it> 2.2
 - Initial version
 - Build for 2.2 official version

@@ -1,181 +1,295 @@
 -- phpMyAdmin SQL Dump
--- version 2.11.11.3
--- http://www.phpmyadmin.net
+-- version 5.1.0
+-- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generato il: 03 Feb, 2015 at 12:00 PM
--- Versione MySQL: 5.1.58
--- Versione PHP: 5.2.17
+-- Generation Time: May 19, 2021 at 10:43 AM
+-- Server version: 8.0.21
+-- PHP Version: 7.4.6
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 
 --
 -- Database: `rbl`
 --
-CREATE DATABASE `rbl` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+CREATE DATABASE IF NOT EXISTS `rbl` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `rbl`;
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `spamdomain`
+-- Table structure for table `spamdomain`
 --
 
-CREATE TABLE IF NOT EXISTS `spamdomain` (
-  `domain` varchar(255) COLLATE utf8_bin NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+CREATE TABLE `spamdomain` (
+  `domain` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `exp` timestamp NOT NULL DEFAULT '2038-01-19 03:14:07',
+  `exp` timestamp NOT NULL DEFAULT '2038-01-19 02:14:07',
   `active` tinyint(1) NOT NULL DEFAULT '1',
-  `nlist` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'unknown',
-  `reason` tinytext CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  PRIMARY KEY (`domain`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `nlist` tinyint UNSIGNED NOT NULL DEFAULT '1',
+  `user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unknown',
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `spamdomain`:
+--
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `spamip`
+-- Table structure for table `spamhash`
 --
 
-CREATE TABLE IF NOT EXISTS `spamip` (
-  `ip` int(4) unsigned NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+CREATE TABLE `spamhash` (
+  `text` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `exp` timestamp NOT NULL DEFAULT '2038-01-19 03:14:07',
+  `exp` timestamp NOT NULL DEFAULT '2038-01-19 02:14:07',
   `active` tinyint(1) NOT NULL DEFAULT '1',
-  `nlist` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'unknown',
-  `reason` tinytext CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  PRIMARY KEY (`ip`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `nlist` tinyint UNSIGNED NOT NULL DEFAULT '1',
+  `user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unknown',
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `spamhash`:
+--
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `spamnet`
+-- Table structure for table `spamip`
 --
 
-CREATE TABLE IF NOT EXISTS `spamnet` (
-  `network` int(4) unsigned NOT NULL,
-  `netmask` int(4) unsigned NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+CREATE TABLE `spamip` (
+  `ip` int UNSIGNED NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `exp` timestamp NOT NULL DEFAULT '2038-01-19 03:14:07',
+  `exp` timestamp NOT NULL DEFAULT '2038-01-19 02:14:07',
   `active` tinyint(1) NOT NULL DEFAULT '1',
-  `nlist` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'unknown',
-  `reason` tinytext CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  PRIMARY KEY (`network`,`netmask`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `nlist` tinyint UNSIGNED NOT NULL DEFAULT '1',
+  `user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unknown',
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `spamip`:
+--
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `spamsender`
+-- Table structure for table `spamnet`
 --
 
-CREATE TABLE IF NOT EXISTS `spamsender` (
-  `email` varchar(255) COLLATE utf8_bin NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+CREATE TABLE `spamnet` (
+  `network` int UNSIGNED NOT NULL,
+  `netmask` int UNSIGNED NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `exp` timestamp NOT NULL DEFAULT '2038-01-19 03:14:07',
+  `exp` timestamp NOT NULL DEFAULT '2038-01-19 02:14:07',
   `active` tinyint(1) NOT NULL DEFAULT '1',
-  `nlist` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'unknown',
-  `reason` tinytext CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  PRIMARY KEY (`email`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `nlist` tinyint UNSIGNED NOT NULL DEFAULT '1',
+  `user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unknown',
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `spamnet`:
+--
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `whitedomain`
+-- Table structure for table `spamsender`
 --
 
-CREATE TABLE IF NOT EXISTS `whitedomain` (
-  `domain` varchar(255) COLLATE utf8_bin NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+CREATE TABLE `spamsender` (
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `exp` timestamp NOT NULL DEFAULT '2038-01-19 03:14:07',
+  `exp` timestamp NOT NULL DEFAULT '2038-01-19 02:14:07',
   `active` tinyint(1) NOT NULL DEFAULT '1',
-  `nlist` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'unknown',
-  `reason` tinytext CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  PRIMARY KEY (`domain`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `nlist` tinyint UNSIGNED NOT NULL DEFAULT '1',
+  `user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unknown',
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `spamsender`:
+--
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `whiteip`
+-- Table structure for table `spamusername`
 --
 
-CREATE TABLE IF NOT EXISTS `whiteip` (
-  `ip` int(4) unsigned NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+CREATE TABLE `spamusername` (
+  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `exp` timestamp NOT NULL DEFAULT '2038-01-19 03:14:07',
+  `exp` timestamp NOT NULL DEFAULT '2038-01-19 02:14:07',
   `active` tinyint(1) NOT NULL DEFAULT '1',
-  `nlist` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'unknown',
-  `reason` tinytext CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  PRIMARY KEY (`ip`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `nlist` tinyint UNSIGNED NOT NULL DEFAULT '1',
+  `user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unknown',
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `spamusername`:
+--
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `whitenet`
+-- Table structure for table `whitedomain`
 --
 
-CREATE TABLE IF NOT EXISTS `whitenet` (
-  `network` int(4) unsigned NOT NULL,
-  `netmask` int(4) unsigned NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+CREATE TABLE `whitedomain` (
+  `domain` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `exp` timestamp NOT NULL DEFAULT '2038-01-19 03:14:07',
+  `exp` timestamp NOT NULL DEFAULT '2038-01-19 02:14:07',
   `active` tinyint(1) NOT NULL DEFAULT '1',
-  `nlist` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'unknown',
-  `reason` tinytext CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  PRIMARY KEY (`network`,`netmask`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `nlist` tinyint UNSIGNED NOT NULL DEFAULT '1',
+  `user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unknown',
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `whitedomain`:
+--
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `whitesender`
+-- Table structure for table `whiteip`
 --
 
-CREATE TABLE IF NOT EXISTS `whitesender` (
-  `email` varchar(255) COLLATE utf8_bin NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+CREATE TABLE `whiteip` (
+  `ip` int UNSIGNED NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `exp` timestamp NOT NULL DEFAULT '2038-01-19 03:14:07',
+  `exp` timestamp NOT NULL DEFAULT '2038-01-19 02:14:07',
   `active` tinyint(1) NOT NULL DEFAULT '1',
-  `nlist` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'unknown',
-  `reason` tinytext CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  PRIMARY KEY (`email`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `nlist` tinyint UNSIGNED NOT NULL DEFAULT '1',
+  `user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unknown',
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `whiteip`:
+--
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `spamusername`
--- (users abused on SMTP Auth)
+-- Table structure for table `whitenet`
 --
 
-CREATE TABLE IF NOT EXISTS `spamusername` (
-  `username` varchar(255) COLLATE utf8_bin NOT NULL,
-  `date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+CREATE TABLE `whitenet` (
+  `network` int UNSIGNED NOT NULL,
+  `netmask` int UNSIGNED NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `exp` timestamp NOT NULL DEFAULT '2038-01-19 03:14:07',
+  `exp` timestamp NOT NULL DEFAULT '2038-01-19 02:14:07',
   `active` tinyint(1) NOT NULL DEFAULT '1',
-  `nlist` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `user` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'unknown',
-  `reason` tinytext CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
-  PRIMARY KEY (`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `nlist` tinyint UNSIGNED NOT NULL DEFAULT '1',
+  `user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unknown',
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `whitenet`:
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `whitesender`
+--
+
+CREATE TABLE `whitesender` (
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `datemod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `exp` timestamp NOT NULL DEFAULT '2038-01-19 02:14:07',
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `nlist` tinyint UNSIGNED NOT NULL DEFAULT '1',
+  `user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unknown',
+  `reason` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `whitesender`:
+--
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `spamdomain`
+--
+ALTER TABLE `spamdomain`
+  ADD PRIMARY KEY (`domain`);
+
+--
+-- Indexes for table `spamhash`
+--
+ALTER TABLE `spamhash`
+  ADD PRIMARY KEY (`text`);
+
+--
+-- Indexes for table `spamip`
+--
+ALTER TABLE `spamip`
+  ADD PRIMARY KEY (`ip`);
+
+--
+-- Indexes for table `spamnet`
+--
+ALTER TABLE `spamnet`
+  ADD PRIMARY KEY (`network`,`netmask`);
+
+--
+-- Indexes for table `spamsender`
+--
+ALTER TABLE `spamsender`
+  ADD PRIMARY KEY (`email`);
+
+--
+-- Indexes for table `spamusername`
+--
+ALTER TABLE `spamusername`
+  ADD PRIMARY KEY (`username`);
+
+--
+-- Indexes for table `whitedomain`
+--
+ALTER TABLE `whitedomain`
+  ADD PRIMARY KEY (`domain`);
+
+--
+-- Indexes for table `whiteip`
+--
+ALTER TABLE `whiteip`
+  ADD PRIMARY KEY (`ip`);
+
+--
+-- Indexes for table `whitenet`
+--
+ALTER TABLE `whitenet`
+  ADD PRIMARY KEY (`network`,`netmask`);
+
+--
+-- Indexes for table `whitesender`
+--
+ALTER TABLE `whitesender`
+  ADD PRIMARY KEY (`email`);
+COMMIT;
+

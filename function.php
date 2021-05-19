@@ -28,6 +28,11 @@ function myConnect($host, $user, $pass, $db, $port, $tablelist, $typedesc, $logu
                     		. $mysqli->connect_error);
 		return FALSE;
 	}
+	if (!$mysqli->set_charset("utf8mb4")) {
+		syslog(LOG_EMERG, $loguser.': Error loading character set utf8mb4: ' . $mysqli->error);
+		return FALSE;
+	}
+	#$mysqli->query("set names 'utf8mb4' collate 'utf8mb4_unicode_520_ci' ");
 	syslog(LOG_INFO, $loguser.': Successfully MySQL connected at DB <'.$db.'> to ' . $mysqli->host_info) ;
 	return $mysqli;
 }
@@ -361,7 +366,7 @@ function searchentry ($myconn,$value,$tablelist) {
 	                switch ($type) {
 	                  case 'ip':
 	                        $query= "select * from $table where $type =  INET_ATON('$value')";
-	                        break;
+				break;
 	                  case 'network':
 	                        list($sub['net'],$sub['mask'])=explode('/',$value);
 	                        $query= sprintf('select * from `%s`
@@ -426,7 +431,7 @@ END;
 
 	$result = searchentry ($myconn,$value,$tables["$typedesc"]);
 	if ($result) {
-		printf("<pre>Your request for $type &lt;$value&gt; returned %d items.\n</pre>", $result->num_rows);
+		printf("<pre>Your request for $type &lt;%s&gt; returned %d items.\n</pre>", htmlentities($value), $result->num_rows);
 
         /* Check for limit in number of listed items */
 	$full = isFull($myconn,$typedesc,$tables);
@@ -465,7 +470,7 @@ END;
 			print '</tbody></table>';
 		}
 		else {
-			print "<pre>$type &lt;$value&gt; is not listed!\n</pre>";
+			printf ("<pre>$type &lt;%s&gt; is not listed!\n</pre>", htmlentities($value));
 			if ( in_array($user,array_keys($adm)) AND ($value != 'ALL') )
 				if ( (!$full) AND (consistentListing($myconn,$tables,$typedesc,$value,$whynot)) ) require_once('listForm.php');
 									else print '<p>'.htmlspecialchars($whynot).'</p>';

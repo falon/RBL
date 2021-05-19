@@ -2,6 +2,7 @@
 require_once('config.php');
 require_once('function.php');
 $typedesc=$_POST['type'];
+$value = iconv(mb_detect_encoding($_POST['value'], mb_detect_order('ISO-8859-15, ISO-8859-1')), "UTF-8", $_POST['value']);
 $type = $tables["$typedesc"]['field'];
 $table = ($tables["$typedesc"]['milter']) ? milterTable($type) : $tables["$typedesc"]['name'];
 
@@ -15,8 +16,8 @@ $err = NULL;
 if ( ($mysqli = myConnect($dbhost, $userdb, $pwd, $db, $dbport, $tables, $typedesc, $user)) === FALSE )
                 exit ($user.': Connect Error (' . $mysqli->connect_errno . ') '. $mysqli->connect_error);
 
-if (addtolist ($mysqli,$user,$_POST['value'],$tables["$typedesc"],$_POST['unit'],$_POST['quantity'],$_POST['reason'],$err))
- print 'OK '.$_POST["type"].' &lt;'.$_POST['value'].'&gt; first time listed for '.$_POST['quantity'].$_POST['unit'].'.';
+if (addtolist ($mysqli,$user,$value,$tables["$typedesc"],$_POST['unit'],$_POST['quantity'],$_POST['reason'],$err))
+ print 'OK '.$_POST["type"].' &lt;'.htmlentities($value).'&gt; first time listed for '.$_POST['quantity'].$_POST['unit'].'.';
 else
  print 'List operation ERROR; check log.';
 if (!is_null($err) ) print htmlentities(' Error: ' . $err);

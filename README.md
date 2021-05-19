@@ -13,6 +13,7 @@ Every member in list can be active (really listed), or inactive (time expired, o
 - PHP >= 7.1 with your date.timezone in php.ini
 - MySQL Server > 5.6.4 (supporting transaction and foreign key)
 - php-gmp and dautkom/php.ipv4
+- php-common and php-mbstring to manage UTF8.
 - RBLDNS, if you export file zone through RBLDNS Export Plugin.
 - Splunk with webhook for the Splunk List Plugin
 - php-ldap for the Amavis Export Plugin
@@ -62,6 +63,7 @@ Customize the tables ($tables) you want. These are the lists. List types are cla
 - username (list of username, maybe useful to Postfix policy over sasl_username, if you like)
 - email (list of email addresses, useful to Postfix policy over sender email addresses, if you like)
 - domain (list of domains, exportable to rbldns format such as URIBL or SURBL)
+- text (list of patterns, exportable to rbldns format for HASHBL type checks)
 
 Every list name and key must be unique. If set to FALSE, the field "active" makes the list inexistent.
 The "limit" field configures the maximum number of active members in every list.

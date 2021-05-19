@@ -3,6 +3,7 @@ require_once('config.php');
 require_once('function.php');
 $typedesc=$_POST['type'];
 $type = $tables["$typedesc"]['field'];
+$value = iconv(mb_detect_encoding($_POST['value'], mb_detect_order('ISO-8859-1, ISO-8859-15')), "UTF-8", $_POST['value']);
 $table = ($tables["$typedesc"]['milter']) ? milterTable($type) : $tables["$typedesc"]['name'];
 $cl = ($tables["$typedesc"]['milter']) ? 10 : 9;
 ?>
@@ -18,8 +19,8 @@ if ( ($mysqli = myConnect($dbhost, $userdb, $pwd, $db, $dbport, $tables, $typede
                 exit ($user.': Connect Error (' . $mysqli->connect_errno . ') '. $mysqli->connect_error);
 
 if (isFull($mysqli,$typedesc,$tables)) die("ERROR in relist: ".htmlspecialchars("$typedesc has reached maximum value of ".$tables["$typedesc"]['limit'].' listed items.') );
-if (relist ($mysqli,username(),$_POST['value'],$type,$table,$_POST['unit'],$_POST['quantity'],$_POST['reason']))
- print 'OK '.$_POST["type"].' &lt;'.$_POST['value'].'&gt; relisted for '.$_POST['quantity'].$_POST['unit'];
+if (relist ($mysqli,username(),$value,$type,$table,$_POST['unit'],$_POST['quantity'],$_POST['reason']))
+ print 'OK '.$_POST["type"].' &lt;'.htmlentities($value).'&gt; relisted for '.$_POST['quantity'].$_POST['unit'];
 else
  print 'ERROR in relist; check log';
 $mysqli->close();

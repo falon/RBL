@@ -1,6 +1,6 @@
 <?php
 $form = <<<END
-<form style="margin:0" name='DelistButton$id' enctype="text/plain" method="post" target="_self" action="delist.php" onSubmit="xmlhttpPost('delist.php', 'DelistButton$id', 'id$id', '<img src=\'/include/pleasewait.gif\'>'); return false;" />
+<form style="margin:0" name='DelistButton$id' enctype="text/plain" method="post" target="_self" action="delist.php" accept-charset="utf-8" onSubmit="xmlhttpPost('delist.php', 'DelistButton$id', 'id$id', '<img src=\'/include/pleasewait.gif\'>'); return false;" />
 END;
 
 $button = <<<END

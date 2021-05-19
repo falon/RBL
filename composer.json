@@ -13,6 +13,6 @@
         "ext-ldap": "*",
         "ext-mysqlnd": "*",
         "ext-imap": "*",
-        "dautkom/php.ipv4": "^1.0"
+        "dautkom/php.ipv4": "dev-master"
     }
 }
