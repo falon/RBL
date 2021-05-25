@@ -9,7 +9,7 @@ WorkingDirectory=/usr/local/RBL/contrib/rbldns/yourbl
 Type = simple
 Restart=always
 RestartSec=1800s
-ExecStart = /usr/local/RBL/contrib/rbldns/exportdns.php -f ../conf.default -t %i
+ExecStart = /usr/local/RBL/contrib/rbldns/exportdns.php -f ../conf.%i -t %i
 
 [Install]
 WantedBy=multi-user.target
