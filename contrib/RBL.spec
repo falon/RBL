@@ -166,12 +166,16 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/template/mailWarnHeaders.eml
 %config(noreplace) %{_datadir}/%{bigname}/template/mailWarn.eml
 %config(noreplace) %{_datadir}/%{bigname}/contrib/rbldns/conf.default
+%config(noreplace) %{_datadir}/%{bigname}/contrib/rbldns/conf.spamhash
 
 %files mailClassifier -f FLMC
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/%{bigname}-mailClassifier.conf
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Tue May 25 2021 Marco Favero <marco.favero@csi.it> 2.5.0-2
+- conf.spamhash is now a config file in rpm.
+
 * Tue May 25 2021 Marco Favero <marco.favero@csi.it> 2.5.0-1
 - better rbldns management by systemd.
 
