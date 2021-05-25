@@ -5,7 +5,7 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.5.0
-Release: 0%{?dist}
+Release: 1%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -172,6 +172,9 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Tue May 25 2021 Marco Favero <marco.favero@csi.it> 2.5.0-1
+- better rbldns management by systemd.
+
 * Wed May 19 2021 Marco Favero <marco.favero@csi.it> 2.5.0-0
 - added support for HASHBL with UTF8 characters.
 
