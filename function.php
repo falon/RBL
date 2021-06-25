@@ -212,7 +212,14 @@ function expire ($myconn,$user,$tables,$expireTime) {
         $return=TRUE;
 	$log=array();
 	$desc = array_keys($tables);
-	foreach ($desc as $tdesc) { 
+	foreach ($desc as $tdesc) {
+		/* Exclude milter dbs */
+                switch ($tables["$tdesc"]['name']) {
+                        case 'miltermap':
+                        case 'milteripmap':
+                                continue 2;
+                        default:
+                }
 		/* QUERY */
 		$query  = 'DELETE FROM `'.$tables["$tdesc"]['name']."` WHERE `exp` < DATE_SUB( NOW(), INTERVAL $expireTime YEAR);";
 		$query .= 'DELETE FROM `'.$tables["$tdesc"]['name']."` WHERE `datemod` < DATE_SUB( NOW(), INTERVAL $expireTime YEAR) AND `active` = 0";
