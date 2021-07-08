@@ -134,7 +134,7 @@ mkdir %{buildroot}%{_datadir}/%{bigname}/contrib/rbldns/yourbl
 %endif
 case "$1" in
   2)
-	echo -en "\n\n\e[33mRemember to check the changes in imap.conf.\e[39m\n\n"
+	echo -en "\n\n  \e[33mRemember to check the changes in imap.conf.\e[39m\n\n"
   ;;
 esac
 
