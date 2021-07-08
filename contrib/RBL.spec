@@ -4,8 +4,8 @@
 
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
-Version: 2.5.0
-Release: 2%{?dist}
+Version: 2.5.1
+Release: 0%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -173,6 +173,9 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Thu Jul 08 2021 Marco Favero <marco.favero@csi.it> 2.5.1-0
+- fix: don't list TLD.
+
 * Tue May 25 2021 Marco Favero <marco.favero@csi.it> 2.5.0-2
 - conf.spamhash is now a config file in rpm.
 
