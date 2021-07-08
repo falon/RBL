@@ -792,6 +792,9 @@ function curl_get($url, array $get = NULL, array $options = array(), $loguser)
 function nsdom($dom) {
 /* Return the first lowercase upper domain (or domain itself) with NS record */
 /* checkdnsrr doesn't work with alias... use dns_get_record */
+	if ( strpos ( rtrim($dom, '.'), '.' ) === false )
+	/* if $dom doesn't contain dots, then it is a TLD. We don't list TLD. */
+		return NULL;
 	if (@dns_get_record ( $dom , DNS_NS ))
 		return strtolower(rtrim($dom, '.'));
 	if (@dns_get_record ( $dom , DNS_A )) 
@@ -800,7 +803,7 @@ function nsdom($dom) {
 }
 
 function isValid($dom) {
-/* Return TRUE id domain has NS or A record */
+/* Return TRUE if domain has NS or A record */
 	if (preg_match('/^(?!:\/\/)([a-zA-Z0-9-]+\.){0,5}[a-zA-Z0-9-][a-zA-Z0-9-]+\.[a-zA-Z]{2,64}?\.{0,1}$/i',$dom) === 1) {
 		if (checkdnsrr ( $dom , 'NS' ))
 			return TRUE;
