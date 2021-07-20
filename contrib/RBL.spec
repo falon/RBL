@@ -4,7 +4,7 @@
 
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
-Version: 2.5.1
+Version: 2.5.2
 Release: 0%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
@@ -173,6 +173,13 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Tue Jul 20 2021 Marco Favero <marco.favero@csi.it> 2.5.2-0
+- NEW: with "whiteforce" bool value in imap.conf, now the
+  Learner performs a dependent bl value delist in order to
+  permit a whitelist add.
+  Before this feature, if the value is in a bl dependent list
+  already, the whitelist was impossible.
+
 * Thu Jul 08 2021 Marco Favero <marco.favero@csi.it> 2.5.1-0
 - fix: don't list TLD.
 

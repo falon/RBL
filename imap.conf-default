@@ -20,6 +20,7 @@ mx[] 		= mx1.example.com
 mx[] 		= mx2.example.com
 
 [listingip]
+forcewhite              = FALSE
 ; In MySQL Language. See at config.php for list names
 quantity[spam]		= 5
 unit[spam]		= DAY
@@ -39,6 +40,7 @@ thresholduid[ham]	= 3
 onlyReport[ham]        = TRUE
 
 [listingdom]
+forcewhite              = FALSE
 ; In MySQL Language. See at config.php for list names
 quantity[spam]          = 5
 unit[spam]              = DAY

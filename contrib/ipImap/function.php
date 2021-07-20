@@ -105,7 +105,8 @@ function summaryReportAndList ($cf,$myconn,$tables,$category,$vet,$key) {
 				$reason = sprintf(
 				'The %s <%s> has been listed because was marked %u times as %s by %u different accounts during last %u days.',
 				strtoupper($key),$value,$nlearn,$category,$nuid,$cf['imap']['oldestday']);
-				$listed = searchAndList ($myconn,$cf['syslog']['user'],$tables,$cf["listing$key"]['list']["$category"],$value,$cf["listing$key"]['unit']["$category"],$quantity,$reason);
+				$listed = searchAndList ($myconn,$cf['syslog']['user'],$tables,$cf["listing$key"]['list']["$category"],$value,
+					                 $cf["listing$key"]['unit']["$category"],$quantity,$reason, $cf["listing$key"]['forcewhite']);
 			}
 			else $listed = FALSE;
 		}
@@ -367,7 +368,7 @@ function imapReport ($cf,$myconnArray,$splunkconn,$tables,$type) {
 	//get all messages
 	$dateTh = date ( "d-M-Y", strToTime ( '-'.$cf['imap']['oldestday'].' days' ) );
         $dateN  = date ( "d-M-Y", strToTime ( "now" ) );
-        $m_search=imap_search ($m_mail, "SINCE \"$dateTh\" BEFORE \"$dateN\"" );
+	$m_search=imap_search ($m_mail, "SINCE \"$dateTh\" BEFORE \"$dateN\"" );
 
 	// Order results starting from newest message
 	if ( empty($m_search) ) {

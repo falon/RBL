@@ -201,7 +201,7 @@ function changestatus ($myconn,$user,$value,$status,$type,$table) {
 	}
 
         if ($return=$myconn->query($query) === TRUE) {
-            syslog(LOG_INFO, "$user: change status of $type <$value>. The status is now <$status>");
+            syslog(LOG_INFO, "$user: change status of $type <$value> on <$table>. The status is now <$status>.");
         }
         else syslog(LOG_ERR, "$user: Error: ". $myconn->error);
 	return $return;	
@@ -302,7 +302,7 @@ function ask($myconn,$id,$what,$alltables,$typedesc,$value,$lock,$user,$adm) {
 }
 
 
-function consistentListing($myconn,$alltables,$typed,$value,&$warn) {
+function consistentListing($myconn,$alltables,$typed,$value,&$warn,$forcewhite=FALSE,$loguser='unknown') {
 /* Check if there are no pending mislisting */
 	$warn = NULL;
 	if (! isset($alltables["$typed"]['depend']) ) return TRUE;
@@ -315,17 +315,24 @@ function consistentListing($myconn,$alltables,$typed,$value,&$warn) {
 		if ( $entry->num_rows ) {
 			if ( $entry->num_rows == 1 ) {
 				$riga = $entry->fetch_array(MYSQLI_ASSOC);
-                        	if (isListed($riga)) {
-					$warn = "<$value> is already present in <$listdep> list!";
-					$entry->free();
-					return FALSE;
+				if (isListed($riga)) {
+					if ( $forcewhite AND $alltables["$listdep"]['bl'] AND !$alltables["$typed"]['bl']) {
+						# If it's wl, we remove it from depend bl
+        					# in order to permit a whitelist add.
+						$entry->free();
+						return changestatus($myconn,$loguser,$value,'0',$alltables["$listdep"]['field'],$alltables["$listdep"]['name']);
+					}
+					else {
+						$warn = "<$value> is already present in <$listdep> list!";
+						$entry->free();
+						return FALSE;
+					}
 				}
 			}
 			if ( $entry->num_rows > 1 ) {$warn = "<$value> seems to be present more than once in <$listdep>. Contact a sysadmin NOW!";}
 		}
 		$entry->free();
 	}
-
 	return TRUE;
 }
 
@@ -549,7 +556,7 @@ function emailToNotify($notify_file,$dom) {
 }
 
 
-function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,&$quantity,&$reason) {
+function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,&$quantity,&$reason,$forcewhite=FALSE) {
 
 /* Search and list value */
         $type = $tables["$typedesc"]['field'];
@@ -573,7 +580,7 @@ function searchAndList ($myconn,$loguser,$tables,$typedesc,$value,$unit,&$quanti
                         return FALSE;
                 }
                 /* Second, check if the (re)list would be consistent now */
-                if (! consistentListing($myconn,$tables,$typedesc,$value,$whynot) ) {
+                if (! consistentListing($myconn,$tables,$typedesc,$value,$whynot,$forcewhite,$loguser) ) {
                         syslog(LOG_ERR, $loguser.': '.$whynot);
                         $result->free();
                         return FALSE;
