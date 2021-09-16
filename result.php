@@ -42,8 +42,12 @@ if ( ($tables["$_"]['field']=='username') AND ($value!='ALL') ) {
 	}
 }	
 
-if ( ($tables["$_"]['field']=='text') AND (preg_match( '/[^\x20-\x7fàèìòù]/i', $value)) )
-        exit('<p>ERROR: &lt;'.htmlentities($_POST['Value'],ENT_COMPAT | ENT_HTML401, 'ISO-8859-1').'&gt; contains UTF8 chars not allowed.</p>');
+if ($tables["$_"]['field']=='text') {
+	if ( preg_match( '/[^\x20-\x7fàèìòù]/i', $value ) ) 
+		exit('<p>ERROR: &lt;'.htmlentities($_POST['Value'],ENT_COMPAT | ENT_HTML401, 'ISO-8859-1').'&gt; contains UTF8 chars not allowed.</p>');
+	if ( !preg_match( '/^\S+(?:[\s\t]+\S+){0,1}$/', $value ) )
+		exit('<p>ERROR: &lt;'.htmlentities($_POST['Value'],ENT_COMPAT | ENT_HTML401, 'ISO-8859-1').'&gt; contains more than two words, or unallowed spaces.</p>');
+}
 
 
 if (empty($_GET)) {

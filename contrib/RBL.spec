@@ -5,7 +5,7 @@
 Summary: A complete, more than an RBL Management System.
 Name: rblmanager
 Version: 2.5.2
-Release: 0%{?dist}
+Release: 1%{?dist}
 Group: System Environment/Daemons
 License: Apache-2.0
 URL: https://falon.github.io/%{bigname}/
@@ -173,6 +173,9 @@ esac
 %config(noreplace) %{_datadir}/%{bigname}/contrib/mailClassifier/imap.conf
 
 %changelog
+* Thu Sep 16 2021 Marco Favero <marco.favero@csi.it> 2.5.2-1
+- added check in hasbl input.
+
 * Tue Jul 20 2021 Marco Favero <marco.favero@csi.it> 2.5.2-0
 - NEW: with "whiteforce" bool value in imap.conf, now the
   Learner performs a dependent bl value delist in order to
