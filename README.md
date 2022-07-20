@@ -2,6 +2,8 @@
 # RBL Manager
 A complete RBL Management System, with interfaces to Splunk Alert and trap or learning mailboxes.
 
+This is not another set of DNSBL. It can be a Management System of your local DNSBLs.
+
 ![screenshot](doc/RBL.JPG)
 ## Abstract
 A complete tool to create and manage a time expiring lists of IPs, networks, usernames and email addresses.
@@ -42,7 +44,10 @@ If you want to install the mailClassifier too:
 `dnf install rblmanager-mailClassifier`
 
 ### By source
-Otherwise you can try these lapidary instructions.
+Otherwise you can try these lapidary instructions. But I warn that I tried this setup only on Centos or Red Hat EL8 systems.
+Probably it works on EL7 systems too. I never tried to install this RBLMS on Ubuntu or Windows. Some hard tricks could be needed to work with these systems.
+
+
 Clone this repository.
 
 From home directory type `composer require dautkom/php.ipv4`.

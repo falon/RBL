@@ -156,7 +156,7 @@ $confImap_file = dirname(__FILE__) . '/imap.conf';
 
 /* syslog */
 $tag = 'myRBL';
-$fac = LOG_LOCAL0;
+$fac = LOG_SYSLOG;
 
 /* Expire (delete) old records from DB */
 $expire		= TRUE;	/* Expire? */
